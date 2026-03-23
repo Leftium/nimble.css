@@ -1,0 +1,101 @@
+// ==========================================================================
+// nimble.css — Buttons
+// Spec §9.2: button base, .secondary, .outline, button groups, disabled
+// ==========================================================================
+
+@use 'config' as *;
+
+@layer nimble.base {
+
+  // ----- Base button -----
+
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
+    --_btn-padding-v: 0.5em;
+    --_btn-padding-h: 1em;
+
+    padding: var(--_btn-padding-v) var(--_btn-padding-h);
+    background-color: var(#{$prefix}primary);
+    color: var(#{$prefix}primary-contrast);
+    border: 1px solid var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    margin: 0 0.25em 0.25em 0;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover {
+    background-color: var(#{$prefix}primary-hover);
+    border-color: var(#{$prefix}primary-hover);
+  }
+
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):focus-visible {
+    box-shadow: 0 0 0 2px var(#{$prefix}primary-focus);
+    outline: none;
+  }
+
+  // ----- Disabled -----
+
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // ----- Button groups -----
+
+  :where([role="group"]) {
+    display: inline-flex;
+  }
+
+  :where([role="group"]) > * {
+    border-radius: 0;
+  }
+
+  :where([role="group"]) > :first-child {
+    border-start-start-radius: var(#{$prefix}radius);
+    border-end-start-radius: var(#{$prefix}radius);
+  }
+
+  :where([role="group"]) > :last-child {
+    border-start-end-radius: var(#{$prefix}radius);
+    border-end-end-radius: var(#{$prefix}radius);
+  }
+
+}
+
+// ----- Variants (utility classes) -----
+
+@layer nimble.utilities {
+
+  .secondary {
+    background-color: var(#{$prefix}secondary);
+    border-color: var(#{$prefix}secondary);
+    color: var(#{$prefix}secondary-contrast);
+  }
+
+  .secondary:hover {
+    background-color: var(#{$prefix}secondary-hover);
+    border-color: var(#{$prefix}secondary-hover);
+  }
+
+  .secondary:focus-visible {
+    box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
+  }
+
+  .outline {
+    background-color: transparent;
+    color: var(#{$prefix}primary);
+  }
+
+  .outline:hover {
+    background-color: var(#{$prefix}primary);
+    color: var(#{$prefix}primary-contrast);
+  }
+
+}

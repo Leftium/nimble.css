@@ -37,6 +37,7 @@ $_heading-phone: (
       margin-top: 0;
       margin-bottom: var(#{$prefix}spacing);
       font-weight: 700;
+      text-wrap: balance;
     }
   }
 
@@ -93,7 +94,7 @@ $_heading-phone: (
   blockquote {
     margin-block: var(#{$prefix}spacing);
     margin-inline: 0;
-    padding: var(#{$prefix}spacing);
+    padding: 0.25em var(#{$prefix}spacing);
     border-inline-start: 0.25rem solid var(#{$prefix}border);
     font-style: italic;
   }

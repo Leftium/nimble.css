@@ -1,0 +1,128 @@
+// ==========================================================================
+// nimble.css — Forms
+// Spec §9.3: inputs, select, textarea, labels, fieldset, validation, switch
+// ==========================================================================
+
+@use 'config' as *;
+
+@layer nimble.base {
+
+  // ----- Text inputs, select, textarea -----
+
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]),
+         select, textarea) {
+    padding: 0.5em 0.75em;
+    background-color: var(#{$prefix}surface-3);
+    border: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius);
+    color: var(#{$prefix}text-1);
+    font: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  // Make text inputs and select full-width by default (PicoCSS pattern)
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
+         select, textarea) {
+    width: 100%;
+  }
+
+  // ----- Focus -----
+
+  :where(input, select, textarea):focus-visible {
+    border-color: var(#{$prefix}primary);
+    box-shadow: 0 0 0 2px var(#{$prefix}primary-focus);
+    outline: none;
+  }
+
+  // ----- Validation states (aria-invalid) -----
+
+  :where(input, select, textarea)[aria-invalid="false"] {
+    border-color: var(#{$prefix}valid);
+  }
+
+  :where(input, select, textarea)[aria-invalid="true"] {
+    border-color: var(#{$prefix}invalid);
+  }
+
+  // ----- Labels -----
+
+  :where(label) {
+    display: block;
+    margin-bottom: 0.25em;
+  }
+
+  :where(label:has(+ input, + select, + textarea)) {
+    font-weight: 600;
+  }
+
+  // ----- Fieldset -----
+
+  :where(fieldset) {
+    border: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius);
+    padding: var(#{$prefix}spacing);
+  }
+
+  :where(legend) {
+    font-weight: 600;
+    padding-inline: 0.25em;
+  }
+
+  // ----- Checkbox & Radio -----
+  // Use accent-color to tint native controls to match the primary color
+
+  :where([type="checkbox"], [type="radio"]) {
+    accent-color: var(#{$prefix}primary);
+  }
+
+  // ----- Range -----
+
+  :where([type="range"]) {
+    accent-color: var(#{$prefix}primary);
+    width: 100%;
+  }
+
+  // ----- Color -----
+
+  :where([type="color"]) {
+    cursor: pointer;
+  }
+
+  // ----- Switch (checkbox with role="switch") -----
+
+  @if $enable-switch {
+    // Minimal switch styling — relies on native checkbox with role="switch"
+    // Browsers with :has() support get enhanced label alignment
+    :where([type="checkbox"][role="switch"]) {
+      appearance: none;
+      width: 2.5em;
+      height: 1.25em;
+      border-radius: 1em;
+      background-color: var(#{$prefix}border);
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    :where([type="checkbox"][role="switch"])::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: calc(1.25em - 4px);
+      height: calc(1.25em - 4px);
+      border-radius: 50%;
+      background-color: #fff;
+      transition: transform 0.2s;
+    }
+
+    :where([type="checkbox"][role="switch"]):checked {
+      background-color: var(#{$prefix}primary);
+    }
+
+    :where([type="checkbox"][role="switch"]):checked::before {
+      transform: translateX(1.25em);
+    }
+  }
+
+}

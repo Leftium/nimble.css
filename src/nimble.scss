@@ -15,16 +15,16 @@
 @use 'document';
 @use 'typography';
 
-// Phase 3: Elements (to be added)
-// @use 'links';
-// @use 'buttons';
-// @use 'forms';
-// @use 'tables';
-// @use 'code';
-// @use 'media';
-// @use 'details';
-// @use 'dialog';
-// @use 'print';
+// Phase 3: Elements
+@use 'links';
+@use 'buttons';
+@use 'forms';
+@use 'tables';
+@use 'code';
+@use 'media';
+@use 'details';
+@use 'dialog';
+@use 'print';
 
 // Phase 4: Utilities (to be added)
 // @use 'utilities';

@@ -1,0 +1,34 @@
+// ==========================================================================
+// nimble.css — Tables
+// Spec §9.4
+// ==========================================================================
+
+@use 'sass:string';
+@use 'config' as *;
+
+@layer nimble.base {
+
+  :where(table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  :where(th, td) {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid #{string.unquote('color-mix(in oklch, var(#{$prefix}border), transparent 40%)')};
+    text-align: start;
+  }
+
+  :where(thead th, thead td) {
+    font-weight: 600;
+    border-bottom-width: 2px;
+    background-color: var(#{$prefix}surface-2);
+    text-wrap: balance;
+  }
+
+  // Responsive tables: horizontal scroll when inside figure
+  :where(figure:has(table)) {
+    overflow-x: auto;
+  }
+
+}

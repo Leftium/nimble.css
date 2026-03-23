@@ -1,0 +1,26 @@
+// ==========================================================================
+// nimble.css — Dialog
+// Spec §9.11 — behind $enable-dialog flag
+// ==========================================================================
+
+@use 'config' as *;
+
+@if $enable-dialog {
+
+  @layer nimble.base {
+
+    :where(dialog) {
+      background-color: var(#{$prefix}surface-4);
+      border: 1px solid var(#{$prefix}border);
+      border-radius: var(#{$prefix}radius);
+      max-width: min(90vw, 40rem);
+      padding: var(#{$prefix}spacing);
+    }
+
+    :where(dialog::backdrop) {
+      background: rgb(0 0 0 / 0.5);
+    }
+
+  }
+
+}

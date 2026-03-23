@@ -1,0 +1,41 @@
+// ==========================================================================
+// nimble.css — Print Styles
+// Spec §9.12
+// Not inside any layer — print overrides everything
+// ==========================================================================
+
+@media print {
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+  }
+
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: none;
+  }
+
+  pre, blockquote {
+    page-break-inside: avoid;
+  }
+
+  h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+
+}

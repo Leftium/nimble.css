@@ -1,0 +1,37 @@
+// ==========================================================================
+// nimble.css — Code
+// Spec §9.5: pre, code, kbd, samp
+// ==========================================================================
+
+@use 'config' as *;
+
+@layer nimble.base {
+
+  :where(code, kbd, samp) {
+    font-family: var(#{$prefix}font-mono);
+    font-size: 0.875em;
+    background-color: var(#{$prefix}surface-2);
+    border-radius: var(#{$prefix}radius);
+    padding: 0.15em 0.35em;
+  }
+
+  :where(pre) {
+    background-color: var(#{$prefix}surface-2);
+    border-radius: var(#{$prefix}radius);
+    padding: var(#{$prefix}spacing);
+    overflow-x: auto;
+  }
+
+  // Reset nested code inside pre
+  :where(pre code) {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  :where(kbd) {
+    border: 1px solid var(#{$prefix}border);
+    border-bottom-width: 2px;
+  }
+
+}

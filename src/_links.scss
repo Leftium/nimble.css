@@ -1,0 +1,29 @@
+// ==========================================================================
+// nimble.css — Links
+// Spec §9.1
+// ==========================================================================
+
+@use 'sass:string';
+@use 'config' as *;
+
+@layer nimble.base {
+
+  :where(a:not([role="button"])) {
+    color: var(#{$prefix}primary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary), transparent 50%)')};
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+
+  :where(a:not([role="button"])):visited {
+    color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.5 0.2 310))')};
+    text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.5 0.2 310) 30%)')};
+  }
+
+  :where(a:not([role="button"])):hover {
+    color: var(#{$prefix}primary-hover);
+    text-decoration-color: var(#{$prefix}primary-hover);
+  }
+
+}

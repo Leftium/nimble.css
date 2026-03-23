@@ -1,0 +1,26 @@
+// ==========================================================================
+// nimble.css — Media
+// Spec §9.8: img, video, canvas, svg, figure, figcaption
+// Note: No dark-mode opacity reduction (ruins images)
+// ==========================================================================
+
+@use 'config' as *;
+
+@layer nimble.base {
+
+  :where(img, video, canvas, svg) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  :where(figure) {
+    margin: 0;
+  }
+
+  :where(figcaption) {
+    font-size: 0.9em;
+    color: var(#{$prefix}text-2);
+    margin-top: 0.5em;
+  }
+
+}
