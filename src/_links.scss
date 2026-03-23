@@ -17,8 +17,8 @@
   }
 
   :where(a:not([role="button"])):visited {
-    color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.5 0.2 310))')};
-    text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.5 0.2 310) 30%)')};
+    color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.38 0.15 310))')};
+    text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.38 0.15 310) 30%)')};
   }
 
   :where(a:not([role="button"])):hover {
