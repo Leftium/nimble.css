@@ -9,7 +9,7 @@
 
   // ----- Text inputs, select, textarea -----
 
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]),
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
          select, textarea) {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
