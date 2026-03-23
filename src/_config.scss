@@ -1,0 +1,53 @@
+// ==========================================================================
+// nimble.css — Configuration
+// All values use !default so they can be overridden via @use ... with (...)
+// ==========================================================================
+
+// --- Prefix ---
+// Must include leading `--` and trailing `-` (e.g., '--nc-', '--my-')
+$prefix: '--nc-' !default;
+
+// --- Feature flags ---
+$enable-utilities: true !default;
+$enable-dialog: true !default;
+$enable-switch: true !default;
+$enable-details: true !default;
+
+// --- Colors (oklch parameters) ---
+
+// Primary (main accent: links, primary buttons, focus rings, checkboxes)
+$primary-hue: 250 !default;
+$primary-chroma: 0.2 !default;
+$primary-lightness: 0.55 !default;
+
+// Secondary (neutral accent: secondary buttons, reset buttons)
+$secondary-hue: 250 !default;
+$secondary-chroma: 0.05 !default;
+$secondary-lightness: 0.45 !default;
+
+// Surface (background hierarchy)
+$surface-hue: 250 !default;
+$surface-chroma: 0.002 !default;
+$surface-light-base: 0.985 !default;
+$surface-dark-base: 0.170 !default;
+
+// Lightness offsets for each surface level (relative to base)
+$surface-offsets: (2: 0.03, 3: 0.06, 4: 0.10) !default;
+
+// Dark mode chroma/hue adjustments for surfaces
+$surface-dark-chroma-boost: 0.003 !default;
+$surface-dark-hue-shift: 10 !default;
+
+// --- Typography ---
+$font-sans: system-ui, sans-serif !default;
+$font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro',
+            Menlo, Consolas, 'DejaVu Sans Mono', monospace !default;
+
+// --- Spacing & Layout ---
+$spacing: 1rem !default;
+$radius: 0.25rem !default;
+$content-width: 720px !default;
+$wide-width: 1200px !default;
+
+// --- Breakpoints ---
+$breakpoint-phone: 720px !default;

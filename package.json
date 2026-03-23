@@ -1,0 +1,35 @@
+{
+  "name": "nimble.css",
+  "version": "0.1.0",
+  "description": "A minimal class/classless CSS library combining Open Props design tokens with PicoCSS aesthetics",
+  "type": "module",
+  "main": "dist/nimble.min.css",
+  "exports": {
+    ".": "./dist/nimble.min.css",
+    "./base": "./dist/nimble-base.min.css",
+    "./reset": "./dist/nimble-reset.min.css",
+    "./utilities": "./dist/nimble-utilities.min.css",
+    "./scss": "./src/nimble.scss"
+  },
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "prepublishOnly": "node build.js"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.29.0",
+    "sass": "^1.86.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "css",
+    "classless",
+    "minimal",
+    "dark-mode",
+    "oklch",
+    "cascade-layers"
+  ]
+}

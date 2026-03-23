@@ -1,0 +1,16 @@
+// ==========================================================================
+// nimble.css — Entry Point
+// A minimal class/classless CSS library
+// ==========================================================================
+
+@use 'config' as *;
+
+// Declare layer order — lower layers lose to higher layers in cascade
+@layer nimble.reset, nimble.base, nimble.utilities;
+
+// Phase 2+ will @use partials here:
+// @use 'reset';
+// @use 'colors';
+// @use 'document';
+// @use 'typography';
+// ... etc.
