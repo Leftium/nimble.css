@@ -5,12 +5,26 @@
 
 @use 'config' as *;
 
-// Declare layer order — lower layers lose to higher layers in cascade
-@layer nimble.reset, nimble.base, nimble.utilities;
+// Layer order declaration — emitted first in CSS output.
+// Lower layers lose to higher layers in cascade.
+@use 'layers';
 
-// Phase 2+ will @use partials here:
-// @use 'reset';
-// @use 'colors';
-// @use 'document';
-// @use 'typography';
-// ... etc.
+// Phase 2: Core
+@use 'reset';
+@use 'colors';
+@use 'document';
+@use 'typography';
+
+// Phase 3: Elements (to be added)
+// @use 'links';
+// @use 'buttons';
+// @use 'forms';
+// @use 'tables';
+// @use 'code';
+// @use 'media';
+// @use 'details';
+// @use 'dialog';
+// @use 'print';
+
+// Phase 4: Utilities (to be added)
+// @use 'utilities';

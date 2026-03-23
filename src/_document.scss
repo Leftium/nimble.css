@@ -1,0 +1,41 @@
+// ==========================================================================
+// nimble.css — Document
+// html, body (grid centering), ::selection
+// ==========================================================================
+
+@use 'sass:string';
+@use 'config' as *;
+
+@layer nimble.base {
+
+  html {
+    font-family: var(#{$prefix}font-sans);
+    font-size: 100%;    // = 16px in most browsers
+    line-height: 1.5;
+    color: var(#{$prefix}text-1);
+    background-color: var(#{$prefix}surface-1);
+  }
+
+  // Grid centering: content sits in the middle column,
+  // full-bleed elements can span 1 / -1.
+  // See spec §7.1
+  body {
+    display: grid;
+    grid-template-columns:
+      1fr
+      min(var(#{$prefix}content-width), #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing))')})
+      1fr;
+    min-height: 100dvh;
+  }
+
+  body > * {
+    grid-column: 2;
+  }
+
+  // Selection styling using primary accent
+  ::selection {
+    background-color: var(#{$prefix}primary-focus);
+    color: var(#{$prefix}text-1);
+  }
+
+}

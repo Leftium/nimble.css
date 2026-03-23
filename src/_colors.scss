@@ -1,0 +1,118 @@
+// ==========================================================================
+// nimble.css — Color System
+// oklch surfaces + primary/secondary/feedback via light-dark()
+// All public properties use $prefix; internals use --_
+//
+// Note: oklch() values are emitted as raw CSS strings to prevent Sass from
+// interpreting them as Sass color functions. We use unquote() wrappers.
+// ==========================================================================
+
+@use 'sass:math';
+@use 'sass:string';
+@use 'config' as *;
+
+// Helper: build an oklch() string that Sass passes through as-is
+@function _oklch($l, $c, $h, $alpha: null) {
+  @if $alpha {
+    @return string.unquote('oklch(#{$l} #{$c} #{$h} / #{$alpha})');
+  }
+  @return string.unquote('oklch(#{$l} #{$c} #{$h})');
+}
+
+// Helper: build a light-dark() string
+@function _light-dark($light, $dark) {
+  @return string.unquote('light-dark(#{$light}, #{$dark})');
+}
+
+@layer nimble.base {
+
+  :root {
+    color-scheme: light dark;
+
+    // ----- Surfaces -----
+    // Surface 1: page background (base lightness)
+    #{$prefix}surface-1: #{_light-dark(
+      _oklch($surface-light-base, $surface-chroma, $surface-hue),
+      _oklch($surface-dark-base, $surface-chroma + $surface-dark-chroma-boost, $surface-hue + $surface-dark-hue-shift)
+    )};
+
+    // Surface 2-4: generated from offsets
+    @each $level, $offset in $surface-offsets {
+      #{$prefix}surface-#{$level}: #{_light-dark(
+        _oklch($surface-light-base - $offset, $surface-chroma, $surface-hue),
+        _oklch($surface-dark-base + $offset, $surface-chroma + $surface-dark-chroma-boost, $surface-hue + $surface-dark-hue-shift)
+      )};
+    }
+
+    // ----- Text -----
+    #{$prefix}text-1: #{_light-dark(
+      _oklch(0.280, 0.005, $surface-hue),
+      _oklch(0.860, 0.005, $surface-hue)
+    )};
+    #{$prefix}text-2: #{_light-dark(
+      _oklch(0.450, 0.005, $surface-hue),
+      _oklch(0.650, 0.005, $surface-hue)
+    )};
+
+    // ----- Border -----
+    #{$prefix}border: #{_light-dark(
+      _oklch(0.830, 0.005, $surface-hue),
+      _oklch(0.280, 0.005, $surface-hue + $surface-dark-hue-shift)
+    )};
+
+    // ----- Primary (main accent) -----
+    #{$prefix}primary: #{_light-dark(
+      _oklch($primary-lightness, $primary-chroma, $primary-hue),
+      _oklch($primary-lightness + 0.1, $primary-chroma, $primary-hue)
+    )};
+    #{$prefix}primary-hover: #{_light-dark(
+      _oklch($primary-lightness - 0.1, $primary-chroma, $primary-hue),
+      _oklch($primary-lightness + 0.2, $primary-chroma, $primary-hue)
+    )};
+    #{$prefix}primary-focus: #{_oklch($primary-lightness, $primary-chroma, $primary-hue, 0.4)};
+    #{$prefix}primary-contrast: #fff;
+
+    // ----- Secondary (neutral accent) -----
+    #{$prefix}secondary: #{_light-dark(
+      _oklch($secondary-lightness, $secondary-chroma, $secondary-hue),
+      _oklch($secondary-lightness + 0.15, $secondary-chroma, $secondary-hue)
+    )};
+    #{$prefix}secondary-hover: #{_light-dark(
+      _oklch($secondary-lightness - 0.1, $secondary-chroma, $secondary-hue),
+      _oklch($secondary-lightness + 0.25, $secondary-chroma, $secondary-hue)
+    )};
+    #{$prefix}secondary-focus: #{_oklch($secondary-lightness, $secondary-chroma, $secondary-hue, 0.3)};
+    #{$prefix}secondary-contrast: #fff;
+
+    // ----- Feedback -----
+    #{$prefix}valid: #{_light-dark(
+      _oklch(0.52, 0.17, 145),
+      _oklch(0.65, 0.2, 145)
+    )};
+    #{$prefix}invalid: #{_light-dark(
+      _oklch(0.55, 0.22, 25),
+      _oklch(0.65, 0.22, 25)
+    )};
+
+    // ----- Typography -----
+    #{$prefix}font-sans: #{$font-sans};
+    #{$prefix}font-mono: #{$font-mono};
+
+    // ----- Spacing & Layout -----
+    #{$prefix}spacing: #{$spacing};
+    #{$prefix}radius: #{$radius};
+    #{$prefix}content-width: #{$content-width};
+  }
+
+  // ----- Manual theme override -----
+  // Setting color-scheme forces light-dark() to resolve to the chosen mode
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+  }
+
+}

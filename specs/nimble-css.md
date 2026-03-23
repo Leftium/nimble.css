@@ -910,6 +910,7 @@ That's it. The grid-based centered layout is inherently responsive without break
 nimble.css/
   src/
     _config.scss       # All configurable variables with !default
+    _layers.scss       # @layer order declaration (must precede all other output)
     _reset.scss        # Trimmed sanitize.css
     _colors.scss       # Color properties (oklch generation + light-dark())
     _document.scss     # html, body, *, ::selection
@@ -1174,7 +1175,28 @@ Open Props normalize looks plain, especially form elements. It's designed as a t
 - **Print styles matter.** Include basic `@media print` rules.
 - **Don't set `html { cursor: default }`** for the entire page if links and buttons have proper cursors anyway (sanitize.css does this; evaluate whether to keep it).
 
-### 15.7 Solarized's Influence on the Surface Model
+### 15.7 Sass and Modern CSS Passthrough
+
+Dart Sass 1.78+ natively parses `oklch()` as a color function, which breaks parametric color generation (e.g., `oklch(#{$lightness} #{$chroma} #{$hue})` triggers "Expected lightness channel to be a number"). Similarly, Sass simplifies `calc()` expressions containing `var()` and can strip the `calc()` wrapper.
+
+**Solution:** Use `sass:string.unquote()` to emit these values as opaque CSS strings that Sass passes through without interpretation:
+
+```scss
+@use 'sass:string';
+
+@function _oklch($l, $c, $h, $alpha: null) {
+  @if $alpha {
+    @return string.unquote('oklch(#{$l} #{$c} #{$h} / #{$alpha})');
+  }
+  @return string.unquote('oklch(#{$l} #{$c} #{$h})');
+}
+```
+
+This affects `_colors.scss` (all oklch/light-dark values), `_document.scss` (grid calc), and `_typography.scss` (mark element colors). The pattern is invisible in the CSS output — it only matters for the SCSS authoring layer.
+
+The `@layer` order declaration also required extraction into a separate `_layers.scss` partial because Sass enforces that all `@use` rules precede any other rules, and `@layer nimble.reset, ...` counts as a CSS rule.
+
+### 15.8 Solarized's Influence on the Surface Model
 
 Solarized uses 8 monotone values in symmetric lightness pairs:
 
@@ -1210,23 +1232,25 @@ The oklch values in Section 5.2 are illustrative. Final tuning needed:
 
 Set up the project infrastructure and a test page for visual verification throughout development.
 
-- [ ] `package.json` (name, exports, scripts, devDependencies: `sass`, `lightningcss-cli`)
-- [ ] `build.js` — Sass compile + Lightning CSS minify pipeline, `--prefix` flag support
-- [ ] `src/_config.scss` — all `!default` variables (prefix, feature flags, color parameters, typography, spacing, breakpoints)
-- [ ] `demo/index.html` — html5-test-page based, all standard elements, links to `dist/nimble.css` (used as visual regression test throughout all phases)
-- [ ] `.gitignore` (`dist/`, `node_modules/`)
-- [ ] Verify: `npm run build` produces an empty but valid `dist/nimble.css`; `demo/index.html` renders with browser defaults
+- [x] `package.json` (name, exports, scripts, devDependencies: `sass`, `lightningcss-cli`)
+- [x] `build.js` — Sass compile + Lightning CSS minify pipeline, `--prefix` flag support
+- [x] `src/_config.scss` — all `!default` variables (prefix, feature flags, color parameters, typography, spacing, breakpoints)
+- [x] `demo/index.html` — html5-test-page based, all standard elements, links to `dist/nimble.css` (used as visual regression test throughout all phases)
+- [x] `.gitignore` (`dist/`, `node_modules/`)
+- [x] Verify: `npm run build` produces an empty but valid `dist/nimble.css`; `demo/index.html` renders with browser defaults
 
 ### Phase 2: Core
 
 The foundational layers that everything else builds on.
 
-- [ ] `src/_reset.scss` — trimmed sanitize.css wrapped in `@layer nimble.reset`
-- [ ] `src/_colors.scss` — oklch surface generation, primary/secondary/feedback colors, all via `light-dark()`
-- [ ] `src/_document.scss` — `html`, `body` (grid centering), `*`, `::selection`
-- [ ] `src/_typography.scss` — headings, `p`, lists, `blockquote`, `hr`, `mark`, vertical rhythm
-- [ ] `src/nimble.scss` — entry point, layer order declaration, `@use` all partials
-- [ ] Verify: drop `dist/nimble.css` into a plain HTML file, confirm readable text on correct surface background in both light and dark mode
+- [x] `src/_layers.scss` — `@layer` order declaration (extracted; Sass requires `@use` before any rules)
+- [x] `src/_reset.scss` — trimmed sanitize.css wrapped in `@layer nimble.reset`
+- [x] `src/_colors.scss` — oklch surface generation, primary/secondary/feedback colors, all via `light-dark()`
+- [x] `src/_document.scss` — `html`, `body` (grid centering), `*`, `::selection`
+- [x] `src/_typography.scss` — headings, `p`, lists, `blockquote`, `hr`, `mark`, vertical rhythm
+- [x] `src/nimble.scss` — entry point, `@use` all partials (layer order via `_layers.scss`)
+- [x] Verify: readable text on correct surface background in both light and dark mode
+- Output: `nimble.css` 6,792 B / `nimble.min.css` 5,044 B
 
 ### Phase 3: Elements
 
