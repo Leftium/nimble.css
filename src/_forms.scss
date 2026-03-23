@@ -84,6 +84,32 @@
     width: 100%;
   }
 
+  // ----- File -----
+
+  :where([type="file"]) {
+    color: var(#{$prefix}text-1);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  :where([type="file"])::file-selector-button {
+    padding: 0.5em 1em;
+    margin-right: 0.75em;
+    margin-inline-end: 0.75em;
+    background-color: var(#{$prefix}primary);
+    color: var(#{$prefix}primary-contrast);
+    border: 1px solid var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  :where([type="file"])::file-selector-button:hover {
+    background-color: var(#{$prefix}primary-hover);
+    border-color: var(#{$prefix}primary-hover);
+  }
+
   // ----- Color -----
 
   :where([type="color"]) {
