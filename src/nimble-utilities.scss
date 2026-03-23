@@ -1,0 +1,8 @@
+// ==========================================================================
+// nimble.css — Utilities Sub-bundle
+// Standalone utility classes (requires colors to be loaded separately)
+// ==========================================================================
+
+@use 'config' as *;
+@use 'layers-utilities';
+@use 'utilities';

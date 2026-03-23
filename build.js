@@ -30,10 +30,9 @@ const DIST = resolve(ROOT, 'dist');
 // Entry points → output filenames
 const entries = [
   { input: 'src/nimble.scss', outName: 'nimble' },
-  // Sub-bundles will be added in later phases:
-  // { input: 'src/nimble-base.scss',      outName: 'nimble-base' },
-  // { input: 'src/nimble-reset.scss',     outName: 'nimble-reset' },
-  // { input: 'src/nimble-utilities.scss', outName: 'nimble-utilities' },
+  { input: 'src/nimble-base.scss',      outName: 'nimble-base' },
+  { input: 'src/nimble-reset.scss',     outName: 'nimble-reset' },
+  { input: 'src/nimble-utilities.scss', outName: 'nimble-utilities' },
 ];
 
 // Browser targets for Lightning CSS (last 2 versions of modern browsers)

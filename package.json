@@ -11,6 +11,12 @@
     "./utilities": "./dist/nimble-utilities.min.css",
     "./scss": "./src/nimble.scss"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Leftium/nimble.css.git"
+  },
+  "homepage": "https://leftium.github.io/nimble.css/",
+  "bugs": "https://github.com/Leftium/nimble.css/issues",
   "files": [
     "dist/",
     "src/"
