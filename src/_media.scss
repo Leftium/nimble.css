@@ -8,9 +8,15 @@
 
 @layer nimble.base {
 
-  :where(img, video, canvas, svg) {
+  :where(img, video, canvas) {
     max-width: 100%;
     height: auto;
+  }
+
+  // SVG gets max-width but NOT height:auto — inline SVGs without viewBox
+  // have no intrinsic aspect ratio, so height:auto breaks them.
+  :where(svg) {
+    max-width: 100%;
   }
 
   :where(figure) {
