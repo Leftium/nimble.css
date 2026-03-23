@@ -807,8 +807,8 @@ nimble.css does **not** reduce image opacity in dark mode (simple.css does this 
   max-width: min(90vw, 40rem);
   padding: var(--nc-spacing);
 }
-:where(dialog::backdrop) {
-  background: rgb(0 0 0 / 0.5);
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.8);
 }
 ```
 

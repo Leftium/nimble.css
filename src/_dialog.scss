@@ -17,8 +17,8 @@
       padding: var(#{$prefix}spacing);
     }
 
-    :where(dialog::backdrop) {
-      background: rgb(0 0 0 / 0.5);
+    dialog::backdrop {
+      background: rgb(0 0 0 / 0.8);
     }
 
   }
