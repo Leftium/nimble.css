@@ -33,13 +33,13 @@ Grab [`nimble.min.css`](dist/nimble.min.css) from this repo and include it local
 
 ## Utility Classes
 
-These are included by default but can be disabled via `$enable-utilities: false`.
+Content is centered at `720px` by default — no class needed. These opt-in utilities handle the rest. Disable all with `$enable-utilities: false`.
 
 | Class | Description |
 |---|---|
-| `.container` | Centered content with max-width |
-| `.fluid` | Full viewport width with padding |
-| `.full-bleed` | Break out of container to full width |
+| `.fluid` | Full viewport width with padding (opt out of centering) |
+| `.container` | Re-center content inside a `.fluid` layout |
+| `.full-bleed` | Break out of centered layout to full width |
 | `.wide` | Break out to wide max-width (1200px) |
 | `.striped` | Striped table rows (apply to table wrapper) |
 | `.visually-hidden` | Hidden visually, accessible to screen readers |
