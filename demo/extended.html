@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nimble.css — Extended Demo</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      /* Demo-only styles — not part of nimble.css */
+      .demo-swatch {
+        padding: 1.5rem;
+        border-radius: var(--nc-radius);
+        margin-bottom: 0.5rem;
+      }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>nimble.css — Extended Demo</h1>
+      <p>Showcasing layout modes, utility classes, button variants, form patterns, surface hierarchy, and dark mode toggling. See also: <a href="index.html">HTML5 Test Page</a>.</p>
+      <nav>
+        <button id="theme-toggle" type="button">Toggle Dark Mode</button>
+      </nav>
+    </header>
+
+    <main>
+
+      <!-- ============================================================ -->
+      <!-- SURFACE HIERARCHY -->
+      <!-- ============================================================ -->
+      <section id="surfaces">
+        <h2>Surface Hierarchy</h2>
+        <p>Four surface levels create depth without relying on box-shadow. The lightness offsets invert symmetrically in dark mode (Solarized principle).</p>
+        <div class="demo-grid">
+          <div class="demo-swatch" style="background: var(--nc-surface-1); border: 1px solid var(--nc-border);">
+            <strong>Surface 1</strong><br>Page background
+          </div>
+          <div class="demo-swatch" style="background: var(--nc-surface-2);">
+            <strong>Surface 2</strong><br>Code blocks, table headers
+          </div>
+          <div class="demo-swatch" style="background: var(--nc-surface-3);">
+            <strong>Surface 3</strong><br>Inset areas
+          </div>
+          <div class="demo-swatch" style="background: var(--nc-surface-4);">
+            <strong>Surface 4</strong><br>Overlays, dialogs
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- BUTTON VARIANTS -->
+      <!-- ============================================================ -->
+      <section id="buttons">
+        <h2>Button Variants</h2>
+
+        <h3>Standard Buttons</h3>
+        <p>
+          <button>Primary</button>
+          <button class="secondary">Secondary</button>
+          <button class="outline">Outline</button>
+          <button disabled>Disabled</button>
+        </p>
+
+        <h3>Link as Button</h3>
+        <p>
+          <a href="#" role="button">Primary Link</a>
+          <a href="#" role="button" class="secondary">Secondary Link</a>
+          <a href="#" role="button" class="outline">Outline Link</a>
+        </p>
+
+        <h3>Button Group</h3>
+        <div role="group">
+          <button>Left</button>
+          <button class="secondary">Center</button>
+          <button class="outline">Right</button>
+        </div>
+
+        <h3>Same-Type Button Groups</h3>
+        <div role="group">
+          <button>One</button>
+          <button>Two</button>
+          <button>Three</button>
+        </div>
+        <br><br>
+        <div role="group">
+          <button class="secondary">A</button>
+          <button class="secondary">B</button>
+          <button class="secondary">C</button>
+        </div>
+        <br><br>
+        <div role="group">
+          <button class="outline">X</button>
+          <button class="outline">Y</button>
+          <button class="outline">Z</button>
+        </div>
+
+        <h3>Small Inline Buttons</h3>
+        <p>Text with an inline <button>action</button> and a <button class="outline">secondary action</button> embedded in a paragraph.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- FORM PATTERNS -->
+      <!-- ============================================================ -->
+      <section id="forms">
+        <h2>Form Patterns</h2>
+
+        <h3>Login Form</h3>
+        <form onsubmit="return false">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Your password">
+          <label>
+            <input type="checkbox"> Remember me
+          </label>
+          <button type="submit">Sign In</button>
+          <button type="reset" class="secondary">Reset</button>
+        </form>
+
+        <h3>Registration Form</h3>
+        <form onsubmit="return false">
+          <fieldset>
+            <legend>Account Details</legend>
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="Jane Doe" aria-invalid="false">
+            <small>Looks good!</small>
+
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="you@example.com" aria-invalid="true">
+            <small>Please enter a valid email address.</small>
+
+            <label for="reg-bio">Bio</label>
+            <textarea id="reg-bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+          </fieldset>
+
+          <fieldset>
+            <legend>Preferences</legend>
+            <label for="reg-plan">Plan</label>
+            <select id="reg-plan">
+              <option>Free</option>
+              <option>Pro</option>
+              <option>Enterprise</option>
+            </select>
+
+            <label>
+              <input type="checkbox" role="switch"> Enable notifications
+            </label>
+
+            <label>Theme preference</label>
+            <label><input type="radio" name="theme-pref" checked> System default</label>
+            <label><input type="radio" name="theme-pref"> Always light</label>
+            <label><input type="radio" name="theme-pref"> Always dark</label>
+          </fieldset>
+
+          <button type="submit">Create Account</button>
+        </form>
+
+        <h3>Search</h3>
+        <form onsubmit="return false" role="search">
+          <div role="group">
+            <input type="search" placeholder="Search...">
+            <button type="submit">Search</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TABLES -->
+      <!-- ============================================================ -->
+      <section id="tables">
+        <h2>Tables</h2>
+
+        <h3>Default Table</h3>
+        <figure>
+          <table>
+            <thead>
+              <tr>
+                <th>Library</th>
+                <th>Size (min+gz)</th>
+                <th>CSS Variables</th>
+                <th>Cascade Layers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>nimble.css</td><td>~3 KB</td><td>~20</td><td>Yes</td></tr>
+              <tr><td>PicoCSS</td><td>~13 KB</td><td>100+</td><td>No</td></tr>
+              <tr><td>simple.css</td><td>~4 KB</td><td>~15</td><td>No</td></tr>
+              <tr><td>new.css</td><td>~4.5 KB</td><td>~12</td><td>No</td></tr>
+            </tbody>
+          </table>
+          <figcaption>Comparison of classless/minimal CSS libraries.</figcaption>
+        </figure>
+
+        <h3>Striped Table</h3>
+        <figure class="striped">
+          <table>
+            <thead>
+              <tr><th>Feature</th><th>Status</th><th>Phase</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Reset layer</td><td>Done</td><td>2</td></tr>
+              <tr><td>Color system</td><td>Done</td><td>2</td></tr>
+              <tr><td>Typography</td><td>Done</td><td>2</td></tr>
+              <tr><td>Forms</td><td>Done</td><td>3</td></tr>
+              <tr><td>Buttons</td><td>Done</td><td>3</td></tr>
+              <tr><td>Utilities</td><td>Done</td><td>4</td></tr>
+            </tbody>
+          </table>
+        </figure>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- LAYOUT BREAKOUT -->
+      <!-- ============================================================ -->
+      <section id="layout">
+        <h2>Layout Utilities</h2>
+        <p>The default body grid centers content at <code>--nc-content-width</code> (720px). These utilities break out of the center column.</p>
+      </section>
+    </main>
+
+    <!-- Layout breakout demos must be direct children of <body> for grid-column to work -->
+    <div class="full-bleed" style="background: var(--nc-surface-2); padding: 2rem 1rem; text-align: center;">
+      <p><strong>.full-bleed</strong> — spans the entire viewport width. Useful for hero sections, banners, and images.</p>
+    </div>
+
+    <div class="wide" style="background: var(--nc-surface-3); padding: 2rem; text-align: center; border-radius: var(--nc-radius);">
+      <p><strong>.wide</strong> — breaks out to 1200px max-width. Good for dashboards and wide content.</p>
+    </div>
+
+    <main>
+      <!-- ============================================================ -->
+      <!-- CODE & DETAILS -->
+      <!-- ============================================================ -->
+      <section id="code">
+        <h2>Code & Interactive Elements</h2>
+
+        <p>Inline code: <code>const x = 42;</code>. Keyboard shortcut: <kbd>Ctrl</kbd> + <kbd>S</kbd>.</p>
+
+        <pre><code>// nimble.css — zero config
+&lt;link rel="stylesheet" href="nimble.css"&gt;
+
+// That's it. Semantic HTML looks good now.</code></pre>
+
+        <details>
+          <summary>Click to expand details</summary>
+          <p>This is a <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> element. nimble.css adds border, radius, and padding. The styling is behind the <code>$enable-details</code> feature flag.</p>
+        </details>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- DIALOG -->
+      <!-- ============================================================ -->
+      <section id="dialog-demo">
+        <h2>Dialog</h2>
+        <p>Native <code>&lt;dialog&gt;</code> element with minimal styling. Behind the <code>$enable-dialog</code> feature flag.</p>
+        <button id="open-dialog">Open Dialog</button>
+        <dialog id="demo-dialog">
+          <h3>Dialog Title</h3>
+          <p>This is a native HTML dialog element. It uses <code>surface-4</code> as its background and gets a semi-transparent backdrop.</p>
+          <form method="dialog">
+            <button>Close</button>
+          </form>
+        </dialog>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TYPOGRAPHY SHOWCASE -->
+      <!-- ============================================================ -->
+      <section id="type">
+        <h2>Typography</h2>
+
+        <blockquote>
+          <p>Any application that can be written in JavaScript, will eventually be written in JavaScript.</p>
+          <footer>— <cite>Jeff Atwood</cite></footer>
+        </blockquote>
+
+        <p>Primary text uses <code>--nc-text-1</code>. <span style="color: var(--nc-text-2);">Secondary text uses <code>--nc-text-2</code> for muted/supporting content.</span></p>
+
+        <p>This text contains a <mark>highlighted mark element</mark> and a <a href="#">standard link</a> plus a <a href="#visited-sim">visited-style link</a>.</p>
+
+        <hr>
+
+        <p>The horizontal rule above uses a subtle <code>color-mix()</code> with the border color at 40% transparency.</p>
+      </section>
+
+    </main>
+
+    <footer>
+      <p><small>nimble.css — Extended Demo. <a href="https://github.com/nicholasgasior/nimble.css">Source on GitHub</a>.</small></p>
+    </footer>
+
+    <script>
+      // Theme toggle
+      const toggle = document.getElementById('theme-toggle');
+      toggle.addEventListener('click', () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        if (current === 'dark') {
+          html.setAttribute('data-theme', 'light');
+          toggle.textContent = 'Toggle Dark Mode';
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          toggle.textContent = 'Toggle Light Mode';
+        }
+      });
+
+      // Dialog
+      const openBtn = document.getElementById('open-dialog');
+      const dialog = document.getElementById('demo-dialog');
+      openBtn.addEventListener('click', () => dialog.showModal());
+    </script>
+  </body>
+</html>

@@ -50,7 +50,7 @@
       _oklch(0.860, 0.005, $surface-hue)
     )};
     #{$prefix}text-2: #{_light-dark(
-      _oklch(0.450, 0.005, $surface-hue),
+      _oklch(0.580, 0.005, $surface-hue),
       _oklch(0.650, 0.005, $surface-hue)
     )};
 
@@ -70,7 +70,10 @@
       _oklch($primary-lightness + 0.2, $primary-chroma, $primary-hue)
     )};
     #{$prefix}primary-focus: #{_oklch($primary-lightness, $primary-chroma, $primary-hue, 0.4)};
-    #{$prefix}primary-contrast: #fff;
+    #{$prefix}primary-contrast: #{_light-dark(
+      '#fff',
+      _oklch(0.15, 0.005, $surface-hue)
+    )};
 
     // ----- Secondary (neutral accent) -----
     #{$prefix}secondary: #{_light-dark(
@@ -82,7 +85,10 @@
       _oklch($secondary-lightness + 0.25, $secondary-chroma, $secondary-hue)
     )};
     #{$prefix}secondary-focus: #{_oklch($secondary-lightness, $secondary-chroma, $secondary-hue, 0.3)};
-    #{$prefix}secondary-contrast: #fff;
+    #{$prefix}secondary-contrast: #{_light-dark(
+      '#fff',
+      _oklch(0.15, 0.005, $surface-hue)
+    )};
 
     // ----- Feedback -----
     #{$prefix}valid: #{_light-dark(

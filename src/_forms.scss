@@ -11,8 +11,10 @@
 
   :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]),
          select, textarea) {
+    --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
+
     padding: 0.5em 0.75em;
-    background-color: var(#{$prefix}surface-3);
+    background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     color: var(#{$prefix}text-1);

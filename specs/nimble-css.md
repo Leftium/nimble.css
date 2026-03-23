@@ -1196,7 +1196,37 @@ This affects `_colors.scss` (all oklch/light-dark values), `_document.scss` (gri
 
 The `@layer` order declaration also required extraction into a separate `_layers.scss` partial because Sass enforces that all `@use` rules precede any other rules, and `@layer nimble.reset, ...` counts as a CSS rule.
 
-### 15.8 Solarized's Influence on the Surface Model
+### 15.8 Visited Link Color
+
+Visited links use `color-mix()` to blend 40% primary with purple (`oklch(0.5 0.2 310)`), giving a recognizable but on-brand visited state. The underline color matches via the same blend. This avoids hardcoding a separate visited color variable.
+
+### 15.9 Button Variants in Utilities Layer
+
+`.secondary` and `.outline` are class-based variants, so they belong in `@layer nimble.utilities`, not `nimble.base`. The base button style (primary bg, white text) is classless and lives in `nimble.base`. This keeps the layer semantics clean: base = classless defaults, utilities = opt-in classes.
+
+### 15.10 `text-wrap: balance` on Headings and Table Headers
+
+Applied to h1-h6 and `thead` cells. Prevents awkward single-word runts on the last line. Well-supported: Chrome 114+, Firefox 121+, Safari 17.5+. Progressive enhancement — ignored by older browsers.
+
+### 15.11 Button Group Dividers
+
+Same-type button groups (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. A `box-shadow: -1px 0 0 rgb(255 255 255 / 0.3)` on `* + *` children provides a subtle white divider that works on both primary and secondary backgrounds. Box-shadow was chosen over `border-inline-start` because variant classes (`.secondary`) set `border-color` via a higher cascade layer, which would override a border-based divider.
+
+### 15.12 Pill-Shaped Search Groups
+
+`[role="search"] [role="group"]` children get `5rem` border-radius on the outer corners, producing pill ends. Extra `padding-inline` on the first/last children prevents text from crowding the curve. This matches PicoCSS's search aesthetic without requiring a dedicated class.
+
+### 15.13 WCAG AA Contrast Tuning
+
+The initial primary lightness (0.55) failed AA for links on `surface-2` in light mode (4.16:1, needed 4.5:1). In dark mode, white text on the lighter primary (L=0.65) only reached 3.23:1.
+
+**Fixes applied:**
+- `$primary-lightness` lowered from 0.55 to 0.50. Light-mode primary on surface-2 now 5.11:1.
+- `primary-contrast` and `secondary-contrast` changed from `#fff` to `light-dark(#fff, oklch(0.15 0.005 250))`. In dark mode, buttons use near-black text on lighter accent backgrounds. All dark-mode button pairings pass AA (5.01:1 to 8.33:1).
+
+This uses a different contrast color per mode -- white in light, near-black in dark -- which is the same approach major design systems use (Material, Carbon).
+
+### 15.12 Solarized's Influence on the Surface Model
 
 Solarized uses 8 monotone values in symmetric lightness pairs:
 
@@ -1216,7 +1246,18 @@ The oklch values in Section 5.2 are illustrative. Final tuning needed:
 - Ensure the primary blue matches PicoCSS's aesthetic feel.
 - Test the full palette on real content in both light and dark modes.
 
-### 16.2 Future Considerations
+### 16.2 Input Background — Resolved
+
+Form inputs previously used `var(--nc-surface-3)` as background. In light mode this produced a visible gray tint that looked odd for text inputs (users expect near-white). But `pre` blocks and `thead` rows also use surface-2/3 and need that contrast to stand out from the page.
+
+**Solution:** Derive the input background via `color-mix()` from existing surface tokens — `color-mix(in oklch, var(--nc-surface-1), var(--nc-surface-2) 20%)`. This gives a barely-there tint in light mode (close to page white) and a slight lift in dark mode, without adding any public custom property. Implemented as a private `--_input-bg` variable scoped to form elements.
+
+**Alternatives rejected:**
+- A new `--nc-input-bg` public token — adds to the variable count for a narrow use case.
+- Making `surface-3` lighter globally — collapses visual hierarchy between surface-2 and surface-3.
+- Using `surface-1` directly — border-only distinction is too subtle for some contexts.
+
+### 16.3 Future Considerations
 
 - **Container queries** for component-level responsiveness.
 - **View transitions** integration for theme switching animations.
@@ -1256,46 +1297,55 @@ The foundational layers that everything else builds on.
 
 One partial per element group. Each can be implemented and visually tested independently.
 
-- [ ] `src/_links.scss` — `a` styling, underline, hover
-- [ ] `src/_buttons.scss` — button base, `.secondary`, `.outline`, button groups
-- [ ] `src/_forms.scss` — inputs, select, textarea, labels, fieldset, validation states, switch
-- [ ] `src/_tables.scss` — table base, thead, `.striped`
-- [ ] `src/_code.scss` — `pre`, `code`, `kbd`, `samp`
-- [ ] `src/_media.scss` — `img`, `video`, `figure`, `figcaption`
-- [ ] `src/_details.scss` — `details`, `summary`
-- [ ] `src/_dialog.scss` — `dialog`, `::backdrop` (behind `$enable-dialog` flag)
-- [ ] `src/_print.scss` — `@media print` rules
-- [ ] Verify: all element styles render correctly against html5-test-page structure
+- [x] `src/_links.scss` — `a` styling, underline via `color-mix()`, visited purple shift, hover
+- [x] `src/_buttons.scss` — button base, `.secondary`/`.outline` variants (in `nimble.utilities` layer), button groups, disabled state
+- [x] `src/_forms.scss` — text inputs, select, textarea, labels, fieldset, validation (`aria-invalid`), `accent-color` for checkbox/radio/range, switch toggle (behind `$enable-switch`)
+- [x] `src/_tables.scss` — table base, thead with `text-wrap: balance`, `figure:has(table)` overflow
+- [x] `src/_code.scss` — inline `code`/`kbd`/`samp`, `pre` blocks, `pre code` reset, `kbd` raised border
+- [x] `src/_media.scss` — responsive `img`/`video`/`canvas`/`svg`, `figure`/`figcaption`
+- [x] `src/_details.scss` — `details`/`summary` (behind `$enable-details` flag)
+- [x] `src/_dialog.scss` — `dialog`/`::backdrop` (behind `$enable-dialog` flag)
+- [x] `src/_print.scss` — unlayered `@media print` rules
+- [x] Verify: all element styles render correctly against html5-test-page structure
+- Output: `nimble.css` 14,128 B / `nimble.min.css` 10,919 B / gzipped ~2.9 KB
 
 ### Phase 4: Polish
 
 Utilities, extended demo, and final validation.
 
-- [ ] `src/_utilities.scss` — `.container`, `.fluid`, `.full-bleed`, `.wide`, `.visually-hidden`, `.overflow-auto`
-- [ ] `demo/extended.html` — layout modes, button variants, form patterns, surface hierarchy demo, dark mode toggle
-- [ ] Tune final oklch color values — validate WCAG AA contrast for text on each surface level
-- [ ] Measure `dist/nimble.min.css` against size budget (<8 KB full, <5 KB base-only)
-- [ ] Verify: feature flags (`$enable-dialog: false`, etc.) correctly exclude output
+- [x] `src/_utilities.scss` — `.container`, `.fluid`, `.full-bleed`, `.wide`, `.striped`, `.visually-hidden`, `.overflow-auto` (in `@layer nimble.utilities`, behind `$enable-utilities`)
+- [x] Wire `_utilities.scss` in `nimble.scss`
+- [x] Fix input backgrounds — replaced `surface-3` with `color-mix(in oklch, surface-1, surface-2 20%)` via private `--_input-bg` variable
+- [x] `demo/extended.html` — layout modes, button variants + groups (including same-type groups), form patterns (login/registration/search with pill-shaped search bar), surface hierarchy swatches, dark mode toggle, striped table, dialog demo
+- [x] WCAG AA color audit — lowered `$primary-lightness` from 0.55 to 0.50; switched `primary-contrast` and `secondary-contrast` to `light-dark(#fff, oklch(0.15 0.005 250))` for dark-mode button readability. All pairings pass AA.
+- [x] Light-mode `text-2` lightened from L=0.450 to L=0.580 for visible distinction from `text-1` (L=0.280)
+- [x] Button group fixes — stripped margin on children, box-shadow dividers between same-type siblings, pill-shaped search groups via `[role="search"] [role="group"]`
+- [x] Outline button hover keeps outline style (subtle `primary-focus` tint instead of solid fill)
+- [x] `.wide` utility: added `width: 100%` so it stretches within `grid-column: 1 / -1`
+- [x] Measure `dist/nimble.min.css` against size budget — 11,924 B min / **3,131 B gzipped** (budget: <8 KB min+gz)
+- [x] Verify: all four feature flags (`$enable-dialog`, `$enable-switch`, `$enable-details`, `$enable-utilities`) correctly exclude output when disabled
+- Output: `nimble.css` 15,467 B / `nimble.min.css` 11,924 B / gzipped ~3.1 KB
 
 ---
 
 ## Appendix: Size Budget
 
-| Component | Estimated Size (min+gz) |
-|---|---|
-| Reset (sanitize.css trimmed) | ~0.6 KB |
-| Base styles (all elements) | ~3.5 KB |
-| Utility classes | ~0.3 KB |
-| Color themes (light + dark via light-dark()) | ~0.6 KB |
-| **Total** | **~5.0 KB** |
+| Metric | Estimated | Actual |
+|---|---|---|
+| Full build (min+gz) | ~5.0 KB | **3.1 KB** |
+| Full build (brotli) | — | **~2.6 KB** |
+| Full build (min) | — | 11.9 KB |
+| Full build (unmin) | — | 15.5 KB |
+| With all flags off (unmin) | — | ~13.0 KB |
+| Budget ceiling | 8 KB min+gz | 3.1 KB (39% of budget) |
 
-Stretch goal: under 4 KB for the base (reset + classless) build.
+The final output is well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly.
 
 ## Appendix: Comparison Matrix
 
 | Feature | nimble.css | PicoCSS | Open Props Normalize | simple.css | new.css | MVP.css |
 |---|---|---|---|---|---|---|
-| Min+gz size | ~5 KB | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
+| Min+gz size | **~3 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
 | CSS vars on :root | ~20 | 100+ | ~0 (on-demand) | ~15 | ~12 | ~15 |
 | Breakpoints | 1 | 5 | 0 | 1 | 0 | 1 |
 | Surface colors | Yes (4) | No | Yes | No | No | No |

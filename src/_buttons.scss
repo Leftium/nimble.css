@@ -48,23 +48,44 @@
   }
 
   // ----- Button groups -----
+  // Note: children use [role="group"] without :where() so they beat
+  // the zero-specificity form input rules for border-radius.
 
   :where([role="group"]) {
     display: inline-flex;
   }
 
-  :where([role="group"]) > * {
+  [role="group"] > * {
     border-radius: 0;
+    margin: 0;
   }
 
-  :where([role="group"]) > :first-child {
+  [role="group"] > * + * {
+    box-shadow: -1px 0 0 rgb(255 255 255 / 0.3);
+  }
+
+  [role="group"] > :first-child {
     border-start-start-radius: var(#{$prefix}radius);
     border-end-start-radius: var(#{$prefix}radius);
   }
 
-  :where([role="group"]) > :last-child {
+  [role="group"] > :last-child {
     border-start-end-radius: var(#{$prefix}radius);
     border-end-end-radius: var(#{$prefix}radius);
+  }
+
+  // ----- Search groups (pill shape) -----
+
+  [role="search"] [role="group"] > :first-child {
+    border-start-start-radius: 5rem;
+    border-end-start-radius: 5rem;
+    padding-inline-start: 1.25em;
+  }
+
+  [role="search"] [role="group"] > :last-child {
+    border-start-end-radius: 5rem;
+    border-end-end-radius: 5rem;
+    padding-inline-end: 1.25em;
   }
 
 }
@@ -94,8 +115,9 @@
   }
 
   .outline:hover {
-    background-color: var(#{$prefix}primary);
-    color: var(#{$prefix}primary-contrast);
+    background-color: var(#{$prefix}primary-focus);
+    color: var(#{$prefix}primary-hover);
+    border-color: var(#{$prefix}primary-hover);
   }
 
 }
