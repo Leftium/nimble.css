@@ -808,7 +808,12 @@ nimble.css does **not** reduce image opacity in dark mode (simple.css does this 
   padding: var(--nc-spacing);
 }
 dialog::backdrop {
-  background: rgb(0 0 0 / 0.8);
+  background: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(4px);
+  animation: nc-backdrop-in 0.2s ease;
+}
+@keyframes nc-backdrop-in {
+  from { opacity: 0; }
 }
 ```
 
