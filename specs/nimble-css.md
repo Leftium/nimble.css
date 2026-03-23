@@ -148,7 +148,7 @@ We embed it directly (not as a dependency) to control size and avoid breaking ch
 
 All public properties use the `--nc-` prefix ("nimble css"). This balances brevity with collision avoidance:
 
-- Short enough for daily use: `var(--nc-text-1)` vs `var(--nimble-text-1)`.
+- Short enough for daily use: `var(--nc-primary)` vs `var(--nimble-primary)`.
 - Collision with new.css's `--nc-` is unlikely -- new.css is unmaintained (last update 2021) and shares no property names.
 - Configurable via the SCSS `$prefix` variable for users who need a different prefix (see Section 12.2).
 
@@ -209,8 +209,7 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
   --nc-surface-4:          /* overlay: dialogs, dropdowns */
 
   /* --- Text --- */
-  --nc-text-1:             /* primary body text */
-  --nc-text-2:             /* secondary / muted text */
+  --nc-text:               /* body text color (light/dark adaptive) */
 
   /* --- Borders --- */
   --nc-border:             /* default border color */
@@ -230,13 +229,14 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
 }
 ```
 
-**Total: ~20 public properties.**
+**Total: ~19 public properties.**
 
 Compared to the original draft's ~25, we cut:
 - `border-muted` -- derived from `--nc-border` at lower opacity where needed
 - `mark` -- hardcoded yellow, not worth a variable
 - `transition` -- hardcoded `0.2s ease-in-out`
-- `text-heading` -- headings use `--nc-text-1`; they differentiate via size, not color
+- `text-heading` -- headings differentiate via size, not color
+- `text-1` / `text-2` -- replaced by single `--nc-text`; muted text uses `color-mix()` inline
 - `wide-width` -- hardcoded in `.wide` utility
 - `line-height`, `font-size` -- hardcoded sensible defaults (1.5, 100%)
 
@@ -247,7 +247,7 @@ Compared to the original draft's ~25, we cut:
 | `surface-1..4` | The key Open Props influence. Without surface hierarchy, cards/inputs/code all blend into the page background. Solarized proved symmetric lightness pairs enable clean dark mode inversion. |
 | `primary` + `secondary` | Two interactive color roles cover all element states (primary buttons, secondary buttons, links, focus rings). "Primary" is the standard term across CSS libraries (PicoCSS, Skeleton, Bootstrap). We skip `tertiary` and `contrast` -- users building complex UIs will layer their own design system on top. |
 | `valid` / `invalid` | Enable proper form validation UX without requiring users to define feedback colors. |
-| `text-1` / `text-2` | Body text and muted text. A single heading color variable was dropped because headings differentiate via size, not color. |
+| `text` | Single text color variable (replaces `text-1`/`text-2`). Muted text is derived inline via `color-mix()`. Headings differentiate via size, not color. |
 
 ### 4.5 Variable Count Comparison
 
@@ -286,8 +286,7 @@ All colors are defined in the oklch color space, using the `light-dark()` functi
   --nc-surface-3: light-dark(oklch(0.925 0.002 250), oklch(0.220 0.005 260));
   --nc-surface-4: light-dark(oklch(0.885 0.002 250), oklch(0.270 0.005 260));
 
-  --nc-text-1:    light-dark(oklch(0.280 0.005 250), oklch(0.860 0.005 250));
-  --nc-text-2:    light-dark(oklch(0.450 0.005 250), oklch(0.650 0.005 250));
+  --nc-text:      light-dark(oklch(0.280 0.005 250), oklch(0.860 0.005 250));
   --nc-border:    light-dark(oklch(0.830 0.005 250), oklch(0.280 0.005 260));
 
   --nc-primary:          light-dark(oklch(0.55 0.2 250), oklch(0.65 0.2 250));
@@ -378,7 +377,7 @@ All color properties use the CSS `light-dark()` function (Chrome 123+, Firefox 1
 :root {
   color-scheme: light dark;
   --nc-surface-1: light-dark(oklch(0.985 0.002 250), oklch(0.170 0.005 260));
-  --nc-text-1:    light-dark(oklch(0.280 0.005 250), oklch(0.860 0.005 250));
+  --nc-text:      light-dark(oklch(0.280 0.005 250), oklch(0.860 0.005 250));
 }
 ```
 
@@ -621,7 +620,7 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
   background-color: var(--nc-surface-3);
   border: 1px solid var(--nc-border);
   border-radius: var(--nc-radius);
-  color: var(--nc-text-1);
+  color: var(--nc-text);
   font: inherit;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -736,7 +735,7 @@ Tables are wrapped in `overflow-x: auto` by default when inside a `figure`:
 :where(blockquote footer, blockquote cite) {
   font-style: normal;
   font-size: 0.9em;
-  color: var(--nc-text-2);
+  color: color-mix(in oklch, currentColor 60%, transparent);
 }
 ```
 
@@ -769,7 +768,7 @@ Tables are wrapped in `overflow-x: auto` by default when inside a `figure`:
 }
 :where(figcaption) {
   font-size: 0.9em;
-  color: var(--nc-text-2);
+  color: color-mix(in oklch, currentColor 60%, transparent);
   margin-top: 0.5em;
 }
 ```

@@ -96,8 +96,7 @@ Override any property at runtime — no build step needed:
 | Property | Description |
 |---|---|
 | `--nc-surface-1` .. `--nc-surface-4` | Background hierarchy (page, card, input, overlay) |
-| `--nc-text-1` | Primary text color |
-| `--nc-text-2` | Muted/secondary text color |
+| `--nc-text` | Text color (adapts to light/dark mode) |
 | `--nc-border` | Default border color |
 | `--nc-primary` | Accent color (links, buttons, focus rings) |
 | `--nc-primary-hover` | Accent hover state |
