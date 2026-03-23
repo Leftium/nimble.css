@@ -23,6 +23,22 @@ A minimal class/classless CSS library. Drop it in and your semantic HTML looks g
 
 That's it. Write semantic HTML and it just works.
 
+### Sub-bundles
+
+Pick only what you need:
+
+| Bundle | Minified | Contents |
+|---|---|---|
+| `nimble.min.css` | 11.9 KB | Everything |
+| `nimble-base.min.css` | 5.2 KB | Reset + colors + document + typography |
+| `nimble-reset.min.css` | 1.7 KB | Modern CSS reset only |
+| `nimble-utilities.min.css` | 572 B | Utility classes only |
+
+```html
+<!-- Just the classless core, no element styles or utilities -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble-base.min.css">
+```
+
 ### Download
 
 Grab [`nimble.min.css`](dist/nimble.min.css) from this repo and include it locally:
