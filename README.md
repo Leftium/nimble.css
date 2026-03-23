@@ -69,7 +69,43 @@ Content is centered at `720px` by default — no class needed. These opt-in util
 
 ## Customization
 
-nimble.css is built with SCSS. Override any config variable:
+### CSS Custom Properties
+
+Override any property at runtime — no build step needed:
+
+```css
+:root {
+  --nc-primary: oklch(0.50 0.15 150);
+  --nc-radius: 0.5rem;
+  --nc-spacing: 1.25rem;
+}
+```
+
+| Property | Description |
+|---|---|
+| `--nc-surface-1` .. `--nc-surface-4` | Background hierarchy (page, card, input, overlay) |
+| `--nc-text-1` | Primary text color |
+| `--nc-text-2` | Muted/secondary text color |
+| `--nc-border` | Default border color |
+| `--nc-primary` | Accent color (links, buttons, focus rings) |
+| `--nc-primary-hover` | Accent hover state |
+| `--nc-primary-focus` | Accent focus ring (semi-transparent) |
+| `--nc-primary-contrast` | Text on primary backgrounds |
+| `--nc-secondary` | Secondary accent (reset buttons) |
+| `--nc-secondary-hover` | Secondary hover state |
+| `--nc-secondary-focus` | Secondary focus ring |
+| `--nc-secondary-contrast` | Text on secondary backgrounds |
+| `--nc-valid` | Validation success color |
+| `--nc-invalid` | Validation error color |
+| `--nc-font-sans` | Body font stack |
+| `--nc-font-mono` | Code font stack |
+| `--nc-spacing` | Base spacing unit |
+| `--nc-radius` | Border radius |
+| `--nc-content-width` | Max content width |
+
+### SCSS
+
+For build-time customization, override any SCSS config variable:
 
 ```scss
 @use 'nimble' with (
