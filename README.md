@@ -21,6 +21,18 @@ A minimal class/classless CSS library. Drop it in and your semantic HTML looks g
 npm install @leftium/nimble.css
 ```
 
+Then import in your CSS, JS, or framework:
+
+```css
+/* CSS */
+@import '@leftium/nimble.css';
+```
+
+```js
+// JS / framework entry point
+import '@leftium/nimble.css';
+```
+
 ### CDN
 
 Via jsDelivr (npm):
