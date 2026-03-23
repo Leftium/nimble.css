@@ -15,7 +15,21 @@ A minimal class/classless CSS library. Drop it in and your semantic HTML looks g
 
 ## Quick Start
 
+### npm
+
+```bash
+npm install @leftium/nimble.css
+```
+
 ### CDN
+
+Via jsDelivr (npm):
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
+```
+
+Or via GitHub (latest on `main`):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble.min.css">
@@ -36,15 +50,7 @@ Pick only what you need:
 
 ```html
 <!-- Just the classless core, no element styles or utilities -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble-base.min.css">
-```
-
-### Download
-
-Grab [`nimble.min.css`](dist/nimble.min.css) from this repo and include it locally:
-
-```html
-<link rel="stylesheet" href="nimble.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-base.min.css">
 ```
 
 ## Utility Classes
