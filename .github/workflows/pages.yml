@@ -40,10 +40,9 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/demo _site/dist
+          cp index.html _site/
           cp demo/* _site/demo/
           cp dist/* _site/dist/
-          # Redirect root to demo page
-          echo '<meta http-equiv="refresh" content="0;url=demo/">' > _site/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:

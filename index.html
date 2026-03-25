@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nimble.css — Classless CSS in ~3 KB</title>
+    <meta name="description" content="A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~3 KB gzipped.">
+    <link rel="stylesheet" href="dist/nimble.css">
+  </head>
+  <body>
+    <header>
+      <h1>nimble.css</h1>
+      <p>A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. <strong>~3 KB gzipped.</strong></p>
+    </header>
+    <main>
+      <section>
+        <h2>Features</h2>
+        <ul>
+          <li><strong>Classless by default</strong> — styles every standard HTML element with zero markup changes</li>
+          <li><strong>Automatic dark mode</strong> — via <code>prefers-color-scheme</code> and <code>light-dark()</code></li>
+          <li><strong>OKLCH color system</strong> — perceptually uniform, fully customizable</li>
+          <li><strong>Cascade layers</strong> — plays nicely alongside your own styles</li>
+          <li><strong>Tiny</strong> — 11.9 KB minified, ~3.1 KB gzipped</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Quick Start</h2>
+        <p>Add one line to your <code>&lt;head&gt;</code>:</p>
+        <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css"&gt;</code></pre>
+        <p>Or install via npm:</p>
+        <pre><code>npm install @leftium/nimble.css</code></pre>
+        <pre><code>/* CSS */
+@import '@leftium/nimble.css';
+
+// JS / framework entry point
+import '@leftium/nimble.css';</code></pre>
+        <p>That's it. Write semantic HTML and it just works.</p>
+      </section>
+
+      <section>
+        <h2>Sub-bundles</h2>
+        <p>Pick only what you need:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Bundle</th>
+              <th>Size</th>
+              <th>Contents</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>nimble.min.css</code></td>
+              <td>11.9 KB</td>
+              <td>Everything</td>
+            </tr>
+            <tr>
+              <td><code>nimble-base.min.css</code></td>
+              <td>5.2 KB</td>
+              <td>Reset + colors + document + typography</td>
+            </tr>
+            <tr>
+              <td><code>nimble-reset.min.css</code></td>
+              <td>1.7 KB</td>
+              <td>Modern CSS reset only</td>
+            </tr>
+            <tr>
+              <td><code>nimble-utilities.min.css</code></td>
+              <td>572 B</td>
+              <td>Utility classes only</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Demos</h2>
+        <ul>
+          <li><a href="demo/">HTML5 Test Page</a> — every standard HTML element</li>
+          <li><a href="demo/extended.html">Extended Demo</a> — layouts, utilities, button variants, dark mode toggle</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Customization</h2>
+        <p>Override CSS custom properties at runtime — no build step needed:</p>
+        <pre><code>:root {
+  --nc-primary: oklch(0.50 0.15 150);
+  --nc-radius: 0.5rem;
+  --nc-spacing: 1.25rem;
+}</code></pre>
+        <p>Or use SCSS for build-time customization:</p>
+        <pre><code>@use 'nimble' with (
+  $primary-hue: 150,
+  $primary-chroma: 0.15,
+  $content-width: 960px,
+);</code></pre>
+        <p>See the <a href="https://github.com/Leftium/nimble.css#readme">README</a> for the full list of config variables.</p>
+      </section>
+    </main>
+    <footer>
+      <p><a href="https://github.com/Leftium/nimble.css">GitHub</a> · MIT License</p>
+    </footer>
+    <style>
+      pre { position: relative; }
+      pre .copy-btn {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        padding: 0.15rem 0.4rem;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      pre:hover .copy-btn,
+      pre .copy-btn:focus-visible { opacity: 1; }
+    </style>
+    <script>
+      document.querySelectorAll('pre > code').forEach(code => {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = 'Copy';
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(code.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 1500);
+          });
+        });
+        code.parentElement.appendChild(btn);
+      });
+    </script>
+  </body>
+</html>
