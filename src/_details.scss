@@ -25,6 +25,14 @@
       // collapsed the text is vertically centered with equal padding.
       margin: 0 -1em;
       padding: 0.75em 1em;
+      // Custom markers fix iOS Safari's tiny native disclosure triangle.
+      // Full-size Unicode triangles inherit font metrics and sit on the
+      // baseline like native markers.
+      list-style-type: '▶ ';
+    }
+
+    :where(details[open] > summary) {
+      list-style-type: '▼ ';
     }
 
     // When open, restore vertical padding for content spacing.
