@@ -10,7 +10,7 @@
 
   // --- Document ---
 
-  :where(*),
+  :where(*:not(progress)),
   :where(*::before),
   :where(*::after) {
     box-sizing: border-box;
