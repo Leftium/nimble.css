@@ -1,12 +1,12 @@
 # nimble.css
 
-A minimal class/classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~4.4 KB gzipped.
+A minimal class/classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~3.3 KB brotli.
 
 - **Classless by default** — style every standard HTML element with zero markup changes
 - **Automatic dark mode** — via `prefers-color-scheme` and `light-dark()`
 - **OKLCH color system** — perceptually uniform, fully customizable via SCSS config
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — 19.0 KB minified, ~4.4 KB gzipped
+- **Tiny** — 15.4 KB minified, ~3.3 KB brotli (~3.8 KB gzip fallback)
 
 ## Demos
 
@@ -55,14 +55,36 @@ Pick only what you need:
 
 | Bundle | Minified | Contents |
 |---|---|---|
-| `nimble.min.css` | 19.0 KB | Everything |
+| `nimble.min.css` | 15.4 KB | Core (no progress/meter/select) |
+| `nimble-full.min.css` | 18.9 KB | Everything |
 | `nimble-base.min.css` | 5.0 KB | Reset + colors + document + typography |
 | `nimble-reset.min.css` | 1.7 KB | Modern CSS reset only |
 | `nimble-utilities.min.css` | 572 B | Utility classes only |
+| `nimble-progress.min.css` | 1.6 KB | Styled `<progress>` (add-on) |
+| `nimble-meter.min.css` | 1.0 KB | Styled `<meter>` (add-on) |
+| `nimble-select.min.css` | 1.0 KB | Customizable `<select>` (add-on) |
 
 ```html
-<!-- Just the classless core, no element styles or utilities -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-base.min.css">
+<!-- Core only (no progress/meter/select) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
+
+<!-- Core + styled progress -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-progress.min.css">
+
+<!-- Everything -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-full.min.css">
+```
+
+SCSS users can import extras individually:
+
+```scss
+@use '@leftium/nimble.css/scss';           // core
+@use '@leftium/nimble.css/scss/progress';  // opt-in extras
+@use '@leftium/nimble.css/scss/meter';
+@use '@leftium/nimble.css/scss/select';
+// or:
+@use '@leftium/nimble.css/scss/full';      // everything
 ```
 
 ## Utility Classes
