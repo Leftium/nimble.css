@@ -88,6 +88,75 @@
     width: 100%;
   }
 
+  // ----- Progress -----
+  // appearance: none is required because the universal * { background-repeat: no-repeat }
+  // in the reset breaks WebKit's native progress rendering (iOS Safari shows a flat gray bar).
+  // We rebuild the bar using ::-webkit-progress-bar / ::-webkit-progress-value pseudo-elements.
+  // Approach adapted from missing.css: apply indeterminate animation to the pseudo-elements
+  // (not the element itself) so WebKit actually renders it.
+
+  :where(progress) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.5rem;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(#{$prefix}radius);
+    background-color: var(#{$prefix}surface-3);
+    color: var(#{$prefix}primary); // Firefox uses color for the bar
+  }
+
+  // Determinate: track and value bar
+  :where(progress)::-webkit-progress-bar {
+    border-radius: var(#{$prefix}radius);
+    background-color: var(#{$prefix}surface-3);
+  }
+
+  :where(progress)[value]::-webkit-progress-value {
+    background-color: var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+    transition: inline-size 0.3s ease;
+  }
+
+  :where(progress)::-moz-progress-bar {
+    background-color: var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  // Indeterminate: sliding gradient applied to each browser's pseudo-element.
+  // We use a back-and-forth ease-in-out at 8s for a calmer feel than Pico (1s linear).
+  :where(progress):not([value]) {
+    --nc-progress-track:
+      linear-gradient(to right,
+        var(#{$prefix}surface-3) 45%,
+        var(#{$prefix}primary) 45%,
+        var(#{$prefix}primary) 55%,
+        var(#{$prefix}surface-3) 55%);
+    --nc-progress-track-size: 225% 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :where(progress):not([value])::-webkit-progress-bar {
+      background: var(--nc-progress-track);
+      background-size: var(--nc-progress-track-size);
+      background-position: right;
+      animation: nc-progress-indeterminate 8s ease-in-out infinite;
+    }
+
+    :where(progress):not([value])::-moz-progress-bar {
+      background: var(--nc-progress-track);
+      background-size: var(--nc-progress-track-size);
+      background-position: right;
+      animation: nc-progress-indeterminate 8s ease-in-out infinite;
+    }
+  }
+
+  @keyframes nc-progress-indeterminate {
+    50% { background-position: left; }
+  }
+
   // ----- Datalist-connected inputs -----
   // Keep natural width so the dropdown arrow stays near the text,
   // similar to date/time inputs preserving native widget UX.
