@@ -58,14 +58,14 @@ Pick only what you need:
 | `nimble.min.css` | 15.4 KB | Core (no progress/meter/select) |
 | `nimble-full.min.css` | 18.9 KB | Everything |
 | `nimble-base.min.css` | 5.0 KB | Reset + colors + document + typography |
-| `nimble-reset.min.css` | 1.7 KB | Modern CSS reset only |
+| `nimble-reset.min.css` | 1.8 KB | Modern CSS reset only |
 | `nimble-utilities.min.css` | 572 B | Utility classes only |
 | `nimble-progress.min.css` | 1.6 KB | Styled `<progress>` (add-on) |
 | `nimble-meter.min.css` | 1.0 KB | Styled `<meter>` (add-on) |
 | `nimble-select.min.css` | 1.0 KB | Customizable `<select>` (add-on) |
 
 ```html
-<!-- Core only (no progress/meter/select) -->
+<!-- Core only -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
 
 <!-- Core + styled progress -->

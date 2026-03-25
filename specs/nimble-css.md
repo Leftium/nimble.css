@@ -1334,6 +1334,7 @@ Utilities, extended demo, and final validation.
 - Post-phase additions (details animation, dialog, form restyling, button groups, meter/progress, landing page): `nimble.css` 25,279 B / `nimble.min.css` 19,454 B / gzipped ~4.4 KB / brotli ~3.9 KB
 - Refactor (date/time dedup, extract progress/meter/select to add-on sub-bundles): `nimble.css` 24,963 B / `nimble.min.css` 19,355 B / gzipped ~4.4 KB / brotli ~3.9 KB
 - Flip model (nimble = core without extras, nimble-full = everything): `nimble.min.css` 15,796 B / gzipped ~3.8 KB / brotli ~3.3 KB
+- Fix progress by excluding from reset `background-repeat` rule; progress add-on fully opt-in: `nimble.min.css` 15,809 B / gzipped ~3.8 KB / brotli ~3.3 KB
 
 ---
 
