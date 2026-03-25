@@ -14,11 +14,13 @@
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
     padding: 0.5em 0.75em;
+    min-height: calc(1em * 1.5 + 1em + 2px); // line-height + vertical padding + border
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     color: var(#{$prefix}text-1);
     font: inherit;
+    font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
     transition: border-color 0.2s, box-shadow 0.2s;
   }
 
@@ -63,6 +65,8 @@
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     padding: var(#{$prefix}spacing);
+    min-width: 0; // Override UA min-content default — prevents overflow on narrow viewports
+    max-width: 100%;
   }
 
   :where(legend) {
@@ -90,6 +94,7 @@
     color: var(#{$prefix}text-1);
     font: inherit;
     cursor: pointer;
+    max-width: 100%; // Prevent native file input from overflowing container (iOS Safari)
   }
 
   :where([type="file"])::file-selector-button {

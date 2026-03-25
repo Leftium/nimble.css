@@ -30,6 +30,7 @@
 
   body > * {
     grid-column: 2;
+    min-width: 0; // Allow grid children to shrink below intrinsic content width
   }
 
   // Selection styling using primary accent

@@ -181,3 +181,16 @@
   }
 
 }
+
+// iOS Safari forces box-sizing: content-box and display: inline-flex on date/time
+// inputs, ignoring author box-sizing overrides. Stripping native appearance fixes
+// this and gives consistent sizing across browsers. The native picker still opens
+// on tap; only the decorative calendar/clock icon is removed.
+[type="date"],
+[type="month"],
+[type="week"],
+[type="time"],
+[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
+}

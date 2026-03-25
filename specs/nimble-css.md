@@ -428,6 +428,7 @@ body {
 }
 body > * {
   grid-column: 2;
+  min-width: 0; /* allow grid children to shrink below intrinsic content width */
 }
 ```
 
@@ -622,6 +623,7 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
   border-radius: var(--nc-radius);
   color: var(--nc-text);
   font: inherit;
+  font-size: 1rem; /* >=16px prevents iOS Safari auto-zoom on focus */
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
