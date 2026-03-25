@@ -9,7 +9,7 @@
 
   // ----- Text inputs, select, textarea -----
 
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]),
          select, textarea) {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
@@ -25,7 +25,7 @@
   }
 
   // Make text inputs and select full-width by default (PicoCSS pattern)
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]),
          select, textarea) {
     width: 100%;
   }
@@ -88,6 +88,14 @@
     width: 100%;
   }
 
+  // ----- Datalist-connected inputs -----
+  // Keep natural width so the dropdown arrow stays near the text,
+  // similar to date/time inputs preserving native widget UX.
+
+  :where(input[list]) {
+    width: auto;
+  }
+
   // ----- File -----
 
   :where([type="file"]) {
@@ -115,9 +123,34 @@
     border-color: var(#{$prefix}primary-hover);
   }
 
+  // ----- Date/time inputs -----
+  // Natural width so picker icon stays near content. appearance: none is applied
+  // outside @layer (see below) to fix iOS Safari sizing.
+  :where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]) {
+    --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
+
+    padding: 0.5em 0.75em;
+    min-height: calc(1em * 1.5 + 1em + 2px); // Match text input height
+    min-width: 10em; // Prevent collapse when empty (e.g. time with no value)
+    background-color: var(--_input-bg);
+    border: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius);
+    color: var(#{$prefix}text-1);
+    font: inherit;
+    font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
+  }
+
   // ----- Color -----
 
   :where([type="color"]) {
+    --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
+
+    min-height: var(--_color-size);
+    min-width: calc(var(--_color-size) * 1.618); // Golden ratio
+    padding: 0.25em;
+    background-color: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
+    border: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius);
     cursor: pointer;
   }
 
@@ -214,4 +247,17 @@
     }
   }
 
+}
+
+// iOS Safari ignores author box-model styles on native date/time inputs.
+// appearance: none unlocks sizing control while preserving the native picker
+// (only the decorative icon is removed on iOS; Chrome/desktop keeps its icons).
+// Placed outside @layer with real selectors to beat UA specificity.
+[type="date"],
+[type="month"],
+[type="week"],
+[type="time"],
+[type="datetime-local"] {
+  -webkit-appearance: none;
+  appearance: none;
 }
