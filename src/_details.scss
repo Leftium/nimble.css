@@ -26,4 +26,37 @@
 
   }
 
+  // Animate content on open/close (progressive enhancement)
+  // Outside @layer — ::details-content needs real specificity to override UA styles
+  // Gate on ::details-content support (Safari 18.4+, Chrome 131+)
+  @supports selector(details::details-content) {
+    details::details-content {
+      transition: opacity 0.3s ease,
+                  content-visibility 0.3s ease allow-discrete;
+      opacity: 0;
+    }
+
+    details[open]::details-content {
+      opacity: 1;
+    }
+
+    // Height animation where interpolate-size is supported (Chrome 129+)
+    @supports (interpolate-size: allow-keywords) {
+      details {
+        interpolate-size: allow-keywords;
+      }
+
+      details::details-content {
+        transition: height 0.3s ease, opacity 0.3s ease,
+                    content-visibility 0.3s ease allow-discrete;
+        height: 0;
+        overflow: clip;
+      }
+
+      details[open]::details-content {
+        height: auto;
+      }
+    }
+  }
+
 }
