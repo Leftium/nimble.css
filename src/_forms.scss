@@ -99,6 +99,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    position: relative; // Needed for Chromium ::after overlay
     width: 100%;
     height: 0.5rem;
     overflow: hidden;
@@ -138,6 +139,20 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    // Chromium: ::after overlay (Chromium supports ::after on progress; Safari/Firefox don't)
+    @supports selector(progress::after) {
+      :where(progress):not([value])::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--nc-progress-track);
+        background-size: var(--nc-progress-track-size);
+        background-position: right;
+        animation: nc-progress-indeterminate 8s ease-in-out infinite;
+      }
+    }
+
+    // Safari: animate on ::-webkit-progress-bar
     :where(progress):not([value])::-webkit-progress-bar {
       background: var(--nc-progress-track);
       background-size: var(--nc-progress-track-size);
@@ -145,6 +160,7 @@
       animation: nc-progress-indeterminate 8s ease-in-out infinite;
     }
 
+    // Firefox: animate on ::-moz-progress-bar
     :where(progress):not([value])::-moz-progress-bar {
       background: var(--nc-progress-track);
       background-size: var(--nc-progress-track-size);
@@ -155,6 +171,69 @@
 
   @keyframes nc-progress-indeterminate {
     50% { background-position: left; }
+  }
+
+  // ----- Meter -----
+  // Same treatment as progress: appearance: none + pseudo-element rebuild.
+  // Meter has three semantic states (optimum / suboptimum / sub-sub-optimum)
+  // which we map to --nc-valid (green), --nc-primary (default), --nc-invalid (red).
+
+  :where(meter) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.5rem;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(#{$prefix}radius);
+    background-color: var(#{$prefix}surface-3);
+  }
+
+  // WebKit: track (outer bar)
+  :where(meter)::-webkit-meter-inner-element {
+    // Wrapper element — reset grid layout that some UAs impose
+  }
+
+  :where(meter)::-webkit-meter-bar {
+    border-radius: var(#{$prefix}radius);
+    background-color: var(#{$prefix}surface-3);
+    border: 0;
+    height: 0.5rem;
+  }
+
+  // WebKit: value bars for each semantic state
+  :where(meter)::-webkit-meter-optimum-value {
+    background-color: var(#{$prefix}valid);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  :where(meter)::-webkit-meter-suboptimum-value {
+    background-color: var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  :where(meter)::-webkit-meter-even-less-good-value {
+    background-color: var(#{$prefix}invalid);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  // Firefox: single bar pseudo-element + pseudo-classes for state
+  :where(meter)::-moz-meter-bar {
+    background-color: var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  :where(meter):-moz-meter-optimum::-moz-meter-bar {
+    background-color: var(#{$prefix}valid);
+  }
+
+  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar {
+    background-color: var(#{$prefix}primary);
+  }
+
+  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar {
+    background-color: var(#{$prefix}invalid);
   }
 
   // ----- Datalist-connected inputs -----
