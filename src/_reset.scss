@@ -156,6 +156,7 @@
   // Remove delay from tapping on clickable elements
   :where(a, area, button, input, label, select, summary, textarea, [tabindex]) {
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   // Change the cursor for busy elements
