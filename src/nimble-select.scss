@@ -1,0 +1,8 @@
+// ==========================================================================
+// nimble.css — Customizable Select Sub-bundle
+// Add to nimble.css for styled <select> using appearance: base-select
+// ==========================================================================
+
+@use 'config' as *;
+@use 'layers-base';
+@use 'select';

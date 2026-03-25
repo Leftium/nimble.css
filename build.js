@@ -29,10 +29,14 @@ const DIST = resolve(ROOT, 'dist');
 
 // Entry points → output filenames
 const entries = [
-  { input: 'src/nimble.scss', outName: 'nimble' },
+  { input: 'src/nimble.scss',           outName: 'nimble' },
+  { input: 'src/nimble-full.scss',      outName: 'nimble-full' },
   { input: 'src/nimble-base.scss',      outName: 'nimble-base' },
   { input: 'src/nimble-reset.scss',     outName: 'nimble-reset' },
   { input: 'src/nimble-utilities.scss', outName: 'nimble-utilities' },
+  { input: 'src/nimble-progress.scss',  outName: 'nimble-progress' },
+  { input: 'src/nimble-meter.scss',     outName: 'nimble-meter' },
+  { input: 'src/nimble-select.scss',    outName: 'nimble-select' },
 ];
 
 // Browser targets for Lightning CSS (last 2 versions of modern browsers)

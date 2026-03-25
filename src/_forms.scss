@@ -9,7 +9,7 @@
 
   // ----- Text inputs, select, textarea -----
 
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]),
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
          select, textarea) {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
@@ -124,154 +124,6 @@
     width: 100%;
   }
 
-  // ----- Progress -----
-  // appearance: none is required because the universal * { background-repeat: no-repeat }
-  // in the reset breaks WebKit's native progress rendering (iOS Safari shows a flat gray bar).
-  // We rebuild the bar using ::-webkit-progress-bar / ::-webkit-progress-value pseudo-elements.
-  // Approach adapted from missing.css: apply indeterminate animation to the pseudo-elements
-  // (not the element itself) so WebKit actually renders it.
-
-  :where(progress) {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    position: relative; // Needed for Chromium ::after overlay
-    width: 100%;
-    height: 0.5rem;
-    overflow: hidden;
-    border: 0;
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-    color: var(#{$prefix}primary); // Firefox uses color for the bar
-  }
-
-  // Determinate: track and value bar
-  :where(progress)::-webkit-progress-bar {
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-  }
-
-  :where(progress)[value]::-webkit-progress-value {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-    transition: inline-size 0.3s ease;
-  }
-
-  :where(progress)::-moz-progress-bar {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  // Indeterminate: sliding gradient applied to each browser's pseudo-element.
-  // We use a back-and-forth ease-in-out at 8s for a calmer feel than Pico (1s linear).
-  :where(progress):not([value]) {
-    --nc-progress-track:
-      linear-gradient(to right,
-        var(#{$prefix}surface-3) 45%,
-        var(#{$prefix}primary) 45%,
-        var(#{$prefix}primary) 55%,
-        var(#{$prefix}surface-3) 55%);
-    --nc-progress-track-size: 225% 100%;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    // Chromium: ::after overlay (Chromium supports ::after on progress; Safari/Firefox don't)
-    @supports selector(progress::after) {
-      :where(progress):not([value])::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--nc-progress-track);
-        background-size: var(--nc-progress-track-size);
-        background-position: right;
-        animation: nc-progress-indeterminate 8s ease-in-out infinite;
-      }
-    }
-
-    // Safari: animate on ::-webkit-progress-bar
-    :where(progress):not([value])::-webkit-progress-bar {
-      background: var(--nc-progress-track);
-      background-size: var(--nc-progress-track-size);
-      background-position: right;
-      animation: nc-progress-indeterminate 8s ease-in-out infinite;
-    }
-
-    // Firefox: animate on ::-moz-progress-bar
-    :where(progress):not([value])::-moz-progress-bar {
-      background: var(--nc-progress-track);
-      background-size: var(--nc-progress-track-size);
-      background-position: right;
-      animation: nc-progress-indeterminate 8s ease-in-out infinite;
-    }
-  }
-
-  @keyframes nc-progress-indeterminate {
-    50% { background-position: left; }
-  }
-
-  // ----- Meter -----
-  // Same treatment as progress: appearance: none + pseudo-element rebuild.
-  // Meter has three semantic states (optimum / suboptimum / sub-sub-optimum)
-  // which we map to --nc-valid (green), --nc-primary (default), --nc-invalid (red).
-
-  :where(meter) {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 0.5rem;
-    overflow: hidden;
-    border: 0;
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-  }
-
-  // WebKit: track (outer bar)
-  :where(meter)::-webkit-meter-inner-element {
-    // Wrapper element — reset grid layout that some UAs impose
-  }
-
-  :where(meter)::-webkit-meter-bar {
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-    border: 0;
-    height: 0.5rem;
-  }
-
-  // WebKit: value bars for each semantic state
-  :where(meter)::-webkit-meter-optimum-value {
-    background-color: var(#{$prefix}valid);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  :where(meter)::-webkit-meter-suboptimum-value {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  :where(meter)::-webkit-meter-even-less-good-value {
-    background-color: var(#{$prefix}invalid);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  // Firefox: single bar pseudo-element + pseudo-classes for state
-  :where(meter)::-moz-meter-bar {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  :where(meter):-moz-meter-optimum::-moz-meter-bar {
-    background-color: var(#{$prefix}valid);
-  }
-
-  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar {
-    background-color: var(#{$prefix}primary);
-  }
-
-  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar {
-    background-color: var(#{$prefix}invalid);
-  }
-
   // ----- Datalist-connected inputs -----
   // Keep natural width so the dropdown arrow stays near the text,
   // similar to date/time inputs preserving native widget UX.
@@ -308,20 +160,10 @@
   }
 
   // ----- Date/time inputs -----
-  // Natural width so picker icon stays near content. appearance: none is applied
-  // outside @layer (see below) to fix iOS Safari sizing.
+  // Natural width so picker icon stays near content (excluded from full-width rule above).
+  // appearance: none is applied outside @layer (see below) to fix iOS Safari sizing.
   :where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]) {
-    --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
-
-    padding: 0.5em 0.75em;
-    min-height: calc(1em * 1.5 + 1em + 2px); // Match text input height
     min-width: 10em; // Prevent collapse when empty (e.g. time with no value)
-    background-color: var(--_input-bg);
-    border: 1px solid var(#{$prefix}border);
-    border-radius: var(#{$prefix}radius);
-    color: var(#{$prefix}text);
-    font: inherit;
-    font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
     margin-bottom: var(#{$prefix}spacing);
   }
 
@@ -347,62 +189,6 @@
     &::-webkit-color-swatch {
       border: none;
       border-radius: calc(var(#{$prefix}radius) * 0.5);
-    }
-  }
-
-  // ----- Customizable select (appearance: base-select) -----
-  // Progressive enhancement: falls back to classic <select> in unsupported browsers
-
-  @supports (appearance: base-select) {
-    :where(select),
-    :where(select)::picker(select) {
-      appearance: base-select;
-    }
-
-    // Picker icon (chevron)
-    :where(select)::picker-icon {
-      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 2l6 6 6-6'/%3E%3C/svg%3E");
-      transition: rotate 0.4s;
-    }
-
-    :where(select):open::picker-icon {
-      rotate: 180deg;
-    }
-
-    // Drop-down picker
-    :where(select)::picker(select) {
-      border: 1px solid var(#{$prefix}border);
-      border-radius: var(#{$prefix}radius);
-      background-color: var(#{$prefix}surface-1);
-      padding: 0.25em;
-      // Fade in/out animation
-      opacity: 0;
-      transition: opacity 0.2s, overlay 0.2s allow-discrete, display 0.2s allow-discrete;
-    }
-
-    :where(select):open::picker(select) {
-      opacity: 1;
-    }
-
-    @starting-style {
-      :where(select):open::picker(select) {
-        opacity: 0;
-      }
-    }
-
-    // Options inside the picker
-    :where(select) option {
-      padding: 0.5em 0.75em;
-      border-radius: var(#{$prefix}radius);
-      transition: background-color 0.15s;
-    }
-
-    :where(select) option:hover {
-      background-color: var(#{$prefix}surface-2);
-    }
-
-    :where(select) option:checked {
-      font-weight: 600;
     }
   }
 

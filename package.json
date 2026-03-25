@@ -6,10 +6,18 @@
   "main": "dist/nimble.min.css",
   "exports": {
     ".": "./dist/nimble.min.css",
+    "./full": "./dist/nimble-full.min.css",
     "./base": "./dist/nimble-base.min.css",
     "./reset": "./dist/nimble-reset.min.css",
     "./utilities": "./dist/nimble-utilities.min.css",
-    "./scss": "./src/nimble.scss"
+    "./progress": "./dist/nimble-progress.min.css",
+    "./meter": "./dist/nimble-meter.min.css",
+    "./select": "./dist/nimble-select.min.css",
+    "./scss": "./src/nimble.scss",
+    "./scss/full": "./src/nimble-full.scss",
+    "./scss/progress": "./src/_progress.scss",
+    "./scss/meter": "./src/_meter.scss",
+    "./scss/select": "./src/_select.scss"
   },
   "repository": {
     "type": "git",
