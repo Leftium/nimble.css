@@ -12,12 +12,24 @@
     :where(details) {
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
-      padding: 0.75em 1em;
+      // No vertical padding — summary provides its own via the
+      // negative-margin/padding trick for vertical centering.
+      padding: 0 1em;
     }
 
     :where(summary) {
       cursor: pointer;
       font-weight: 600;
+      // Stretch summary across the horizontal padding area, then
+      // re-apply vertical + horizontal padding on itself. When
+      // collapsed the text is vertically centered with equal padding.
+      margin: 0 -1em;
+      padding: 0.75em 1em;
+    }
+
+    // When open, restore vertical padding for content spacing.
+    :where(details[open]) {
+      padding-bottom: 0.75em;
     }
 
     // Spacing between summary and content lives on ::details-content
@@ -39,13 +51,14 @@
     }
 
     details::details-content {
-      padding-top: 0.5em;
-      transition: opacity 0.3s ease,
+      padding-top: 0;
+      transition: padding-top 0.3s ease, opacity 0.3s ease,
                   content-visibility 0.3s ease allow-discrete;
       opacity: 0;
     }
 
     details[open]::details-content {
+      padding-top: 0.5em;
       opacity: 1;
     }
 
@@ -56,7 +69,7 @@
       }
 
       details::details-content {
-        transition: height 0.3s ease, opacity 0.3s ease,
+        transition: height 0.3s ease, padding-top 0.3s ease, opacity 0.3s ease,
                     content-visibility 0.3s ease allow-discrete;
         height: 0;
         overflow: clip;
