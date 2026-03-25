@@ -28,6 +28,7 @@
   :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]),
          select, textarea) {
     width: 100%;
+    margin-bottom: var(#{$prefix}spacing);
   }
 
   // ----- Focus -----
@@ -38,6 +39,16 @@
     outline: none;
   }
 
+  // When a validation message <small> immediately follows an input,
+  // pull it up tight against the field and let it carry the spacing instead.
+  :where(input, select, textarea) + :where(small) {
+    display: block;
+    margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
+    margin-bottom: var(#{$prefix}spacing);
+    font-size: 0.875em;
+    color: var(#{$prefix}text-2);
+  }
+
   // ----- Validation states (aria-invalid) -----
 
   :where(input, select, textarea)[aria-invalid="false"] {
@@ -46,6 +57,15 @@
 
   :where(input, select, textarea)[aria-invalid="true"] {
     border-color: var(#{$prefix}invalid);
+  }
+
+  // Color validation messages to match the field state
+  :where(input, select, textarea)[aria-invalid="false"] + :where(small) {
+    color: var(#{$prefix}valid);
+  }
+
+  :where(input, select, textarea)[aria-invalid="true"] + :where(small) {
+    color: var(#{$prefix}invalid);
   }
 
   // ----- Labels -----
@@ -81,12 +101,20 @@
     accent-color: var(#{$prefix}primary);
     width: 1.125em;
     height: 1.125em;
+    margin: 0; // Remove browser default margin so flex labels align flush left
   }
 
   :where(label:has([type="checkbox"], [type="radio"])) {
     display: flex;
     align-items: center;
     gap: 0.35em;
+    margin-bottom: var(#{$prefix}spacing);
+  }
+
+  // Radio options in a group sit close together; only the last one
+  // carries the full field-gap to the next element.
+  :where(label:has([type="radio"])) {
+    margin-bottom: 0.35em;
   }
 
   // ----- Range -----
@@ -294,6 +322,7 @@
     color: var(#{$prefix}text-1);
     font: inherit;
     font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
+    margin-bottom: var(#{$prefix}spacing);
   }
 
   // ----- Color -----
@@ -386,6 +415,7 @@
       position: relative;
       cursor: pointer;
       flex-shrink: 0;
+      margin: 0; // Remove browser default margin so flex labels align flush left
       transition: background-color 0.2s;
     }
 
