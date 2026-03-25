@@ -58,10 +58,49 @@
   [role="group"] > * {
     border-radius: 0;
     margin: 0;
+    position: relative;
   }
 
+  // Inset divider between adjacent same-type buttons.  Different-type
+  // neighbours already have distinct backgrounds so no separator needed.
   [role="group"] > * + * {
-    box-shadow: -1px 0 0 rgb(255 255 255 / 0.3);
+    --_divider: "";           // shown by default (same-type needs separation)
+  }
+
+  [role="group"] > * + *::before {
+    content: var(--_divider);
+    position: absolute;
+    inset-inline-start: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 1px;
+    background: rgb(255 255 255 / 0.3);
+    pointer-events: none;
+  }
+
+  // Hide divider between different-type button neighbours.
+  // primary ↔ secondary
+  [role="group"] > :not(.secondary):not(.outline) + .secondary,
+  [role="group"] > .secondary + :not(.secondary):not(.outline) {
+    --_divider: none;
+  }
+
+  // primary ↔ outline
+  [role="group"] > :not(.secondary):not(.outline) + .outline,
+  [role="group"] > .outline + :not(.secondary):not(.outline) {
+    --_divider: none;
+  }
+
+  // secondary ↔ outline
+  [role="group"] > .secondary + .outline,
+  [role="group"] > .outline + .secondary {
+    --_divider: none;
+  }
+
+  // Hide divider after non-button elements (e.g. search input).
+  [role="group"] > input + *,
+  [role="group"] > select + * {
+    --_divider: none;
   }
 
   [role="group"] > :first-child {
@@ -72,6 +111,26 @@
   [role="group"] > :last-child {
     border-start-end-radius: var(#{$prefix}radius);
     border-end-end-radius: var(#{$prefix}radius);
+  }
+
+  // ----- Outline button groups -----
+  // When ALL children are .outline, collapse borders onto the group
+  // container so internal dividers don't double up with per-button borders.
+  // :has(> :not(.outline)) excludes mixed groups (e.g. primary + outline).
+
+  [role="group"]:has(.outline):not(:has(> :not(.outline))) {
+    border: 1px solid var(#{$prefix}primary);
+    border-radius: var(#{$prefix}radius);
+  }
+
+  [role="group"]:has(.outline):not(:has(> :not(.outline))) > .outline {
+    border: none;
+  }
+
+  // Outline dividers use primary color (white overlay is invisible
+  // against transparent background).
+  [role="group"] > .outline + .outline::before {
+    background: var(#{$prefix}primary);
   }
 
   // ----- Search groups (pill shape) -----
