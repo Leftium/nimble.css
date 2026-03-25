@@ -330,13 +330,24 @@
   :where([type="color"]) {
     --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
 
-    min-height: var(--_color-size);
-    min-width: calc(var(--_color-size) * 1.618); // Golden ratio
-    padding: 0.25em;
+    --_color-pad: 0.25em;
+
+    height: var(--_color-size);
+    width: calc((var(--_color-size) - 2 * var(--_color-pad)) * 1.618 + 2 * var(--_color-pad)); // Golden ratio inner swatch
+    padding: var(--_color-pad);
     background-color: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     cursor: pointer;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: none;
+      border-radius: calc(var(#{$prefix}radius) * 0.5);
+    }
   }
 
   // ----- Customizable select (appearance: base-select) -----
