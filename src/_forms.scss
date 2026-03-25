@@ -363,6 +363,12 @@
   @if $enable-switch {
     // Minimal switch styling — relies on native checkbox with role="switch"
     // Browsers with :has() support get enhanced label alignment
+    :where(label:has([type="checkbox"][role="switch"])) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+
     :where([type="checkbox"][role="switch"]) {
       appearance: none;
       width: 2.5em;
@@ -371,6 +377,7 @@
       background-color: var(#{$prefix}border);
       position: relative;
       cursor: pointer;
+      flex-shrink: 0;
       transition: background-color 0.2s;
     }
 
