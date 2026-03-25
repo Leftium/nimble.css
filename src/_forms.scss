@@ -18,7 +18,7 @@
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
-    color: var(#{$prefix}text-1);
+    color: var(#{$prefix}text);
     font: inherit;
     font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -46,7 +46,7 @@
     margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
     margin-bottom: var(#{$prefix}spacing);
     font-size: 0.875em;
-    color: var(#{$prefix}text-2);
+    color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
   }
 
   // ----- Validation states (aria-invalid) -----
@@ -283,7 +283,7 @@
   // ----- File -----
 
   :where([type="file"]) {
-    color: var(#{$prefix}text-1);
+    color: var(#{$prefix}text);
     font: inherit;
     cursor: pointer;
     max-width: 100%; // Prevent native file input from overflowing container (iOS Safari)
@@ -319,7 +319,7 @@
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
-    color: var(#{$prefix}text-1);
+    color: var(#{$prefix}text);
     font: inherit;
     font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
     margin-bottom: var(#{$prefix}spacing);

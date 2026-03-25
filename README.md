@@ -156,7 +156,7 @@ For build-time customization, override any SCSS config variable:
 nimble.css combines [Open Props](https://open-props.style/)'s design token philosophy with [PicoCSS](https://picocss.com/)'s classless aesthetics. Key concepts borrowed from Open Props:
 
 - **Surface hierarchy** (`surface-1` through `surface-4`) — layered backgrounds for page, card, input, and overlay contexts. Defined in `_colors.scss` from OKLCH parameters rather than imported at runtime.
-- **Text hierarchy** (`text-1`, `text-2`) — primary and muted text colors, same naming convention as Open Props.
+- **Text color** (`text`) — single text color variable; muted text derived inline via `color-mix()`.
 - **OKLCH color space** — perceptually uniform color system. Change `$primary-hue` and the entire palette regenerates consistently.
 - **Curated scale values** — `$spacing: 1rem` (~Open Props `size-3`) and `$radius: 0.25rem` (~Open Props `radius-2`) are sourced from Open Props' scales.
 - **Minimal DevTools pollution** — ~20 semantic custom properties on `:root` plus scoped `--_` internals per component, rather than dumping hundreds of variables globally.

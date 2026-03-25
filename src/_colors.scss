@@ -45,13 +45,9 @@
     }
 
     // ----- Text -----
-    #{$prefix}text-1: #{_light-dark(
+    #{$prefix}text: #{_light-dark(
       _oklch(0.280, 0.005, $surface-hue),
       _oklch(0.860, 0.005, $surface-hue)
-    )};
-    #{$prefix}text-2: #{_light-dark(
-      _oklch(0.580, 0.005, $surface-hue),
-      _oklch(0.650, 0.005, $surface-hue)
     )};
 
     // ----- Border -----

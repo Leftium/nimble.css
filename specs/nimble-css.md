@@ -235,8 +235,8 @@ Compared to the original draft's ~25, we cut:
 - `border-muted` -- derived from `--nc-border` at lower opacity where needed
 - `mark` -- hardcoded yellow, not worth a variable
 - `transition` -- hardcoded `0.2s ease-in-out`
-- `text-heading` -- headings differentiate via size, not color
 - `text-1` / `text-2` -- replaced by single `--nc-text`; muted text uses `color-mix()` inline
+- `text-heading` -- headings differentiate via size, not color
 - `wide-width` -- hardcoded in `.wide` utility
 - `line-height`, `font-size` -- hardcoded sensible defaults (1.5, 100%)
 

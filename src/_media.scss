@@ -19,7 +19,7 @@
 
   :where(figcaption) {
     font-size: 0.9em;
-    color: var(#{$prefix}text-2);
+    color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
     margin-top: 0.5em;
   }
 

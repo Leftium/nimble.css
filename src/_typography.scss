@@ -103,7 +103,7 @@ $_heading-phone: (
   :where(blockquote) cite {
     font-style: normal;
     font-size: 0.9em;
-    color: var(#{$prefix}text-2);
+    color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
   }
 
   // ----- Horizontal Rule -----

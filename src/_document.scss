@@ -12,7 +12,7 @@
     font-family: var(#{$prefix}font-sans);
     font-size: 100%;    // = 16px in most browsers
     line-height: 1.5;
-    color: var(#{$prefix}text-1);
+    color: var(#{$prefix}text);
     background-color: var(#{$prefix}surface-1);
   }
 
@@ -36,7 +36,7 @@
   // Selection styling using primary accent
   ::selection {
     background-color: var(#{$prefix}primary-focus);
-    color: var(#{$prefix}text-1);
+    color: var(#{$prefix}text);
   }
 
 }
