@@ -1331,6 +1331,7 @@ Utilities, extended demo, and final validation.
 - [x] Measure `dist/nimble.min.css` against size budget — 11,924 B min / **3,131 B gzipped** (budget: <8 KB min+gz)
 - [x] Verify: all four feature flags (`$enable-dialog`, `$enable-switch`, `$enable-details`, `$enable-utilities`) correctly exclude output when disabled
 - Output: `nimble.css` 15,467 B / `nimble.min.css` 11,924 B / gzipped ~3.1 KB
+- Post-phase additions (details animation, dialog, form restyling, button groups, meter/progress, landing page): `nimble.css` 25,279 B / `nimble.min.css` 19,454 B / gzipped ~4.4 KB / brotli ~3.9 KB
 
 ---
 
@@ -1338,12 +1339,12 @@ Utilities, extended demo, and final validation.
 
 | Metric | Estimated | Actual |
 |---|---|---|
-| Full build (min+gz) | ~5.0 KB | **3.1 KB** |
-| Full build (brotli) | — | **~2.6 KB** |
-| Full build (min) | — | 11.9 KB |
-| Full build (unmin) | — | 15.5 KB |
+| Full build (min+gz) | ~5.0 KB | **4.4 KB** |
+| Full build (brotli) | — | **~3.9 KB** |
+| Full build (min) | — | 19.0 KB |
+| Full build (unmin) | — | 24.7 KB |
 | With all flags off (unmin) | — | ~13.0 KB |
-| Budget ceiling | 8 KB min+gz | 3.1 KB (39% of budget) |
+| Budget ceiling | 8 KB min+gz | 4.4 KB (55% of budget) |
 
 The final output is well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly.
 
@@ -1351,7 +1352,7 @@ The final output is well under all budget targets. The `light-dark()` function a
 
 | Feature | nimble.css | PicoCSS | Open Props Normalize | simple.css | new.css | MVP.css |
 |---|---|---|---|---|---|---|
-| Min+gz size | **~3 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
+| Min+gz size | **~4.4 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
 | CSS vars on :root | ~20 | 100+ | ~0 (on-demand) | ~15 | ~12 | ~15 |
 | Breakpoints | 1 | 5 | 0 | 1 | 0 | 1 |
 | Surface colors | Yes (4) | No | Yes | No | No | No |

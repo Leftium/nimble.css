@@ -1,12 +1,12 @@
 # nimble.css
 
-A minimal class/classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~3 KB gzipped.
+A minimal class/classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~4.4 KB gzipped.
 
 - **Classless by default** — style every standard HTML element with zero markup changes
 - **Automatic dark mode** — via `prefers-color-scheme` and `light-dark()`
 - **OKLCH color system** — perceptually uniform, fully customizable via SCSS config
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — 11.9 KB minified, ~3.1 KB gzipped
+- **Tiny** — 19.0 KB minified, ~4.4 KB gzipped
 
 ## Demos
 
@@ -55,8 +55,8 @@ Pick only what you need:
 
 | Bundle | Minified | Contents |
 |---|---|---|
-| `nimble.min.css` | 11.9 KB | Everything |
-| `nimble-base.min.css` | 5.2 KB | Reset + colors + document + typography |
+| `nimble.min.css` | 19.0 KB | Everything |
+| `nimble-base.min.css` | 5.0 KB | Reset + colors + document + typography |
 | `nimble-reset.min.css` | 1.7 KB | Modern CSS reset only |
 | `nimble-utilities.min.css` | 572 B | Utility classes only |
 
