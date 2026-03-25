@@ -20,6 +20,9 @@
       font-weight: 600;
     }
 
+    // Spacing between summary and content lives on ::details-content
+    // (as padding-top) so it animates with the height transition.
+    // Fallback for browsers without ::details-content:
     :where(details[open] > summary) {
       margin-bottom: 0.5em;
     }
@@ -30,7 +33,13 @@
   // Outside @layer — ::details-content needs real specificity to override UA styles
   // Gate on ::details-content support (Safari 18.4+, Chrome 131+)
   @supports selector(details::details-content) {
+    // Remove the summary margin fallback — spacing handled by padding below
+    details[open] > summary {
+      margin-bottom: 0;
+    }
+
     details::details-content {
+      padding-top: 0.5em;
       transition: opacity 0.3s ease,
                   content-visibility 0.3s ease allow-discrete;
       opacity: 0;
@@ -55,6 +64,14 @@
 
       details[open]::details-content {
         height: auto;
+      }
+
+      // Kill last-child bottom margin inside details to prevent jitter.
+      // With overflow:clip during the height animation, the margin doesn't
+      // collapse — it inflates the animated height. When the animation ends
+      // and overflow resets, margin collapsing kicks in and height snaps shorter.
+      details > :last-child {
+        margin-bottom: 0;
       }
     }
   }
