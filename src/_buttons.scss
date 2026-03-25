@@ -39,6 +39,16 @@
     outline: none;
   }
 
+  // ----- Inline (buttons within flow text) -----
+
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline {
+    --_btn-padding-v: 0.05em;
+    --_btn-padding-h: 0.4em;
+    margin: 0.1em 0.15em;
+    font-size: 0.875em;
+    vertical-align: baseline;
+  }
+
   // ----- Disabled -----
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):disabled {
