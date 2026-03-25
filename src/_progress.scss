@@ -37,14 +37,22 @@
     border-radius: var(#{$prefix}radius);
   }
 
+  // Indeterminate: evenly-spaced blue bands travel continuously rightward.
+  // Gradient is 200% wide with two identical 10%-wide bands at 15% and 65%.
+  // They're 50% apart — exactly one visible width (100/200 = 50% of gradient).
+  // Animating position by -200% = one full gradient width → seamless loop.
   :where(progress):not([value]) {
     --nc-progress-track:
       linear-gradient(to right,
-        var(#{$prefix}surface-3) 45%,
-        var(#{$prefix}primary) 45%,
-        var(#{$prefix}primary) 55%,
-        var(#{$prefix}surface-3) 55%);
-    --nc-progress-track-size: 225% 100%;
+        var(#{$prefix}surface-3) 0%,
+        var(#{$prefix}primary) 25%,
+        var(#{$prefix}primary) 25%,
+        var(#{$prefix}surface-3) 50%,
+        var(#{$prefix}surface-3) 50%,
+        var(#{$prefix}primary) 75%,
+        var(#{$prefix}primary) 75%,
+        var(#{$prefix}surface-3) 100%);
+    --nc-progress-track-size: 200% 100%;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -55,28 +63,26 @@
         inset: 0;
         background: var(--nc-progress-track);
         background-size: var(--nc-progress-track-size);
-        background-position: right;
-        animation: nc-progress-indeterminate 8s ease-in-out infinite;
+        animation: nc-progress-indeterminate 12s linear infinite;
       }
     }
 
     :where(progress):not([value])::-webkit-progress-bar {
       background: var(--nc-progress-track);
       background-size: var(--nc-progress-track-size);
-      background-position: right;
-      animation: nc-progress-indeterminate 8s ease-in-out infinite;
+      animation: nc-progress-indeterminate 12s linear infinite;
     }
 
     :where(progress):not([value])::-moz-progress-bar {
       background: var(--nc-progress-track);
       background-size: var(--nc-progress-track-size);
-      background-position: right;
-      animation: nc-progress-indeterminate 8s ease-in-out infinite;
+      animation: nc-progress-indeterminate 12s linear infinite;
     }
   }
 
   @keyframes nc-progress-indeterminate {
-    50% { background-position: left; }
+    from { background-position: 0% 0%; }
+    to { background-position: -200% 0%; }
   }
 
 }
