@@ -79,6 +79,14 @@
 
   :where([type="checkbox"], [type="radio"]) {
     accent-color: var(#{$prefix}primary);
+    width: 1.125em;
+    height: 1.125em;
+  }
+
+  :where(label:has([type="checkbox"], [type="radio"])) {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
   }
 
   // ----- Range -----
