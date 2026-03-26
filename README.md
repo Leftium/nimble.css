@@ -2,11 +2,10 @@
 
 Minimal CSS library that makes semantic HTML look nice; no classes required. ~3.3 KB brotli (core).
 
-- **Classless by default** — style every standard HTML element with zero markup changes
-- **Automatic dark mode** — via `prefers-color-scheme` and `light-dark()`
-- **OKLCH color system** — perceptually uniform, fully customizable via SCSS config
+- **Classless** — every standard HTML element elegantly styled without classes
+- **Dark mode** — included (automatic and manual)
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — core is 15.4 KB minified, ~3.3 KB brotli; full bundle is 18.9 KB minified, ~4 KB brotli
+- **Tiny** — core is only ~3.3 KB brotli (15.4 KB minified)
 
 ## Demos
 
