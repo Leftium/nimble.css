@@ -26,6 +26,9 @@
 
     // Drop-down picker
     :where(select)::picker(select) {
+      position-area: block-end;
+      position-try-order: normal;
+      position-try-fallbacks: flip-block;
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
       background-color: var(#{$prefix}surface-1);
