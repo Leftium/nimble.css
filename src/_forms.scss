@@ -79,6 +79,12 @@
     font-weight: 600;
   }
 
+  // file and range are short/inline controls — increase the label gap to match
+  // the visual weight of the spacing above and beside them.
+  :where(label:has(+ [type="file"], + [type="range"])) {
+    margin-bottom: 0.5em;
+  }
+
   // ----- Fieldset -----
 
   :where(fieldset) {
