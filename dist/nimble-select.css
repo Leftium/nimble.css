@@ -1,0 +1,43 @@
+@layer nimble.reset, nimble.base;
+@layer nimble.base {
+  @supports (appearance: base-select) {
+    :where(select),
+    :where(select)::picker(select) {
+      appearance: base-select;
+    }
+    :where(select)::picker-icon {
+      content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 2l6 6 6-6'/%3E%3C/svg%3E");
+      transition: rotate 0.4s;
+    }
+    :where(select):open::picker-icon {
+      rotate: 180deg;
+    }
+    :where(select)::picker(select) {
+      border: 1px solid var(--nc-border);
+      border-radius: var(--nc-radius);
+      background-color: var(--nc-surface-1);
+      padding: 0.25em;
+      opacity: 0;
+      transition: opacity 0.2s, overlay 0.2s allow-discrete, display 0.2s allow-discrete;
+    }
+    :where(select):open::picker(select) {
+      opacity: 1;
+    }
+    @starting-style {
+      :where(select):open::picker(select) {
+        opacity: 0;
+      }
+    }
+    :where(select) option {
+      padding: 0.5em 0.75em;
+      border-radius: var(--nc-radius);
+      transition: background-color 0.15s;
+    }
+    :where(select) option:hover {
+      background-color: var(--nc-surface-2);
+    }
+    :where(select) option:checked {
+      font-weight: 600;
+    }
+  }
+}

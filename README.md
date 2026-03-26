@@ -1,11 +1,11 @@
 # nimble.css
 
-Minimal CSS library that makes semantic HTML look nice; no classes required. ~3.3 KB brotli (core).
+Minimal CSS library that makes semantic HTML look nice; no classes required. ~3.4 KB brotli (core).
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — core is only ~3.3 KB brotli (15.4 KB minified)
+- **Tiny** — core is only ~3.4 KB brotli (15.9 KB minified)
 
 ## Demos
 
@@ -48,11 +48,11 @@ Or via GitHub (latest on `main`):
 </details>
 
 <details>
-<summary>For 3.3 KB core size</summary>
+<summary>For 3.4 KB core size</summary>
 
-`nimble.min.css` (18.9 KB) includes everything.
+`nimble.min.css` (19.4 KB) includes everything.
 
-To trim size, use `nimble-core.min.css` (15.4 KB) + only the add-ons you need:
+To trim size, use `nimble-core.min.css` (15.9 KB) + only the add-ons you need:
 
 | Add-on | Minified |
 |---|---|
@@ -86,7 +86,7 @@ For advanced use, `nimble-core` is composed of these non-overlapping layers:
 | Sub-bundle | Minified | Contents |
 |---|---|---|
 | `nimble-reset.min.css` | 1.8 KB | Modern CSS reset |
-| `nimble-base.min.css` | 3.4 KB | Colors + document + typography |
+| `nimble-base.min.css` | 3.8 KB | Colors + document + typography |
 | `nimble-utilities.min.css` | 572 B | Utility classes |
 
 </details>
@@ -113,30 +113,19 @@ Content is centered at `720px` by default — no class needed. These opt-in util
 
 ### CSS Custom Properties
 
-Override any property at runtime — no build step needed:
+Override at runtime — no build step needed. Hover and focus states auto-derive from the base color via [relative color syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors).
 
 ```css
 :root {
-  /* Background hierarchy: page, card, input, overlay */
-  --nc-surface-1: light-dark(oklch(0.985 0.002 250), oklch(0.17 0.005 260));
-  --nc-surface-2: light-dark(oklch(0.955 0.002 250), oklch(0.2 0.005 260));
-  --nc-surface-3: light-dark(oklch(0.925 0.002 250), oklch(0.23 0.005 260));
-  --nc-surface-4: light-dark(oklch(0.885 0.002 250), oklch(0.27 0.005 260));
+  /* Surface hue (shared by backgrounds, text, border) */
+  --nc-surface-hue: 250;
 
-  /* Text color (adapts to light/dark mode) */
-  --nc-text: light-dark(oklch(0.28 0.005 250), oklch(0.86 0.005 250));
-  --nc-border: light-dark(oklch(0.83 0.005 250), oklch(0.28 0.005 260));
-
-  /* Primary accent (links, buttons, focus rings) */
+  /* Primary accent (links, buttons, focus rings) — hover/focus auto-derive */
   --nc-primary: light-dark(oklch(0.5 0.2 250), oklch(0.6 0.2 250));
-  --nc-primary-hover: light-dark(oklch(0.4 0.2 250), oklch(0.7 0.2 250));
-  --nc-primary-focus: oklch(0.5 0.2 250 / 0.4);
   --nc-primary-contrast: light-dark(#fff, oklch(0.15 0.005 250));
 
-  /* Secondary accent (reset buttons) */
+  /* Secondary accent (reset buttons) — hover/focus auto-derive */
   --nc-secondary: light-dark(oklch(0.45 0.05 250), oklch(0.6 0.05 250));
-  --nc-secondary-hover: light-dark(oklch(0.35 0.05 250), oklch(0.7 0.05 250));
-  --nc-secondary-focus: oklch(0.45 0.05 250 / 0.3);
   --nc-secondary-contrast: light-dark(#fff, oklch(0.15 0.005 250));
 
   /* Validation colors */
@@ -154,57 +143,74 @@ Override any property at runtime — no build step needed:
 }
 ```
 
-### SCSS
+These properties are auto-derived and available for use in your own components (no need to set them):
 
-For build-time customization, override config variables:
+`--nc-surface-1` .. `--nc-surface-4`, `--nc-text`, `--nc-border`, `--nc-primary-hover`, `--nc-primary-focus`, `--nc-secondary-hover`, `--nc-secondary-focus`
+
+<details>
+<summary>SCSS (advanced)</summary>
+
+Build a CSS file with new defaults. SCSS-unique options listed first; the rest mirror CSS custom properties above.
 
 ```scss
 @use 'nimble' with (
-  /* CSS custom property prefix */
-  $prefix: '--nc-',
+  // --- SCSS-only (no CSS custom property equivalent) ---
 
-  /* Primary accent hue, chroma, lightness (OKLCH) */
-  $primary-hue: 250,
-  $primary-chroma: 0.2,
-  $primary-lightness: 0.50,
+  $prefix: '--nc-',        // CSS custom property prefix
+  $wide-width: 1200px,     // wide layout max-width (used in utilities)
 
-  /* Secondary accent (OKLCH) */
-  $secondary-hue: 250,
-  $secondary-chroma: 0.05,
-  $secondary-lightness: 0.45,
-
-  /* Background surface hue */
-  $surface-hue: 250,
-
-  /* Font stacks */
-  $font-sans: system-ui, sans-serif,
-  $font-mono: ui-monospace, monospace,
-
-  /* Layout */
-  $spacing: 1rem,
-  $radius: 0.25rem,
-  $content-width: 720px,
-  $wide-width: 1200px,
-
-  /* Feature flags */
+  // Feature flags (tree-shake unused components)
   $enable-utilities: true,
   $enable-dialog: true,
   $enable-switch: true,
   $enable-details: true,
+
+  // Surface fine-tuning
+  $surface-chroma: 0.002,
+  $surface-light-base: 0.985,     // light mode base lightness
+  $surface-dark-base: 0.170,      // dark mode base lightness
+  $surface-offsets: (2: 0.03, 3: 0.06, 4: 0.10),
+  $surface-dark-chroma-boost: 0.003,
+  $surface-dark-hue-shift: 10,
+
+  // --- Same as CSS custom properties above ---
+
+  $surface-hue: 250,
+
+  // Primary accent (hue, chroma, lightness → --nc-primary)
+  $primary-hue: 250,
+  $primary-chroma: 0.2,
+  $primary-lightness: 0.50,
+
+  // Secondary accent (hue, chroma, lightness → --nc-secondary)
+  $secondary-hue: 250,
+  $secondary-chroma: 0.05,
+  $secondary-lightness: 0.45,
+
+  // Font stacks
+  $font-sans: (system-ui, sans-serif),
+  $font-mono: (ui-monospace, monospace),
+
+  // Layout
+  $spacing: 1rem,
+  $radius: 0.25rem,
+  $content-width: 720px,
 );
 ```
+
+</details>
 
 ## Design Lineage
 
 nimble.css combines [Open Props](https://open-props.style/)'s design token philosophy with [PicoCSS](https://picocss.com/)'s classless aesthetics. Key concepts borrowed from Open Props:
 
-- **Surface hierarchy** (`surface-1` through `surface-4`) — layered backgrounds for page, card, input, and overlay contexts. Defined in `_colors.scss` from OKLCH parameters rather than imported at runtime.
+- **Surface hierarchy** (`surface-1` through `surface-4`) — layered backgrounds for page, card, input, and overlay contexts, all derived from a single `--nc-surface-hue`.
 - **Text color** (`text`) — single text color variable; muted text derived inline via `color-mix()`.
-- **OKLCH color space** — perceptually uniform color system. Change `$primary-hue` and the entire palette regenerates consistently.
+- **OKLCH color space** — perceptually uniform color system. Change `--nc-primary` and hover/focus states regenerate automatically via [relative color syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors).
 - **Curated scale values** — `$spacing: 1rem` (~Open Props `size-3`) and `$radius: 0.25rem` (~Open Props `radius-2`) are sourced from Open Props' scales.
 - **Minimal DevTools pollution** — ~20 semantic custom properties on `:root` plus scoped `--_` internals per component, rather than dumping hundreds of variables globally.
 
-The key architectural difference: nimble.css is self-contained SCSS with no runtime dependency on Open Props. Token values are baked in at compile time, and the SCSS parametric layer (change one hue, regenerate everything) goes beyond what pure CSS custom properties can offer.
+The key architectural difference: nimble.css is self-contained SCSS with no runtime dependency on Open Props. Color derivatives (hover, focus, surfaces) are expressed as native CSS relative colors and `calc()`, so runtime theming works without a build step.
 
 ## Building from Source
 

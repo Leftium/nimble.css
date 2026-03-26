@@ -1,0 +1,71 @@
+@layer nimble.reset, nimble.base;
+@layer nimble.base {
+  :where(progress) {
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 100%;
+    height: 0.5rem;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--nc-radius);
+    background-color: var(--nc-surface-3);
+    color: var(--nc-primary);
+  }
+  :where(progress)::-webkit-progress-bar {
+    border-radius: var(--nc-radius);
+    background-color: var(--nc-surface-3);
+  }
+  :where(progress)::-webkit-progress-value {
+    background-color: var(--nc-primary);
+    border-radius: var(--nc-radius);
+    transition: inline-size 0.3s ease;
+  }
+  :where(progress)::-moz-progress-bar {
+    background-color: var(--nc-primary);
+    border-radius: var(--nc-radius);
+  }
+  :where(progress):not([value]) {
+    --nc-progress-track:
+      linear-gradient(to right,
+        var(--nc-surface-3) 0%,
+        var(--nc-primary) 25%,
+        var(--nc-primary) 25%,
+        var(--nc-surface-3) 50%,
+        var(--nc-surface-3) 50%,
+        var(--nc-primary) 75%,
+        var(--nc-primary) 75%,
+        var(--nc-surface-3) 100%);
+    --nc-progress-track-size: 200% 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports selector(progress::after) {
+      :where(progress):not([value])::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--nc-progress-track);
+        background-size: var(--nc-progress-track-size);
+        animation: nc-progress-indeterminate 12s linear infinite;
+      }
+    }
+    :where(progress):not([value])::-webkit-progress-bar {
+      background: var(--nc-progress-track);
+      background-size: var(--nc-progress-track-size);
+      animation: nc-progress-indeterminate 12s linear infinite;
+    }
+    :where(progress):not([value])::-moz-progress-bar {
+      background: var(--nc-progress-track);
+      background-size: var(--nc-progress-track-size);
+      animation: nc-progress-indeterminate 12s linear infinite;
+    }
+  }
+  @keyframes nc-progress-indeterminate {
+    from {
+      background-position: 0% 0%;
+    }
+    to {
+      background-position: -200% 0%;
+    }
+  }
+}

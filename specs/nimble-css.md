@@ -190,29 +190,30 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
 :root {
   color-scheme: light dark;
 
-  /* --- Primary (main accent) --- */
-  --nc-primary:            /* links, primary buttons, focus rings, checkboxes */
-  --nc-primary-hover:      /* autocomputed via oklch */
-  --nc-primary-focus:      /* semi-transparent for focus rings */
-  --nc-primary-contrast:   /* text on primary background (usually #fff) */
-
-  /* --- Secondary (neutral accent) --- */
-  --nc-secondary:          /* secondary buttons, reset buttons */
-  --nc-secondary-hover:    /* autocomputed or explicit */
-  --nc-secondary-focus:    /* semi-transparent for focus rings */
-  --nc-secondary-contrast: /* text on secondary background */
-
   /* --- Surfaces --- */
-  --nc-surface-1:          /* page background */
+  --nc-surface-hue:        /* shared hue for surfaces, text, border (250 = blue-gray) */
+  --nc-surface-1:          /* page background (derived from surface-hue) */
   --nc-surface-2:          /* raised: cards, code blocks, table headers */
   --nc-surface-3:          /* inset: form inputs, aside */
   --nc-surface-4:          /* overlay: dialogs, dropdowns */
 
   /* --- Text --- */
-  --nc-text:               /* body text color (light/dark adaptive) */
+  --nc-text:               /* body text color (derived from surface-hue) */
 
   /* --- Borders --- */
-  --nc-border:             /* default border color */
+  --nc-border:             /* default border color (derived from surface-hue) */
+
+  /* --- Primary (main accent) --- */
+  --nc-primary:            /* links, primary buttons, focus rings, checkboxes */
+  --nc-primary-hover:      /* auto-derived from --nc-primary via relative color syntax */
+  --nc-primary-focus:      /* auto-derived (semi-transparent) */
+  --nc-primary-contrast:   /* text on primary background (usually #fff) */
+
+  /* --- Secondary (neutral accent) --- */
+  --nc-secondary:          /* secondary buttons, reset buttons */
+  --nc-secondary-hover:    /* auto-derived from --nc-secondary */
+  --nc-secondary-focus:    /* auto-derived (semi-transparent) */
+  --nc-secondary-contrast: /* text on secondary background */
 
   /* --- Feedback --- */
   --nc-valid:              /* valid/success (green) */
@@ -229,7 +230,7 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
 }
 ```
 
-**Total: ~19 public properties.**
+**Total: ~20 public properties** (19 original + `--nc-surface-hue`).
 
 Compared to the original draft's ~25, we cut:
 - `border-muted` -- derived from `--nc-border` at lower opacity where needed
@@ -280,23 +281,25 @@ All colors are defined in the oklch color space, using the `light-dark()` functi
 :root {
   color-scheme: light dark;
 
-  /* Surfaces: same hue (250 = blue-gray), minimal chroma, varying lightness */
-  --nc-surface-1: light-dark(oklch(0.985 0.002 250), oklch(0.170 0.005 260));
-  --nc-surface-2: light-dark(oklch(0.955 0.002 250), oklch(0.200 0.005 260));
-  --nc-surface-3: light-dark(oklch(0.925 0.002 250), oklch(0.220 0.005 260));
-  --nc-surface-4: light-dark(oklch(0.885 0.002 250), oklch(0.270 0.005 260));
+  /* Surface hue shared by surfaces, text, border */
+  --nc-surface-hue: 250;
 
-  --nc-text:      light-dark(oklch(0.280 0.005 250), oklch(0.860 0.005 250));
-  --nc-border:    light-dark(oklch(0.830 0.005 250), oklch(0.280 0.005 260));
+  /* Surfaces: derived from surface-hue via var() + calc() */
+  --nc-surface-1: light-dark(oklch(0.985 0.002 var(--nc-surface-hue)), oklch(0.17 0.005 calc(var(--nc-surface-hue) + 10)));
+  --nc-surface-2: light-dark(oklch(0.955 0.002 var(--nc-surface-hue)), oklch(0.2 0.005 calc(var(--nc-surface-hue) + 10)));
+  --nc-surface-3: light-dark(oklch(0.925 0.002 var(--nc-surface-hue)), oklch(0.23 0.005 calc(var(--nc-surface-hue) + 10)));
+  --nc-surface-4: light-dark(oklch(0.885 0.002 var(--nc-surface-hue)), oklch(0.27 0.005 calc(var(--nc-surface-hue) + 10)));
 
-  --nc-primary:          light-dark(oklch(0.55 0.2 250), oklch(0.65 0.2 250));
-  --nc-primary-hover:    light-dark(oklch(0.45 0.2 250), oklch(0.75 0.2 250));
-  --nc-primary-focus:    oklch(0.55 0.2 250 / 0.4);
-  --nc-primary-contrast: #fff;
+  --nc-text:      light-dark(oklch(0.28 0.005 var(--nc-surface-hue)), oklch(0.86 0.005 var(--nc-surface-hue)));
+  --nc-border:    light-dark(oklch(0.83 0.005 var(--nc-surface-hue)), oklch(0.28 0.005 calc(var(--nc-surface-hue) + 10)));
+
+  /* Primary: hover/focus auto-derived via relative color syntax */
+  --nc-primary:          light-dark(oklch(0.5 0.2 250), oklch(0.6 0.2 250));
+  --nc-primary-hover:    light-dark(oklch(from var(--nc-primary) calc(l - 0.1) c h), oklch(from var(--nc-primary) calc(l + 0.1) c h));
+  --nc-primary-focus:    oklch(from var(--nc-primary) l c h / 0.4);
+  --nc-primary-contrast: light-dark(#fff, oklch(0.15 0.005 250));
 }
 ```
-
-> **Note:** The concrete oklch values above are illustrative. Final values will be tuned against PicoCSS's blue-gray aesthetic during implementation.
 
 ### 5.3 Autocomputed Surface Colors
 
@@ -307,11 +310,17 @@ Light mode:  surface-1 (L=0.985) > surface-2 (0.955) > surface-3 (0.925)
 Dark mode:   surface-1 (L=0.170) < surface-2 (0.200) < surface-3 (0.220)
 ```
 
-In SCSS, the entire neutral palette is generated from four parameters:
+The hue is exposed as the runtime CSS custom property `--nc-surface-hue`. All four surfaces, text, and border derive from it via `var()` + `calc()`, so overriding one value shifts the entire neutral palette at runtime:
+
+```css
+:root { --nc-surface-hue: 80; }  /* warm sand neutrals */
+```
+
+In SCSS, the lightness/chroma parameters that aren't exposed at runtime can also be overridden:
 
 ```scss
 // src/_config.scss
-$surface-hue: 250 !default;       // blue-gray
+$surface-hue: 250 !default;       // blue-gray (also sets --nc-surface-hue default)
 $surface-chroma: 0.002 !default;  // near-neutral
 $surface-light-base: 0.985 !default;
 $surface-dark-base: 0.170 !default;
@@ -321,30 +330,29 @@ $surface-offsets: (2: 0.03, 3: 0.06, 4: 0.10);
 ```
 
 ```scss
-// src/_colors.scss
+// src/_colors.scss — surfaces derive from --nc-surface-hue at runtime
+#{$prefix}surface-hue: #{$surface-hue};
+
 @each $level, $offset in $surface-offsets {
   #{$prefix}surface-#{$level}: light-dark(
-    oklch(#{$surface-light-base - $offset} #{$surface-chroma} #{$surface-hue}),
-    oklch(#{$surface-dark-base + $offset} #{$surface-chroma + 0.003} #{$surface-hue + 10})
+    oklch(#{$surface-light-base - $offset} #{$surface-chroma} var(#{$prefix}surface-hue)),
+    oklch(#{$surface-dark-base + $offset} #{$surface-chroma + 0.003} calc(var(#{$prefix}surface-hue) + 10))
   );
 }
 ```
 
-SCSS power users can override `$surface-hue` to shift the entire neutral palette (e.g., warm sand at hue 80, green-gray at hue 150) without touching individual color values.
-
 ### 5.4 Customizing the Primary Color
 
-**Runtime (CSS custom properties):** Override the primary color and its variants:
+**Runtime (CSS custom properties):** Override the primary color — hover and focus auto-derive via [relative color syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors):
 
 ```css
 :root {
-  --nc-primary: oklch(0.6 0.25 25);  /* red-orange */
-  --nc-primary-hover: oklch(0.5 0.25 25);
-  --nc-primary-focus: oklch(0.6 0.25 25 / 0.4);
+  --nc-primary: light-dark(oklch(0.6 0.25 25), oklch(0.7 0.25 25));  /* red-orange */
+  /* --nc-primary-hover and --nc-primary-focus update automatically */
 }
 ```
 
-**Build-time (SCSS):** Set just the hue/chroma/lightness and all variants are computed automatically:
+**Build-time (SCSS):** Set just the hue/chroma/lightness:
 
 ```scss
 @use 'nimble' with (
@@ -354,7 +362,7 @@ SCSS power users can override `$surface-hue` to shift the entire neutral palette
 );
 ```
 
-The SCSS path computes hover, focus, and contrast values from the base parameters. The CSS path requires setting variants explicitly.
+Both paths now produce the same result: hover, focus, and contrast values are derived from the base color automatically. The CSS path uses `oklch(from var(--nc-primary) ...)` relative color syntax; the SCSS path bakes the same expressions at compile time.
 
 ### 5.5 Open Props Integration (Values, Not Dependency)
 

@@ -29,58 +29,63 @@
   :root {
     color-scheme: light dark;
 
+    // ----- Surface hue (shared by surfaces, text, border) -----
+    #{$prefix}surface-hue: #{$surface-hue};
+
     // ----- Surfaces -----
     // Surface 1: page background (base lightness)
     #{$prefix}surface-1: #{_light-dark(
-      _oklch($surface-light-base, $surface-chroma, $surface-hue),
-      _oklch($surface-dark-base, $surface-chroma + $surface-dark-chroma-boost, $surface-hue + $surface-dark-hue-shift)
+      string.unquote('oklch(#{$surface-light-base} #{$surface-chroma} var(#{$prefix}surface-hue))'),
+      string.unquote('oklch(#{$surface-dark-base} #{$surface-chroma + $surface-dark-chroma-boost} calc(var(#{$prefix}surface-hue) + #{$surface-dark-hue-shift}))')
     )};
 
     // Surface 2-4: generated from offsets
     @each $level, $offset in $surface-offsets {
       #{$prefix}surface-#{$level}: #{_light-dark(
-        _oklch($surface-light-base - $offset, $surface-chroma, $surface-hue),
-        _oklch($surface-dark-base + $offset, $surface-chroma + $surface-dark-chroma-boost, $surface-hue + $surface-dark-hue-shift)
+        string.unquote('oklch(#{$surface-light-base - $offset} #{$surface-chroma} var(#{$prefix}surface-hue))'),
+        string.unquote('oklch(#{$surface-dark-base + $offset} #{$surface-chroma + $surface-dark-chroma-boost} calc(var(#{$prefix}surface-hue) + #{$surface-dark-hue-shift}))')
       )};
     }
 
     // ----- Text -----
     #{$prefix}text: #{_light-dark(
-      _oklch(0.280, 0.005, $surface-hue),
-      _oklch(0.860, 0.005, $surface-hue)
+      string.unquote('oklch(0.28 0.005 var(#{$prefix}surface-hue))'),
+      string.unquote('oklch(0.86 0.005 var(#{$prefix}surface-hue))')
     )};
 
     // ----- Border -----
     #{$prefix}border: #{_light-dark(
-      _oklch(0.830, 0.005, $surface-hue),
-      _oklch(0.280, 0.005, $surface-hue + $surface-dark-hue-shift)
+      string.unquote('oklch(0.83 0.005 var(#{$prefix}surface-hue))'),
+      string.unquote('oklch(0.28 0.005 calc(var(#{$prefix}surface-hue) + #{$surface-dark-hue-shift}))')
     )};
 
     // ----- Primary (main accent) -----
+    // Base color; hover/focus are derived via relative color syntax
     #{$prefix}primary: #{_light-dark(
       _oklch($primary-lightness, $primary-chroma, $primary-hue),
       _oklch($primary-lightness + 0.1, $primary-chroma, $primary-hue)
     )};
     #{$prefix}primary-hover: #{_light-dark(
-      _oklch($primary-lightness - 0.1, $primary-chroma, $primary-hue),
-      _oklch($primary-lightness + 0.2, $primary-chroma, $primary-hue)
+      string.unquote('oklch(from var(#{$prefix}primary) calc(l - 0.1) c h)'),
+      string.unquote('oklch(from var(#{$prefix}primary) calc(l + 0.1) c h)')
     )};
-    #{$prefix}primary-focus: #{_oklch($primary-lightness, $primary-chroma, $primary-hue, 0.4)};
+    #{$prefix}primary-focus: #{string.unquote('oklch(from var(#{$prefix}primary) l c h / 0.4)')};
     #{$prefix}primary-contrast: #{_light-dark(
       '#fff',
       _oklch(0.15, 0.005, $surface-hue)
     )};
 
     // ----- Secondary (neutral accent) -----
+    // Base color; hover/focus are derived via relative color syntax
     #{$prefix}secondary: #{_light-dark(
       _oklch($secondary-lightness, $secondary-chroma, $secondary-hue),
       _oklch($secondary-lightness + 0.15, $secondary-chroma, $secondary-hue)
     )};
     #{$prefix}secondary-hover: #{_light-dark(
-      _oklch($secondary-lightness - 0.1, $secondary-chroma, $secondary-hue),
-      _oklch($secondary-lightness + 0.25, $secondary-chroma, $secondary-hue)
+      string.unquote('oklch(from var(#{$prefix}secondary) calc(l - 0.1) c h)'),
+      string.unquote('oklch(from var(#{$prefix}secondary) calc(l + 0.1) c h)')
     )};
-    #{$prefix}secondary-focus: #{_oklch($secondary-lightness, $secondary-chroma, $secondary-hue, 0.3)};
+    #{$prefix}secondary-focus: #{string.unquote('oklch(from var(#{$prefix}secondary) l c h / 0.3)')};
     #{$prefix}secondary-contrast: #{_light-dark(
       '#fff',
       _oklch(0.15, 0.005, $surface-hue)
