@@ -79,8 +79,7 @@
   // the zero-specificity form input rules for border-radius.
 
   :where([role="group"]) {
-    display: flex;
-    width: 100%;
+    display: inline-flex;
     margin-bottom: var(#{$prefix}spacing);
   }
 
