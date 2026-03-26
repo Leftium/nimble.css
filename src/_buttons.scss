@@ -39,6 +39,23 @@
     outline: none;
   }
 
+  // ----- Reset button (secondary by default) -----
+
+  :where([type="reset"]) {
+    background-color: var(#{$prefix}secondary);
+    border-color: var(#{$prefix}secondary);
+    color: var(#{$prefix}secondary-contrast);
+  }
+
+  :where([type="reset"]):hover {
+    background-color: var(#{$prefix}secondary-hover);
+    border-color: var(#{$prefix}secondary-hover);
+  }
+
+  :where([type="reset"]):focus-visible {
+    box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
+  }
+
   // ----- Inline (buttons within flow text) -----
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline {
@@ -62,7 +79,8 @@
   // the zero-specificity form input rules for border-radius.
 
   :where([role="group"]) {
-    display: inline-flex;
+    display: flex;
+    width: 100%;
     margin-bottom: var(#{$prefix}spacing);
   }
 

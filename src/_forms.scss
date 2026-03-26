@@ -108,13 +108,20 @@
     display: flex;
     align-items: center;
     gap: 0.35em;
-    margin-bottom: var(#{$prefix}spacing);
+    margin-bottom: 0.5em;
   }
 
-  // Radio options in a group sit close together; only the last one
-  // carries the full field-gap to the next element.
-  :where(label:has([type="radio"])) {
-    margin-bottom: 0.35em;
+  // Last checkbox/radio label in a group drops its bottom margin
+  // so the parent element controls spacing to the next sibling.
+  :where(label:has([type="checkbox"], [type="radio"]):last-child) {
+    margin-bottom: 0;
+  }
+
+  // ----- Search (pill shape) -----
+
+  :where([type="search"]) {
+    border-radius: 5rem;
+    padding-inline: 1.25em;
   }
 
   // ----- Range -----
@@ -198,7 +205,7 @@
     // Minimal switch styling — relies on native checkbox with role="switch"
     // Browsers with :has() support get enhanced label alignment
     :where(label:has([type="checkbox"][role="switch"])) {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 0.5em;
     }
