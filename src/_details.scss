@@ -17,6 +17,10 @@
       padding: 0 1em;
     }
 
+    :where(details) {
+      margin-bottom: 0.5em;
+    }
+
     :where(summary) {
       cursor: pointer;
       font-weight: 600;
