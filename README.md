@@ -1,6 +1,6 @@
 # nimble.css
 
-Minimal CSS library for great-looking HTML default styles; no classes required. ~3.4 KB brotli (core).
+Minimal CSS library for great-looking default HTML styles; no classes required. ~3.4 KB brotli (core).
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
