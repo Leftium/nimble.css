@@ -118,34 +118,34 @@ Override any property at runtime — no build step needed:
 ```css
 :root {
   /* Background hierarchy: page, card, input, overlay */
-  --nc-surface-1: ...;
-  --nc-surface-2: ...;
-  --nc-surface-3: ...;
-  --nc-surface-4: ...;
+  --nc-surface-1: light-dark(oklch(0.985 0.002 250), oklch(0.17 0.005 260));
+  --nc-surface-2: light-dark(oklch(0.955 0.002 250), oklch(0.2 0.005 260));
+  --nc-surface-3: light-dark(oklch(0.925 0.002 250), oklch(0.23 0.005 260));
+  --nc-surface-4: light-dark(oklch(0.885 0.002 250), oklch(0.27 0.005 260));
 
   /* Text color (adapts to light/dark mode) */
-  --nc-text: ...;
-  --nc-border: ...;
+  --nc-text: light-dark(oklch(0.28 0.005 250), oklch(0.86 0.005 250));
+  --nc-border: light-dark(oklch(0.83 0.005 250), oklch(0.28 0.005 260));
 
   /* Primary accent (links, buttons, focus rings) */
-  --nc-primary: oklch(0.50 0.15 150);
-  --nc-primary-hover: ...;
-  --nc-primary-focus: ...;
-  --nc-primary-contrast: ...;
+  --nc-primary: light-dark(oklch(0.5 0.2 250), oklch(0.6 0.2 250));
+  --nc-primary-hover: light-dark(oklch(0.4 0.2 250), oklch(0.7 0.2 250));
+  --nc-primary-focus: oklch(0.5 0.2 250 / 0.4);
+  --nc-primary-contrast: light-dark(#fff, oklch(0.15 0.005 250));
 
   /* Secondary accent (reset buttons) */
-  --nc-secondary: ...;
-  --nc-secondary-hover: ...;
-  --nc-secondary-focus: ...;
-  --nc-secondary-contrast: ...;
+  --nc-secondary: light-dark(oklch(0.45 0.05 250), oklch(0.6 0.05 250));
+  --nc-secondary-hover: light-dark(oklch(0.35 0.05 250), oklch(0.7 0.05 250));
+  --nc-secondary-focus: oklch(0.45 0.05 250 / 0.3);
+  --nc-secondary-contrast: light-dark(#fff, oklch(0.15 0.005 250));
 
   /* Validation colors */
-  --nc-valid: ...;
-  --nc-invalid: ...;
+  --nc-valid: light-dark(oklch(0.52 0.17 145), oklch(0.65 0.2 145));
+  --nc-invalid: light-dark(oklch(0.55 0.22 25), oklch(0.65 0.22 25));
 
   /* Font stacks */
   --nc-font-sans: system-ui, sans-serif;
-  --nc-font-mono: ui-monospace, monospace;
+  --nc-font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 
   /* Layout */
   --nc-spacing: 1rem;
