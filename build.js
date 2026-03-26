@@ -30,7 +30,7 @@ const DIST = resolve(ROOT, 'dist');
 // Entry points → output filenames
 const entries = [
   { input: 'src/nimble.scss',           outName: 'nimble' },
-  { input: 'src/nimble-full.scss',      outName: 'nimble-full' },
+  { input: 'src/nimble-core.scss',     outName: 'nimble-core' },
   { input: 'src/nimble-base.scss',      outName: 'nimble-base' },
   { input: 'src/nimble-reset.scss',     outName: 'nimble-reset' },
   { input: 'src/nimble-utilities.scss', outName: 'nimble-utilities' },

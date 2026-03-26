@@ -4,15 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nimble.css — Classless CSS in ~3.3 KB</title>
-    <meta name="description" content="A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~3.3 KB brotli.">
+    <meta name="description" content="A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. ~3.3 KB brotli (core).">
     <link rel="stylesheet" href="dist/nimble.css">
   </head>
   <body>
     <header>
       <h1>nimble.css</h1>
-      <p>A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. <strong>~3.3 KB brotli.</strong></p>
+      <p>A minimal classless CSS library. Drop it in and your semantic HTML looks good — no classes required. <strong>~3.3 KB brotli (core).</strong></p>
     </header>
     <main>
+      <section>
+        <h2>Demos</h2>
+        <ul>
+          <li><a href="demo/">HTML5 Test Page</a> — every standard HTML element</li>
+          <li><a href="demo/extended.html">Extended Demo</a> — layouts, utilities, button variants, dark mode toggle</li>
+        </ul>
+      </section>
+
       <section>
         <h2>Features</h2>
         <ul>
@@ -20,7 +28,7 @@
           <li><strong>Automatic dark mode</strong> — via <code>prefers-color-scheme</code> and <code>light-dark()</code></li>
           <li><strong>OKLCH color system</strong> — perceptually uniform, fully customizable</li>
           <li><strong>Cascade layers</strong> — plays nicely alongside your own styles</li>
-          <li><strong>Tiny</strong> — 15.4 KB minified, ~3.3 KB brotli (~3.8 KB gzip fallback)</li>
+          <li><strong>Tiny</strong> — core is 15.4 KB minified, ~3.3 KB brotli; full bundle is 18.9 KB minified, ~4 KB brotli</li>
         </ul>
       </section>
 
@@ -39,67 +47,31 @@ import '@leftium/nimble.css';</code></pre>
       </section>
 
       <section>
-        <h2>Sub-bundles</h2>
-        <p>Pick only what you need:</p>
+        <h2>Bundles</h2>
+        <p><code>nimble.min.css</code> (18.9 KB) includes everything.</p>
+        <p>To trim size, use <code>nimble-core.min.css</code> (15.4 KB) + only the add-ons you need:</p>
         <table>
           <thead>
             <tr>
-              <th>Bundle</th>
+              <th>Add-on</th>
               <th>Size</th>
-              <th>Contents</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>nimble.min.css</code></td>
-              <td>15.4 KB</td>
-              <td>Core (no progress/meter/select)</td>
-            </tr>
-            <tr>
-              <td><code>nimble-full.min.css</code></td>
-              <td>18.9 KB</td>
-              <td>Everything</td>
-            </tr>
-            <tr>
-              <td><code>nimble-base.min.css</code></td>
-              <td>5.0 KB</td>
-              <td>Reset + colors + document + typography</td>
-            </tr>
-            <tr>
-              <td><code>nimble-reset.min.css</code></td>
-              <td>1.8 KB</td>
-              <td>Modern CSS reset only</td>
-            </tr>
-            <tr>
-              <td><code>nimble-utilities.min.css</code></td>
-              <td>572 B</td>
-              <td>Utility classes only</td>
-            </tr>
-            <tr>
               <td><code>nimble-progress.min.css</code></td>
               <td>1.6 KB</td>
-              <td>Styled <code>&lt;progress&gt;</code> (add-on)</td>
             </tr>
             <tr>
               <td><code>nimble-meter.min.css</code></td>
               <td>1.0 KB</td>
-              <td>Styled <code>&lt;meter&gt;</code> (add-on)</td>
             </tr>
             <tr>
               <td><code>nimble-select.min.css</code></td>
               <td>1.0 KB</td>
-              <td>Customizable <code>&lt;select&gt;</code> (add-on)</td>
             </tr>
           </tbody>
         </table>
-      </section>
-
-      <section>
-        <h2>Demos</h2>
-        <ul>
-          <li><a href="demo/">HTML5 Test Page</a> — every standard HTML element</li>
-          <li><a href="demo/extended.html">Extended Demo</a> — layouts, utilities, button variants, dark mode toggle</li>
-        </ul>
       </section>
 
       <section>

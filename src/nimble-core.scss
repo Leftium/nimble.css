@@ -1,6 +1,6 @@
 // ==========================================================================
-// nimble.css — Full Entry Point
-// Everything including optional progress, meter, and select extras
+// nimble.css — Core Entry Point
+// Everything except progress, meter, and select add-ons
 // ==========================================================================
 
 @use 'config' as *;
@@ -25,11 +25,6 @@
 @use 'details';
 @use 'dialog';
 @use 'print';
-
-// Phase 3: Optional extras
-@use 'progress';
-@use 'meter';
-@use 'select';
 
 // Phase 4: Utilities
 @use 'utilities';

@@ -1,6 +1,6 @@
 // ==========================================================================
 // nimble.css — Entry Point
-// A minimal class/classless CSS library
+// Everything: core + progress, meter, and select
 // ==========================================================================
 
 @use 'config' as *;
@@ -25,6 +25,11 @@
 @use 'details';
 @use 'dialog';
 @use 'print';
+
+// Phase 3: Optional extras
+@use 'progress';
+@use 'meter';
+@use 'select';
 
 // Phase 4: Utilities
 @use 'utilities';
