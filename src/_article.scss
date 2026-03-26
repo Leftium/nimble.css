@@ -42,4 +42,24 @@
     margin-bottom: 0;
   }
 
+  // Kill last-child bottom margin inside article > header/footer too —
+  // those containers use padding for spacing; a trailing margin doubles it.
+  :where(article > header, article > footer) > :last-child {
+    margin-bottom: 0;
+  }
+
+  // Suppress heading top/bottom margin inside article > header / footer —
+  // the container's own padding already provides the visual gap on both sides.
+  // Real specificity on the heading tags so this wins over the plain h1–h6
+  // rule in _typography.scss (same layer, same zero-specificity containers).
+  :where(article > header, article > footer) > h1,
+  :where(article > header, article > footer) > h2,
+  :where(article > header, article > footer) > h3,
+  :where(article > header, article > footer) > h4,
+  :where(article > header, article > footer) > h5,
+  :where(article > header, article > footer) > h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
 }
