@@ -117,69 +117,82 @@ Override any property at runtime — no build step needed:
 
 ```css
 :root {
+  /* Background hierarchy: page, card, input, overlay */
+  --nc-surface-1: ...;
+  --nc-surface-2: ...;
+  --nc-surface-3: ...;
+  --nc-surface-4: ...;
+
+  /* Text color (adapts to light/dark mode) */
+  --nc-text: ...;
+  --nc-border: ...;
+
+  /* Primary accent (links, buttons, focus rings) */
   --nc-primary: oklch(0.50 0.15 150);
-  --nc-radius: 0.5rem;
-  --nc-spacing: 1.25rem;
+  --nc-primary-hover: ...;
+  --nc-primary-focus: ...;
+  --nc-primary-contrast: ...;
+
+  /* Secondary accent (reset buttons) */
+  --nc-secondary: ...;
+  --nc-secondary-hover: ...;
+  --nc-secondary-focus: ...;
+  --nc-secondary-contrast: ...;
+
+  /* Validation colors */
+  --nc-valid: ...;
+  --nc-invalid: ...;
+
+  /* Font stacks */
+  --nc-font-sans: system-ui, sans-serif;
+  --nc-font-mono: ui-monospace, monospace;
+
+  /* Layout */
+  --nc-spacing: 1rem;
+  --nc-radius: 0.25rem;
+  --nc-content-width: 720px;
 }
 ```
 
-| Property | Description |
-|---|---|
-| `--nc-surface-1` .. `--nc-surface-4` | Background hierarchy (page, card, input, overlay) |
-| `--nc-text` | Text color (adapts to light/dark mode) |
-| `--nc-border` | Default border color |
-| `--nc-primary` | Accent color (links, buttons, focus rings) |
-| `--nc-primary-hover` | Accent hover state |
-| `--nc-primary-focus` | Accent focus ring (semi-transparent) |
-| `--nc-primary-contrast` | Text on primary backgrounds |
-| `--nc-secondary` | Secondary accent (reset buttons) |
-| `--nc-secondary-hover` | Secondary hover state |
-| `--nc-secondary-focus` | Secondary focus ring |
-| `--nc-secondary-contrast` | Text on secondary backgrounds |
-| `--nc-valid` | Validation success color |
-| `--nc-invalid` | Validation error color |
-| `--nc-font-sans` | Body font stack |
-| `--nc-font-mono` | Code font stack |
-| `--nc-spacing` | Base spacing unit |
-| `--nc-radius` | Border radius |
-| `--nc-content-width` | Max content width |
-
 ### SCSS
 
-For build-time customization, override any SCSS config variable:
+For build-time customization, override config variables:
 
 ```scss
 @use 'nimble' with (
-  $primary-hue: 150,
-  $primary-chroma: 0.15,
-  $radius: 0.5rem,
-  $content-width: 960px,
-  $enable-dialog: false,
+  /* CSS custom property prefix */
+  $prefix: '--nc-',
+
+  /* Primary accent hue, chroma, lightness (OKLCH) */
+  $primary-hue: 250,
+  $primary-chroma: 0.2,
+  $primary-lightness: 0.50,
+
+  /* Secondary accent (OKLCH) */
+  $secondary-hue: 250,
+  $secondary-chroma: 0.05,
+  $secondary-lightness: 0.45,
+
+  /* Background surface hue */
+  $surface-hue: 250,
+
+  /* Font stacks */
+  $font-sans: system-ui, sans-serif,
+  $font-mono: ui-monospace, monospace,
+
+  /* Layout */
+  $spacing: 1rem,
+  $radius: 0.25rem,
+  $content-width: 720px,
+  $wide-width: 1200px,
+
+  /* Feature flags */
+  $enable-utilities: true,
+  $enable-dialog: true,
+  $enable-switch: true,
+  $enable-details: true,
 );
 ```
-
-### Config Variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `$prefix` | `'--nc-'` | CSS custom property prefix |
-| `$primary-hue` | `250` | Primary accent hue (OKLCH) |
-| `$primary-chroma` | `0.2` | Primary accent chroma |
-| `$primary-lightness` | `0.50` | Primary accent lightness |
-| `$secondary-hue` | `250` | Secondary accent hue |
-| `$secondary-chroma` | `0.05` | Secondary accent chroma |
-| `$secondary-lightness` | `0.45` | Secondary accent lightness |
-| `$surface-hue` | `250` | Background surface hue |
-| `$font-sans` | `system-ui, sans-serif` | Body font stack |
-| `$font-mono` | `ui-monospace, ...` | Code font stack |
-| `$spacing` | `1rem` | Base spacing unit |
-| `$radius` | `0.25rem` | Border radius |
-| `$content-width` | `720px` | Max content width |
-| `$wide-width` | `1200px` | Wide layout max-width |
-| `$enable-utilities` | `true` | Include utility classes |
-| `$enable-dialog` | `true` | Include dialog styles |
-| `$enable-switch` | `true` | Include switch toggle |
-| `$enable-details` | `true` | Include details/summary |
 
 ## Design Lineage
 
