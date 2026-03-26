@@ -3,6 +3,7 @@
 // Spec §9.2: button base, .secondary, .outline, button groups, disabled
 // ==========================================================================
 
+@use 'sass:string';
 @use 'config' as *;
 
 @layer nimble.base {
@@ -181,27 +182,37 @@
 
 @layer nimble.utilities {
 
-  .secondary {
+  .secondary:not(a:not([role="button"])) {
     background-color: var(#{$prefix}secondary);
     border-color: var(#{$prefix}secondary);
     color: var(#{$prefix}secondary-contrast);
   }
 
-  .secondary:hover {
+  .secondary:not(a:not([role="button"])):hover {
     background-color: var(#{$prefix}secondary-hover);
     border-color: var(#{$prefix}secondary-hover);
   }
 
-  .secondary:focus-visible {
+  .secondary:not(a:not([role="button"])):focus-visible {
     box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
   }
 
-  .outline {
+  a:not([role="button"]).secondary {
+    color: var(#{$prefix}secondary);
+    text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}secondary), transparent 50%)')};
+  }
+
+  a:not([role="button"]).secondary:hover {
+    color: var(#{$prefix}secondary-hover);
+    text-decoration-color: var(#{$prefix}secondary-hover);
+  }
+
+  .outline:not(a:not([role="button"])) {
     background-color: transparent;
     color: var(#{$prefix}primary);
   }
 
-  .outline:hover {
+  .outline:not(a:not([role="button"])):hover {
     background-color: var(#{$prefix}primary-focus);
     color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
