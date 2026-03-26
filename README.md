@@ -15,8 +15,6 @@ A classless CSS library. Make semantic HTML look good; no classes required. ~3.3
 
 ## Quick Start
 
-### npm
-
 ```bash
 npm install @leftium/nimble.css
 ```
@@ -33,7 +31,8 @@ Then import in your CSS, JS, or framework:
 import '@leftium/nimble.css';
 ```
 
-### CDN
+<details>
+<summary>Or use CDN</summary>
 
 Via jsDelivr (npm):
 
@@ -47,9 +46,10 @@ Or via GitHub (latest on `main`):
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble.min.css">
 ```
 
-That's it. Write semantic HTML and it just works.
+</details>
 
-### Bundles
+<details>
+<summary>For 3.3 KB core size</summary>
 
 `nimble.min.css` (18.9 KB) includes everything.
 
@@ -91,6 +91,10 @@ For advanced use, `nimble-core` is composed of these non-overlapping layers:
 | `nimble-utilities.min.css` | 572 B | Utility classes |
 
 </details>
+
+</details>
+
+That's it. Write semantic HTML and it just works.
 
 ## Utility Classes
 

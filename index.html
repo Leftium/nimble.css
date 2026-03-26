@@ -34,44 +34,48 @@
 
       <section>
         <h2>Quick Start</h2>
-        <p>Add one line to your <code>&lt;head&gt;</code>:</p>
-        <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css"&gt;</code></pre>
-        <p>Or install via npm:</p>
         <pre><code>npm install @leftium/nimble.css</code></pre>
+        <p>Then import in your CSS, JS, or framework:</p>
         <pre><code>/* CSS */
 @import '@leftium/nimble.css';
 
 // JS / framework entry point
 import '@leftium/nimble.css';</code></pre>
+        <details>
+          <summary>Or use CDN</summary>
+          <p>Via jsDelivr (npm):</p>
+          <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css"&gt;</code></pre>
+          <p>Or via GitHub (latest on <code>main</code>):</p>
+          <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble.min.css"&gt;</code></pre>
+        </details>
+        <details>
+          <summary>For 3.3 KB core size</summary>
+          <p><code>nimble.min.css</code> (18.9 KB) includes everything.</p>
+          <p>To trim size, use <code>nimble-core.min.css</code> (15.4 KB) + only the add-ons you need:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Add-on</th>
+                <th>Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>nimble-progress.min.css</code></td>
+                <td>1.6 KB</td>
+              </tr>
+              <tr>
+                <td><code>nimble-meter.min.css</code></td>
+                <td>1.0 KB</td>
+              </tr>
+              <tr>
+                <td><code>nimble-select.min.css</code></td>
+                <td>1.0 KB</td>
+              </tr>
+            </tbody>
+          </table>
+        </details>
         <p>That's it. Write semantic HTML and it just works.</p>
-      </section>
-
-      <section>
-        <h2>Bundles</h2>
-        <p><code>nimble.min.css</code> (18.9 KB) includes everything.</p>
-        <p>To trim size, use <code>nimble-core.min.css</code> (15.4 KB) + only the add-ons you need:</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Add-on</th>
-              <th>Size</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>nimble-progress.min.css</code></td>
-              <td>1.6 KB</td>
-            </tr>
-            <tr>
-              <td><code>nimble-meter.min.css</code></td>
-              <td>1.0 KB</td>
-            </tr>
-            <tr>
-              <td><code>nimble-select.min.css</code></td>
-              <td>1.0 KB</td>
-            </tr>
-          </tbody>
-        </table>
       </section>
 
       <section>
