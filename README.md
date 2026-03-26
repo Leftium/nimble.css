@@ -39,12 +39,6 @@ Via jsDelivr (npm):
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
 ```
 
-Or via GitHub (latest on `main`):
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Leftium/nimble.css@main/dist/nimble.min.css">
-```
-
 </details>
 
 <details>
