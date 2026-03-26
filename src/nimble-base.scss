@@ -1,11 +1,10 @@
 // ==========================================================================
 // nimble.css — Base Sub-bundle
-// Reset + colors + document + typography — the classless core
+// Colors + document + typography (no reset — use nimble-reset for that)
 // ==========================================================================
 
 @use 'config' as *;
 @use 'layers-base';
-@use 'reset';
 @use 'colors';
 @use 'document';
 @use 'typography';

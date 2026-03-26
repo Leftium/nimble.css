@@ -82,13 +82,13 @@ Or with SCSS (comment out what you don't need):
 <details>
 <summary>Granular sub-bundles</summary>
 
-For advanced use, `nimble-core` itself is composed of these layers:
+For advanced use, `nimble-core` is composed of these non-overlapping layers:
 
 | Sub-bundle | Minified | Contents |
 |---|---|---|
-| `nimble-base.min.css` | 5.0 KB | Reset + colors + document + typography |
-| `nimble-reset.min.css` | 1.8 KB | Modern CSS reset only |
-| `nimble-utilities.min.css` | 572 B | Utility classes only |
+| `nimble-reset.min.css` | 1.8 KB | Modern CSS reset |
+| `nimble-base.min.css` | 3.4 KB | Colors + document + typography |
+| `nimble-utilities.min.css` | 572 B | Utility classes |
 
 </details>
 
