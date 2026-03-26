@@ -1,0 +1,45 @@
+// ==========================================================================
+// nimble.css — Article (Card)
+// Styled as a self-contained card with optional header/footer separators.
+// ==========================================================================
+
+@use 'config' as *;
+
+@layer nimble.base {
+
+  :where(article) {
+    background-color: var(#{$prefix}surface-1);
+    border: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius);
+    padding: var(#{$prefix}spacing);
+    margin-bottom: var(#{$prefix}spacing);
+  }
+
+  // Header and footer bleed to card edges via negative margin,
+  // with a subtle background tint (matches input background).
+  :where(article > header),
+  :where(article > footer) {
+    background-color: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
+    padding: var(#{$prefix}spacing);
+  }
+
+  :where(article > header) {
+    margin: calc(var(#{$prefix}spacing) * -1) calc(var(#{$prefix}spacing) * -1) var(#{$prefix}spacing);
+    border-bottom: 1px solid var(#{$prefix}border);
+    border-radius: var(#{$prefix}radius) var(#{$prefix}radius) 0 0;
+  }
+
+  :where(article > footer) {
+    margin: var(#{$prefix}spacing) calc(var(#{$prefix}spacing) * -1) calc(var(#{$prefix}spacing) * -1);
+    border-top: 1px solid var(#{$prefix}border);
+    border-radius: 0 0 var(#{$prefix}radius) var(#{$prefix}radius);
+  }
+
+  // Kill last-child bottom margin inside article so it doesn't
+  // stack with the card's own padding — but not footer, which
+  // uses negative margin to bleed to the card edge.
+  :where(article) > :last-child:not(footer) {
+    margin-bottom: 0;
+  }
+
+}
