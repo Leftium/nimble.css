@@ -21,22 +21,35 @@
       }
 
       /* Contrast button (Pico-style: near-black bg, white text) */
-      .contrast {
+      button.contrast {
         background-color: var(--nc-text);
         border-color: var(--nc-text);
         color: var(--nc-surface-1);
       }
-      .contrast:hover {
+      button.contrast:hover {
         background-color: color-mix(in oklch, var(--nc-text), var(--nc-surface-1) 15%);
         border-color: color-mix(in oklch, var(--nc-text), var(--nc-surface-1) 15%);
       }
-      .outline.contrast {
+      button.outline.contrast {
         background-color: transparent;
         color: var(--nc-text);
         border-color: var(--nc-text);
       }
-      .outline.contrast:hover {
+      button.outline.contrast:hover {
         background-color: color-mix(in oklch, var(--nc-text), transparent 90%);
+      }
+
+      /* Contrast link (demo-only — no .contrast in nimble.css) */
+      a.contrast,
+      a.contrast:visited {
+        color: var(--nc-text);
+        text-decoration: underline;
+        text-decoration-color: color-mix(in oklch, var(--nc-text), transparent 50%);
+      }
+      a.contrast:hover {
+        color: var(--nc-text);
+        text-decoration: underline;
+        text-decoration-color: var(--nc-text);
       }
 
       /* Reusable 3-column grid with uniform spacing */
@@ -88,6 +101,24 @@
       #group [role="group"] {
         width: 100%;
       }
+
+      /* Theme switcher: prevent full-width, add label styling */
+      #theme-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+        align-items: flex-start;
+      }
+      #theme-wrapper label {
+        font-size: 0.875em;
+        font-weight: 600;
+        color: var(--nc-text-secondary);
+        margin: 0;
+      }
+      #theme-switcher {
+        width: auto;
+        min-width: 120px;
+      }
     </style>
   </head>
 
@@ -99,11 +130,14 @@
         <p>A pure HTML example, without dependencies. Inspired by the <a href="https://picocss.com">Pico CSS</a> demo.</p>
       </hgroup>
       <nav>
-        <select id="theme-switcher" aria-label="Theme">
-          <option value="auto" selected>Auto</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
+        <div id="theme-wrapper">
+          <label for="theme-switcher">Theme</label>
+          <select id="theme-switcher">
+            <option value="auto" selected>Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
       </nav>
     </header>
     <!-- ./ Header -->
@@ -520,10 +554,10 @@
         Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
         pellentesque. Nullam finibus risus non semper euismod.
       </p>
-      <div role="group">
+      <footer>
         <button class="secondary" id="cancel-dialog">Cancel</button>
         <button autofocus id="confirm-dialog">Confirm</button>
-      </div>
+      </footer>
     </dialog>
     <!-- ./ Modal example -->
 
@@ -544,6 +578,10 @@
       document.getElementById('open-dialog').addEventListener('click', () => dialog.showModal());
       document.getElementById('cancel-dialog').addEventListener('click', () => dialog.close());
       document.getElementById('confirm-dialog').addEventListener('click', () => dialog.close());
+      // Close on backdrop click
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
     </script>
   </body>
 </html>
