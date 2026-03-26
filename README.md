@@ -1,6 +1,6 @@
 # nimble.css
 
-A classless CSS library. Make semantic HTML look good; no classes required. ~3.3 KB brotli (core).
+Minimal CSS library that makes semantic HTML look nice; no classes required. ~3.3 KB brotli (core).
 
 - **Classless by default** — style every standard HTML element with zero markup changes
 - **Automatic dark mode** — via `prefers-color-scheme` and `light-dark()`
