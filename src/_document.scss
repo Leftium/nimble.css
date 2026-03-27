@@ -33,6 +33,16 @@
     min-width: 0; // Allow grid children to shrink below intrinsic content width
   }
 
+  // Fix for frameworks (SvelteKit, etc.) that insert a
+  // <div style="display: contents"> wrapper between <body> and content.
+  // display: contents removes the element from the box tree for layout,
+  // but NOT for CSS selector matching — so body > * misses the actual
+  // content elements. This rule mirrors the body > * rule above.
+  body > [style*='display: contents'] > * {
+    grid-column: 2;
+    min-width: 0;
+  }
+
   // Selection styling using primary accent
   ::selection {
     background-color: var(#{$prefix}primary-focus);
