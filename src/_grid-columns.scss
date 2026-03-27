@@ -15,6 +15,7 @@
     min-width: 0; // Allow grid children to shrink below intrinsic content width
   }
 
+
   // Fix for frameworks (SvelteKit, etc.) that insert a
   // <div style="display: contents"> wrapper between <body> and content.
   // display: contents removes the element from the box tree for layout,

@@ -62,6 +62,19 @@ $_heading-phone: (
     margin-bottom: var(#{$prefix}spacing);
   }
 
+  // Prevent double spacing at page edges: body has padding-block,
+  // so strip margins that would stack with it.
+  // Must live inside @scope so it beats the scoped margin rules above.
+  // Uses :nth-child/:nth-last-child(of ...) to skip <script>/<style>.
+  body > :first-child,
+  body > :first-child > :first-child {
+    margin-top: 0;
+  }
+  body > :nth-last-child(1 of :not(script, style)),
+  body > :nth-last-child(1 of :not(script, style)) > :last-child {
+    margin-bottom: 0;
+  }
+
 
 
   // ----- Lists -----

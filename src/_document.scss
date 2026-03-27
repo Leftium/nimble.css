@@ -32,6 +32,7 @@
       var(#{$prefix}content-shadow-gap)
       1fr;
     min-height: 100dvh;
+    padding-block: var(#{$prefix}spacing);
     position: relative;
   }
 
