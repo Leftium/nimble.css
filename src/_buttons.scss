@@ -30,6 +30,12 @@
     transition: background-color 0.2s, border-color 0.2s;
   }
 
+  // Vertical rhythm for flow-level buttons (not [role="button"] on
+  // arbitrary elements like logo containers — those opt in manually).
+  :where(button, [type="submit"], [type="reset"], [type="button"]) {
+    margin-block-end: 0.25em;
+  }
+
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover {
     background-color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
