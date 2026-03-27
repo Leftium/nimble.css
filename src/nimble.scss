@@ -5,33 +5,25 @@
 
 @forward 'config';
 @use 'config' as *;
+@use 'scopeable';
 
 // Layer order declaration — emitted first in CSS output.
 // Lower layers lose to higher layers in cascade.
 @use 'layers';
 
-// Phase 2: Core
+// Global styles — always apply regardless of scoping
 @use 'reset';
 @use 'colors';
 @use 'document';
-@use 'typography';
-
-// Phase 3: Elements
-@use 'links';
-@use 'buttons';
-@use 'forms';
-@use 'tables';
-@use 'code';
-@use 'media';
-@use 'article';
-@use 'details';
-@use 'dialog';
+@use 'grid-columns';
+@use 'layout-utilities';
 @use 'print';
 
-// Phase 3: Optional extras
-@use 'progress';
-@use 'meter';
-@use 'select';
-
-// Phase 4: Utilities
-@use 'utilities';
+// Component-level styles — optionally scoped
+@if $exclude-selector {
+  @scope (:root) to (#{$exclude-selector}) {
+    @include scopeable.load-with-extras;
+  }
+} @else {
+  @include scopeable.load-with-extras;
+}

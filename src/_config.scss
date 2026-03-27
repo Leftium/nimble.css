@@ -13,6 +13,13 @@ $enable-dialog: true !default;
 $enable-switch: true !default;
 $enable-details: true !default;
 
+// --- Scoping ---
+// Component-level styles are wrapped in @scope (:root) to ($exclude-selector)
+// so they don't apply inside elements matching this selector.
+// Document-level styles (reset, colors, body grid) remain global.
+// Set to null to disable scoping (all styles apply globally).
+$exclude-selector: '.no-nimble' !default;
+
 // --- Colors (oklch parameters) ---
 
 // Primary (main accent: links, primary buttons, focus rings, checkboxes)

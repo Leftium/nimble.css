@@ -1,45 +1,14 @@
 // ==========================================================================
-// nimble.css — Utilities
-// Spec §10: .container, .fluid, .full-bleed, .wide, .striped,
-//           .visually-hidden, .overflow-auto
+// nimble.css — Utilities (Scopeable)
+// Non-layout utilities: striped tables, visibility, overflow.
+// Layout utilities are in _layout-utilities.scss (global).
 // ==========================================================================
 
-@use 'sass:string';
 @use 'config' as *;
 
 @if $enable-utilities {
 
   @layer nimble.utilities {
-
-    // ----- Layout -----
-
-    // Centered content container (useful inside fluid layout)
-    .container {
-      max-width: var(#{$prefix}content-width);
-      margin-inline: auto;
-      padding-inline: var(#{$prefix}spacing);
-    }
-
-    // Full viewport width with padding (opt-in on body or wrapper)
-    .fluid {
-      display: block;
-      max-width: none;
-      padding-inline: var(#{$prefix}spacing);
-    }
-
-    // Break out of centered container to full width
-    .full-bleed {
-      grid-column: 1 / -1;
-    }
-
-    // Break out to wide max-width
-    .wide {
-      grid-column: 1 / -1;
-      width: 100%;
-      max-width: #{$wide-width};
-      margin-inline: auto;
-      padding-inline: var(#{$prefix}spacing);
-    }
 
     // ----- Tables -----
 
