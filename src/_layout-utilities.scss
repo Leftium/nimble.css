@@ -24,14 +24,19 @@
       padding-inline: var(#{$prefix}spacing);
     }
 
-    // Break out of centered container to full width
+    // Break out of centered container to full width.
+    // position: relative creates a stacking context so background
+    // covers adjacent siblings' content shadows.
     .full-bleed {
       grid-column: 1 / -1;
+      box-shadow: none;
+      position: relative;
     }
 
     // Break out to wide max-width
     .wide {
       grid-column: 1 / -1;
+      box-shadow: none;
       width: 100%;
       max-width: #{$wide-width};
       margin-inline: auto;

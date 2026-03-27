@@ -56,5 +56,11 @@ $radius: 0.25rem !default;
 $content-width: 60ch !default;
 $wide-width: 1200px !default;
 
+// --- Content Shadow ---
+// Shadow color uses the surface hue for tonal consistency.
+// Set to 'none' to disable. Override via --nc-content-shadow custom property.
+$content-shadow-color-light: '0.55 0.01 var(#{$prefix}surface-hue)' !default;
+$content-shadow-color-dark:  '0.15 0.01 calc(var(#{$prefix}surface-hue) + #{$surface-dark-hue-shift})' !default;
+
 // --- Breakpoints ---
 $breakpoint-phone: 720px !default;

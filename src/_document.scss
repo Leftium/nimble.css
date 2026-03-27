@@ -27,6 +27,7 @@
       min(var(#{$prefix}content-width), #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing))')})
       1fr;
     min-height: 100dvh;
+    position: relative;
   }
 
   // Selection styling using primary accent

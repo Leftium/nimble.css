@@ -4,6 +4,7 @@
 // Global (not scoped) so the body grid layout always applies.
 // ==========================================================================
 
+@use 'sass:string';
 @use 'config' as *;
 
 @layer nimble.base {
@@ -21,6 +22,30 @@
   body > [style*='display: contents'] > * {
     grid-column: 2;
     min-width: 0;
+  }
+
+  // Content shadow: a single absolutely-positioned pseudo-element that
+  // spans the full body height in the center column. One continuous
+  // shadow — no horizontal lines between sibling elements.
+  // Hidden on small viewports where content is edge-to-edge.
+  @media (min-width: #{$breakpoint-phone}) {
+    body::before {
+      content: '';
+      position: absolute;
+      // Wider than the content column by --nc-content-shadow-gap on each side,
+      // so the shadow edge sits outside the content boundary.
+      width: min(
+        #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')},
+        #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing) + 2 * var(#{$prefix}content-shadow-gap))')}
+      );
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      bottom: 0;
+      box-shadow: var(#{$prefix}content-shadow);
+      pointer-events: none;
+      z-index: -1;
+    }
   }
 
 }
