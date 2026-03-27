@@ -87,6 +87,40 @@ Run the dev server and check each page. The main areas to inspect:
 - Form elements and buttons
 - Dark mode (if used)
 
+### 1.7 Restore responsive font-size scaling (if used)
+
+Pico's `$breakpoints` SCSS config applied responsive `root-font-size` at each breakpoint (e.g., 106.25% at 576px, 112.5% at 768px). This made `1rem` = 17–19px, scaling all rem-based dimensions. nimble has no breakpoint system and does not adjust font-size.
+
+If your project relied on Pico's responsive font scaling (or customized it via `$breakpoints`), add equivalent CSS:
+
+```css
+@media (min-width: 576px)  { html { font-size: 106.25%; } }
+@media (min-width: 768px)  { html { font-size: 112.5%; } }
+@media (min-width: 1024px) { html { font-size: 118.75%; } }
+```
+
+This is the **single largest source of layout dimension mismatches** — without it, all spacing, logo sizes, and content widths will be ~10–20% smaller.
+
+### 1.8 Full-bleed header backgrounds
+
+Pico's `<header>` is a normal block element spanning the viewport. nimble's body grid constrains all children to the content column. If your header has a background color that should span full width:
+
+```css
+header { grid-column: 1 / -1; }
+```
+
+### 1.9 Override surface colors (if needed)
+
+nimble's surface scale has larger lightness steps than Pico's. If exact Pico background shades are important, override surface variables with Pico's values:
+
+```css
+:root {
+  --nc-surface-1: light-dark(#fff, #13161e);
+  --nc-surface-2: light-dark(#fbfbfc, #1a1e28);
+  --nc-surface-3: light-dark(#e7eaef, #202632);
+}
+```
+
 ---
 
 ## 2. Feature Comparison Matrix
@@ -287,9 +321,15 @@ Pico defines 100+ `--pico-*` properties on `:root`. nimble defines ~20 `--nc-*` 
 | `--pico-background-color` | `--nc-surface-1` |
 | `--pico-font-size` | `font-size` on `html` directly |
 | `--pico-color` | `--nc-text` |
-| `--pico-muted-border-color` | `--nc-border` |
+| `--pico-muted-border-color` | `--nc-surface-3` (when used as background); `--nc-border` (when used as border) |
+| `--pico-card-sectioning-background-color` | `--nc-surface-2` |
+| `--pico-block-spacing-horizontal` | `--nc-spacing` |
+| `--pico-block-spacing-vertical` | `--nc-spacing` |
+| `--pico-primary-inverse` | `--nc-primary-contrast` or `--nc-surface-1` (no exact equivalent) |
 
 Many Pico variables have no nimble equivalent because nimble derives them automatically (hover/focus states via relative color syntax) or uses `color-mix()` inline.
+
+**Important:** nimble's surface color scale has larger lightness steps than Pico's. If your project depends on exact Pico background shades, override `--nc-surface-1/2/3` in `:root` with Pico's hex values using `light-dark()`. See [§6.6 leftium.com](#66-leftiumcom-2026-03-27) for an example.
 
 Pico projects often override `--pico-font-size` at multiple breakpoints. If all overrides are the same value, collapse them to a single `html { font-size: ... }` rule:
 
@@ -563,3 +603,80 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 - No SvelteKit `display: contents` issue (handled automatically by nimble 0.5.0)
 - No SCSS color palette imports — all colors were from Open Props or hardcoded
 - Simplest migration so far — mechanical 1:1 variable mapping, no workarounds needed
+
+### 6.6 leftium.com (2026-03-27)
+
+**Project:** SvelteKit 2 / Svelte 5 — personal/consulting site with resume, portfolio, testimonials, contact pages
+**Source:** `/Volumes/p/LEFTIUM/leftium.com`
+**Pico version:** `2.1.1`
+**Pico features used:** `.container`, `$theme-color: 'blue'` + custom `$breakpoints` SCSS config (responsive `root-font-size`), `<nav>` horizontal flexbox, `--pico-muted-border-color` / `--pico-block-spacing-horizontal` / `--pico-background-color` / `--pico-secondary` / `--pico-card-sectioning-background-color` / `--pico-blockquote-border-color` / `--pico-primary` / `--pico-primary-inverse` CSS variables, `.outline` + `role="button"` (via markdown-it-attrs), `[data-theme='dark']`, Open Props coexistence
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico ^2.1.1` → `@leftium/nimble.css ^0.5.0` |
+| `src/app.scss` | `@use` swapped; added `:root` overrides for `--nc-surface-1/2/3` and `--nc-secondary` to match Pico blue theme colors; added `hr { margin }` fix; added responsive `html { font-size }` breakpoints to replace Pico's `$breakpoints` config; `--pico-card-sectioning-background-color` → `--nc-surface-2`; `--pico-blockquote-border-color` → `--nc-surface-3`; `--pico-secondary` → `--nc-secondary` (via `color-mix`) |
+| `src/routes/(centered)/+layout.svelte` | Removed `.container` from `<nav>` and `<main>`; added `display: flex; align-items: center` on `nav`; added `ul { display: flex; align-items: center; list-style: none; gap: 1rem }` and `li { margin: 0 }`; added `justify-content: space-between` at 768px+; header: `grid-column: 1 / -1` for full-bleed bg; nav `margin-bottom: 0` (moved gap to `main { margin-top }`); main: added `padding-inline: var(--nc-spacing)`; logo wrapper: `:global([role='button']) { margin: 0 }` to fix glow alignment; all 5 `--pico-*` → `--nc-*` mappings |
+| `src/routes/(centered)/resume/+page.svelte` | `--pico-muted-border-color` → `--nc-surface-3` (2×); `--pico-primary` → `--nc-primary` (2×); `--pico-primary-inverse` → `--nc-surface-1`; removed `.container` from `<main>`; switch: suppressed `[role="group"]` dividers and border-radius reset; switch sizing tweaked (180/140px); slider height `calc(100% - 8px)` |
+| `vite.config.ts` | Removed `css.preprocessorOptions.scss.silenceDeprecations: ['if-function']` |
+
+**Issues encountered:**
+
+1. **Nav layout broken** — Expected (Issue #3). Pico auto-styles `<nav>` with `display: flex; justify-content: space-between` and strips list bullets/padding from `<nav> ul`. Required: `display: flex; align-items: center` on `nav`, `display: flex; align-items: center; list-style: none; gap: 1rem` on `nav ul`, `justify-content: space-between` at desktop breakpoint. Also `li { margin: 0 }` to counter nimble's `li { margin-bottom: 0.25em }` (Issue #7).
+
+2. **Surface color mismatch** — nimble's surface scale has larger lightness steps than Pico's. Pico's `--pico-muted-border-color` (~oklch 0.93) falls between nimble's `--nc-surface-3` (0.925) and `--nc-surface-2` (0.955). Pico's `--pico-card-sectioning-background-color` (~oklch 0.985) is nearly invisible while nimble's `--nc-surface-2` (0.955) is noticeably tinted. **Fix:** override `--nc-surface-1/2/3` and `--nc-secondary` in `:root` with Pico's exact hex values using `light-dark()`.
+
+3. **Responsive font-size lost** — Pico's `$breakpoints` SCSS config applied responsive `root-font-size` scaling (106.25% at 576px, 112.5% at 768px, 118.75% at 1024px). This made 1rem = 17–19px instead of 16px, scaling all rem-based dimensions (spacing, logo size, content width). nimble has no breakpoint system. **Fix:** add explicit `@media` rules in `app.scss` with `html { font-size }` at each breakpoint. This was the single largest source of layout dimension mismatches.
+
+4. **Full-bleed header background** — Pico's `<header>` was a normal block element spanning the viewport. nimble's body grid constrains all children to the content column. **Fix:** `header { grid-column: 1 / -1 }` to break out of the grid. The nav inside still constrains to `max-width: var(--size-content-3)` with `margin: auto`.
+
+5. **`[role="button"]` margin on logo** — nimble adds `margin: 0 0.25em 0.25em 0` to all `[role="button"]` elements (Issue #6). The LeftiumLogo component's interactive div uses `role="button"`, causing the blue square to shift 4.5px down-right relative to the glow overlay. **Fix:** `.logo-wrapper :global([role='button']) { margin: 0 }`.
+
+6. **`[role="group"]` dividers on custom switch** — nimble's `[role="group"]` styling adds `::before` dividers between children and zeroes border-radius. The resume page's pill toggle uses `role="group"` but is a custom widget, not a button group. **Fix:** `:global(> * + *::before) { content: none !important }` and `:global(> *) { border-radius: inherit !important }`.
+
+7. **No `--pico-primary-inverse`** — nimble has no primary-inverse variable. **Fix:** `var(--nc-surface-1)` — page background color provides correct contrast.
+
+8. **`hsl(from ...)` incompatible with OKLCH** — nimble uses OKLCH for `--nc-secondary`. **Fix:** `color-mix(in srgb, var(--nc-secondary) 40%, transparent)`.
+
+9. **Nav margin-bottom inside header bg** — Pico's nav `margin-bottom: 4.5px` appeared white (outside header bg). In nimble with `grid-column: 1 / -1`, the margin is inside the header's grey background. **Fix:** move the gap from `nav { margin-bottom }` to `main { margin-top: var(--size-1) }`.
+
+10. **`<hr>` vertical margin** — nimble defaults to `margin: calc(var(--nc-spacing) * 2) 0` (2× spacing). Pico used 1× spacing. **Fix:** `hr { margin: var(--nc-spacing) 0 }`.
+
+11. **`<main>` horizontal padding** — Pico's `.container` added `padding: 0 18px`. Without it, child elements (pill group) extend to full width. **Fix:** `main { padding-inline: var(--nc-spacing) }`.
+
+**Issues NOT encountered:**
+- `.outline` and `role="button"` (via markdown-it-attrs) transfer cleanly — no class changes needed
+- `[data-theme='dark']` in `resume.scss` works identically — zero changes to theme logic
+- Open Props variables (`--size-*`, `$font-size-*`, `$stone-*`) independent of both Pico and nimble — no conflicts
+- No SvelteKit `display: contents` issue (handled automatically by nimble 0.5.0)
+- Print styles in `app.scss` and `resume.scss` are framework-independent — zero changes needed
+
+**New issues for nimble.css:**
+
+### Issue 5: `li { margin-bottom: 0.25em }` not wrapped in `:where()`
+
+**Severity:** Migration friction
+**Status:** Open
+
+nimble.css applies `li { margin-bottom: 0.25em }` (not `:where(li)`) in the base layer. This has real specificity `(0, 0, 1)`, making it harder to override in nav/flexbox contexts where list item margins are unwanted. Pico did not add margin to `<li>` elements. Projects with custom nav layouts (horizontal flex lists) need explicit `li { margin: 0 }` overrides.
+
+**Recommendation:** Wrap in `:where()` or scope to prose contexts only (e.g., `:where(main, article, section) li`).
+
+### Issue 6: `[role="button"]` gets `margin: 0 0.25em 0.25em 0`
+
+**Severity:** Migration friction
+**Status:** Open
+
+nimble.css adds margin to all `[role="button"]` elements. This affects third-party components (like LeftiumLogo) that use `role="button"` on non-button elements for click interactivity. Pico did not add margin to `[role="button"]`. The margin shifts positioned elements (like the logo's glow overlay) relative to their siblings.
+
+**Recommendation:** Consider wrapping in `:where()` or removing the default margin — buttons in flow content can use gap/margin via utility classes.
+
+### Issue 7: `<hr>` vertical margin 2× spacing
+
+**Severity:** Cosmetic
+**Status:** Open
+
+nimble.css applies `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the base spacing. Pico used `margin: var(--pico-spacing) 0` (1× spacing). This creates noticeably larger gaps around horizontal rules.
+
+**Recommendation:** Reduce to `var(--nc-spacing) 0` to match common expectations.
