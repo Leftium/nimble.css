@@ -3,7 +3,7 @@
 > A guide for migrating projects from PicoCSS v2 to nimble.css, plus a tracker for nimble.css issues discovered during migration.
 
 **Status:** Living document
-**Last updated:** 2026-03-27
+**Last updated:** 2026-03-28
 
 ---
 
@@ -134,7 +134,8 @@ nimble's surface scale has larger lightness steps than Pico's. If exact Pico bac
 | `.overflow-auto` | `.overflow-auto` | Same purpose. |
 | `.secondary` | `.secondary` | Same purpose (secondary button color). |
 | `.outline` | `.outline` | Same purpose (outline button style). |
-| `.contrast` | _(none)_ | No contrast variant in nimble. Use custom CSS if needed. |
+| `.contrast` | _(none)_ | No contrast variant in nimble. Use `.secondary` or custom CSS. |
+| `data-tooltip` | _(none)_ | No built-in tooltip. Use tippy.js or CSS-only tooltips. See §6.7. |
 | `[role="group"]` (button groups) | `[role="group"]` | Same pattern, same styling. |
 | `[role="search"]` (pill search) | `[role="search"]` | Same pattern. nimble applies pill-shaped ends to search groups. |
 | `data-theme="dark"` / `data-theme="light"` | `data-theme="dark"` / `data-theme="light"` | Same attribute, same behavior. nimble uses `color-scheme` under the hood. |
@@ -326,6 +327,8 @@ Pico defines 100+ `--pico-*` properties on `:root`. nimble defines ~20 `--nc-*` 
 | `--pico-block-spacing-horizontal` | `--nc-spacing` |
 | `--pico-block-spacing-vertical` | `--nc-spacing` |
 | `--pico-primary-inverse` | `--nc-primary-contrast` or `--nc-surface-1` (no exact equivalent) |
+| `--pico-form-element-spacing-horizontal` | `0.75em` (hardcode — no nimble equivalent) |
+| `--pico-icon-search` | Hardcode SVG data URI (no nimble equivalent) |
 
 Many Pico variables have no nimble equivalent because nimble derives them automatically (hover/focus states via relative color syntax) or uses `color-mix()` inline.
 
@@ -680,3 +683,116 @@ nimble.css adds margin to all `[role="button"]` elements. This affects third-par
 nimble.css applies `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the base spacing. Pico used `margin: var(--pico-spacing) 0` (1× spacing). This creates noticeably larger gaps around horizontal rules.
 
 **Recommendation:** Reduce to `var(--nc-spacing) 0` to match common expectations.
+
+### 6.7 multi-launch (2026-03-28)
+
+**Project:** SvelteKit 2 / Svelte 5 — multi-engine search launcher with configurable TOML plans
+**Source:** `/Volumes/p/multi-launch`
+**Pico version:** `2.1.1`
+**Pico features used:** `.container`, `$theme-color: 'blue'` SCSS config, `--pico-spacing` / `--pico-muted-border-color` / `--pico-card-sectioning-background-color` / `--pico-background-color` / `--pico-primary` / `--pico-form-element-spacing-horizontal` / `--pico-icon-search` CSS variables, `data-tooltip` (native tooltips on buttons), `class="contrast"` on `summary[role="button"]`, `[role="group"]` button groups, `<article>` with `<header>` inside `<details>`, inline button grid with responsive breakpoints
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico ^2.1.1` → `@leftium/nimble.css ^0.5.0`; added `tippy.js ^6.3.7` |
+| `src/app.scss` | `@use '@picocss/pico/scss/pico' with ($theme-color: 'blue')` → `@use '@leftium/nimble.css/scss'`; added `--nc-content-width: 960px` on `:root` |
+| `src/routes/+layout.svelte` | `--pico-primary` → `--nc-primary`; removed `padding-left: calc(100vw - 100%)` and `overflow-x: hidden` (incompatible with nimble's body grid — `100%` resolves to grid column width, not viewport) |
+| `src/routes/+page.svelte` | All `--pico-*` → `--nc-*` mappings (15 refs); hardcoded Pico search icon SVG data URI; `class="contrast"` → `class="secondary"` on summary; replaced `data-tooltip` with tippy.js via Svelte 5 `{@attach}` pattern; removed Pico tooltip CSS; simplified 5-tier responsive breakpoints to 3-tier (phone/tablet/desktop); scoped button grid styles to `.search-group` (was `div button`); stripped `article` border and `article > header` background/padding/border from editor panel; added partial-height gradient dividers between same-type buttons |
+
+**Issues encountered:**
+
+1. **SCSS `@use ... with ($content-width)` fails** — nimble's entry point (`nimble.scss`) `@use`s `_config.scss` internally but does not `@forward` it. SCSS `@use ... with (...)` can only override variables that are `@forward`ed. **Fix:** use the runtime CSS custom property `--nc-content-width` on `:root` instead. (Issue #8)
+
+2. **`padding-left: calc(100vw - 100%)` scrollbar hack breaks** — This Pico-era trick assumes `100%` = viewport minus scrollbar. In nimble's body grid, the layout `<div>` is a grid child in column 2 (960px), so `100%` = 960px, producing `calc(100vw - 960px) = 746px` of left padding at wide viewports. **Fix:** remove the hack entirely; nimble's grid handles centering. (See §3.2)
+
+3. **No `data-tooltip` support** — Pico provides built-in CSS tooltips via `data-tooltip` attribute. nimble has no tooltip system. **Fix:** added tippy.js with a Svelte 5 attachment function. The `{@attach tooltip(...)}` pattern is clean and reactive. (Issue #9)
+
+4. **No `.contrast` button variant** — Pico's `.contrast` gives a dark/inverted button appearance. nimble has no equivalent. **Fix:** replaced with `.secondary`. (Issue #10)
+
+5. **`article > header` needs full reset for non-card usage** — nimble's `article > header` applies background, padding, negative margins, and border-bottom for card-header styling. When `<article>` is used as a structural container (not a visual card), all of these need explicit overrides. **Fix:** `border: none` on article, `margin: 0; padding: 0; padding-bottom: var(--nc-spacing); border-bottom: none; background: none` on header. (Issue #11)
+
+6. **Button `border` creates double dividers in custom grids** — nimble buttons have `border: 1px solid` on all sides. In a custom inline button grid (not `[role="group"]`), adjacent buttons show 2px borders between them. Additionally, nimble's `[role="group"]` partial dividers (`::before`) doubled with the editor's own `border-left`. **Fix:** `border: none` on `.search-group button` (only `border-top` re-added for row separators); removed `border-left` from editor buttons; added gradient-based partial dividers scoped to `.search-group`. (Issue #12)
+
+7. **Fullscreen icon positioning** — The `iconify-icon` web component needed `top: calc(1px + 0.5em + 0.75em); transform: translateY(-50%)` to align with the textarea's content box center (accounting for 1px border + 0.5em padding + half of 1.5em line-height). Also required `.wrap textarea { margin-bottom: 0 }` since nimble's textarea margin expanded the positioning container. The fullscreen-hide selector needed `:global(.fullscreen)` since the class is toggled via JS.
+
+8. **Hidden placeholder `<blockquote>` takes space** — `visibility: hidden` reserves layout space. **Fix:** `blockquote[style*="hidden"] { display: none }` scoped to the editor header.
+
+**Issues NOT encountered:**
+- `[role="group"]` button groups transfer cleanly — nimble's partial-height dividers are an improvement over Pico's approach
+- `<details>`/`<summary>` accordion works with nimble's open/close animation
+- `summary[role="button"]` styled correctly with `.secondary`
+- Dark mode works automatically (no theme toggle in this app)
+- No nav layout issues (nav contains only `<h1>` with inline links)
+- No SvelteKit `display: contents` issue (handled automatically by nimble 0.5.0)
+- `iconify-icon` web component receives Svelte scoped class attributes correctly
+
+### Issue 8: SCSS `$content-width` not `@forward`ed from entry point
+
+**Severity:** Migration friction
+**Status:** Open
+
+nimble's `nimble.scss` entry point uses `@use 'config' as *` but does not `@forward 'config'`. This means SCSS consumers cannot use `@use '@leftium/nimble.css/scss' with ($content-width: 960px)` — it fails with "This variable was not declared with !default in the @used module."
+
+The variable IS declared with `!default` in `_config.scss`, but SCSS's module system requires the entry point to `@forward` the config module for `with (...)` to work.
+
+**Workaround:** Use the runtime CSS custom property instead:
+```css
+:root { --nc-content-width: 960px; }
+```
+
+**Recommendation:** Add `@forward 'config'` to `nimble.scss` so that all `!default` config variables are overridable via `@use ... with (...)`. This is the expected SCSS pattern and would allow compile-time customization (e.g., different prefix, custom colors, content width) without runtime overhead.
+
+### Issue 9: No built-in tooltip support
+
+**Severity:** Enhancement
+**Status:** Open (by design)
+
+Pico CSS provides built-in CSS-only tooltips via `[data-tooltip]` attribute with `::before`/`::after` pseudo-elements. nimble.css has no tooltip system.
+
+**Workaround:** Use tippy.js (recommended) or add custom CSS tooltips. For Svelte 5 projects, the `{@attach}` pattern works well:
+
+```ts
+import tippy from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
+
+function tooltip(content: string) {
+  return (element: Element) => {
+    const instance = tippy(element, { content, allowHTML: false })
+    return instance.destroy
+  }
+}
+```
+
+**Recommendation:** Do not add to nimble.css core. Tooltips are interaction-heavy and vary significantly between projects (positioning, animation, HTML content, accessibility). A JS library like tippy.js is the right tool. Document the recommended approach in migration guide.
+
+### Issue 10: No `.contrast` button variant
+
+**Severity:** Cosmetic
+**Status:** Open (by design)
+
+Pico provides `.contrast` for dark/inverted buttons. nimble has `.secondary` and `.outline` but no contrast/inverted variant.
+
+**Workaround:** Use `.secondary` (closest match) or add custom CSS.
+
+**Recommendation:** Low priority. `.secondary` covers most use cases. A `.contrast` variant would require a full inverted color scale (dark bg + light text in light mode, vice versa in dark mode) which adds complexity for marginal benefit.
+
+### Issue 11: `article > header` styling assumes card context
+
+**Severity:** Migration friction
+**Status:** Open
+
+nimble's `article > header` applies: background tint, padding, negative margins (to bleed to card edges), and border-bottom. This is ideal for card-style articles but problematic when `<article>` is used as a generic sectioning container (e.g., wrapping form controls inside `<details>`).
+
+Resetting requires 5 property overrides: `margin: 0; padding: 0; border-bottom: none; background: none; border-radius: 0`.
+
+**Recommendation:** This is working as designed — `<article>` is styled as a card, which is the common pattern. Projects using `<article>` as a generic container should either switch to `<div>` or add the reset. No change needed in nimble.css, but document the reset pattern in the migration guide.
+
+### Issue 12: Button borders create double dividers in inline grids
+
+**Severity:** Cosmetic
+**Status:** Open
+
+nimble buttons have `border: 1px solid` on all four sides. When buttons are laid out in a custom inline grid (not `[role="group"]`), adjacent buttons show 2px borders between them. Projects must add `border: none` and re-add only the borders they need.
+
+**Recommendation:** This is inherent to CSS box model — any element with borders on all sides will double up when adjacent. nimble's `[role="group"]` already handles this correctly for button groups. For custom grids, the fix is straightforward (`border: none` + selective re-add). No change needed in nimble.css.
