@@ -14,6 +14,7 @@
     line-height: 1.5;
     color: var(#{$prefix}text);
     background-color: var(#{$prefix}surface-1);
+    scrollbar-gutter: stable;
   }
 
   // Grid centering: define the 3-column grid on body.
