@@ -27,8 +27,10 @@
       // Stretch summary across the horizontal padding area, then
       // re-apply vertical + horizontal padding on itself. When
       // collapsed the text is vertically centered with equal padding.
+      // Vertical padding matches button padding (0.5em) so collapsed
+      // details height equals button height (2px border + 2.5em).
       margin: 0 -1em;
-      padding: 0.75em 1em;
+      padding: 0.5em 1em;
       // Custom markers fix iOS Safari's tiny native disclosure triangle.
       // Full-size Unicode triangles inherit font metrics and sit on the
       // baseline like native markers.
@@ -49,7 +51,7 @@
     :where(summary[role="button"]) {
       display: block;
       width: auto;
-      margin: 0 -1em;          // restore stretch (button sets 0 0.25em 0.25em 0)
+      margin: 0 -1em;          // restore stretch (button sets margin: 0)
       list-style: none;         // remove ▶/▼ marker — replaced by ::before
     }
 
@@ -67,7 +69,7 @@
 
     // When open, restore vertical padding for content spacing.
     :where(details[open]) {
-      padding-bottom: 0.75em;
+      padding-bottom: 0.5em;
     }
 
     // Kill last-child bottom margin so it doesn't stack with
