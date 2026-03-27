@@ -46,6 +46,13 @@ Or in CSS:
 + @import '@leftium/nimble.css';
 ```
 
+For SCSS projects, use the `scss` export path (not the `src/` directory directly):
+
+```diff
+- @use '@picocss/pico/scss/pico';
++ @use '@leftium/nimble.css/scss';
+```
+
 ### 1.3 Fix navigation
 
 Pico styles `<nav>` with horizontal flexbox layout automatically. nimble.css intentionally omits nav styling (see [Non-Goals in the nimble spec](nimble-css.md#2-non-goals)). Add your own:
@@ -62,10 +69,10 @@ nav ul {
 
 ### 1.4 Remove Pico-specific container width overrides
 
-Pico's `.container` defaults to ~1200px (varies by breakpoint). nimble's centered body grid defaults to 720px (`--nc-content-width`). If you were overriding Pico's container to be narrower (e.g., `max-width: 600px`), you may not need the override at all, or you can set:
+Pico's `.container` defaults to ~1200px (varies by breakpoint). nimble's centered body grid defaults to `60ch` (`--nc-content-width`), which aligns with OpenProps `--size-content-3` (~480–600px depending on font). If you need a wider layout, set:
 
 ```css
-:root { --nc-content-width: 600px; }
+:root { --nc-content-width: 80ch; }
 ```
 
 ### 1.5 Check for Pico-specific classes
@@ -146,7 +153,7 @@ These work identically in both libraries (write semantic HTML, get styled output
 | Feature | Pico | nimble | Notes |
 |---|---|---|---|
 | Centered content | `.container` class (max-width + breakpoints) | Body CSS Grid (automatic) | nimble centers by default; no class needed. |
-| Content width | ~1200px (varies by breakpoint) | 720px (`--nc-content-width`) | Overridable via CSS custom property. |
+| Content width | ~1200px (varies by breakpoint) | `60ch` (`--nc-content-width`, aligns with OpenProps `--size-content-3`) | Overridable via CSS custom property. |
 | Full-width layout | No built-in fluid mode | `.fluid` class on body | |
 | Full-bleed breakout | Not supported | `.full-bleed` class | |
 | Wide breakout | Not supported | `.wide` class | |
@@ -207,8 +214,8 @@ Content is always centered with real padding. No breakpoints needed. This means:
 
 | | Pico | nimble |
 |---|---|---|
-| Default | ~1200px (breakpoint-dependent) | 720px |
-| Override | CSS: set `max-width` on `.container` | CSS: `--nc-content-width: 800px` on `:root` |
+| Default | ~1200px (breakpoint-dependent) | `60ch` (≈ OpenProps `--size-content-3`) |
+| Override | CSS: set `max-width` on `.container` | CSS: `--nc-content-width: 80ch` on `:root` |
 
 ### 3.4 Button Sizing
 
@@ -237,7 +244,34 @@ nimble.css wraps all styles in `@layer nimble.reset, nimble.base, nimble.utiliti
 
 **Practical impact:** If you had `!important` hacks or overly specific selectors to override Pico, you can simplify them. Plain selectors will work.
 
-### 3.8 CSS Custom Properties
+### 3.8 Nested Constrained Elements
+
+nimble's body-grid centers direct children of `<body>`. If a page component renders its own `<main>` or wrapper with a custom `max-width`, it will be left-aligned inside the outer centered element — the body-grid does not cascade inward.
+
+**Fix:** Add `margin-inline: auto` to any inner element with a constrained width:
+
+```css
+main {
+  max-width: 40ch;
+  margin-inline: auto;
+}
+```
+
+### 3.9 Full-Bleed Elements Inside a Padded Wrapper
+
+If your outer wrapper has `padding-inline` (for content breathing room) but you need a child element (e.g., a hero image or nav banner) to span the full width, use negative `margin-inline` to escape the padding:
+
+```css
+.wrapper {
+  padding-inline: var(--nc-spacing);
+}
+
+.hero-nav {
+  margin-inline: calc(var(--nc-spacing) * -1);
+}
+```
+
+### 3.10 CSS Custom Properties
 
 Pico defines 100+ `--pico-*` properties on `:root`. nimble defines ~20 `--nc-*` properties. If your project overrides `--pico-*` variables, map them to `--nc-*` equivalents:
 
@@ -251,10 +285,21 @@ Pico defines 100+ `--pico-*` properties on `:root`. nimble defines ~20 `--nc-*` 
 | `--pico-font-family` | `--nc-font-sans` |
 | `--pico-font-family-monospace` | `--nc-font-mono` |
 | `--pico-background-color` | `--nc-surface-1` |
+| `--pico-font-size` | `font-size` on `html` directly |
 | `--pico-color` | `--nc-text` |
 | `--pico-muted-border-color` | `--nc-border` |
 
 Many Pico variables have no nimble equivalent because nimble derives them automatically (hover/focus states via relative color syntax) or uses `color-mix()` inline.
+
+Pico projects often override `--pico-font-size` at multiple breakpoints. If all overrides are the same value, collapse them to a single `html { font-size: ... }` rule:
+
+```diff
+- :root { --pico-font-size: 150%; }
+- @media (min-width: 576px)  { :root { --pico-font-size: 150%; } }
+- @media (min-width: 768px)  { :root { --pico-font-size: 150%; } }
+- /* ... */
++ html { font-size: 150%; }
+```
 
 ---
 
@@ -391,3 +436,32 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 - All form elements, buttons, inputs rendered correctly
 - Dark mode worked automatically
 - No Pico-specific classes to remove (project only used `.container`)
+
+### 6.2 modu-blues.com (2026-03-27)
+
+**Project:** SvelteKit 1 / Svelte 4 dance event site (Korean blues social)
+**Source:** `/Volumes/p/DANCE-FORM-SHEETS/modu-blues.com`
+**Pico version:** `2.0.0-alpha1`
+**Pico features used:** `.container`, `<nav>` horizontal layout, forms, `--pico-font-size` breakpoint overrides, `--pico-background-color`
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico` → `@leftium/nimble.css` |
+| `src/app.scss` | Swapped `@use '@picocss/pico/scss/pico'` → `@use '@leftium/nimble.css/scss'`; collapsed 6 breakpoint `--pico-font-size: 150%` overrides → `html { font-size: 150% }` |
+| `src/routes/+layout.svelte` | Removed `class="container"` from `<main>`; replaced `--pico-background-color` → `--nc-surface-1`; removed invalid `:h1 { --pico-font-size }` rule; added nav flexbox + vertical centering; added `padding-inline` to `<main>` with negative `margin-inline` on nav for full-bleed hero |
+| `src/routes/(no-nav)/pretty/+page.svelte` | Removed `class="container"` from `<main>` |
+| `src/routes/(no-nav)/pretty/form/+page.svelte` | Removed `class="container"` from `<main>`; added `margin-inline: auto` to center narrow inner `<main>` |
+| `src/routes/(no-nav)/pretty/sheet/+page.svelte` | Removed `class="container"` from `<main>` |
+
+**Issues encountered:**
+1. **SCSS import path wrong** — `@use '@leftium/nimble.css/src/nimble'` failed; correct path is `@use '@leftium/nimble.css/scss'`. (See §1.2)
+2. **Nav layout broken** — Expected. Added flexbox + `align-items: center` on `nav` and `nav ul`. (Issue #3)
+3. **Content left-aligned** — Inner `<main>` (page component) had `max-width: 40ch` but no `margin-inline: auto`. Added centering. (See §3.8)
+4. **Nav hero not full-bleed** — Nav needed to escape `<main>`'s `padding-inline`. Fixed with negative `margin-inline`. (See §3.9)
+
+**Issues NOT encountered:**
+- Dark mode (`prefers-color-scheme` + `[data-theme='dark']`) worked automatically
+- `role="button"` on `<summary>` styled correctly
+- No SvelteKit `display: contents` issue (handled automatically by nimble 0.4.0)
