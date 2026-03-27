@@ -660,7 +660,7 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 ### Issue 5: `li { margin-bottom: 0.25em }` not wrapped in `:where()`
 
 **Severity:** Migration friction
-**Status:** Open
+**Status:** Fixed — wrapped in `:where(li)` in `_typography.scss`
 
 nimble.css applies `li { margin-bottom: 0.25em }` (not `:where(li)`) in the base layer. This has real specificity `(0, 0, 1)`, making it harder to override in nav/flexbox contexts where list item margins are unwanted. Pico did not add margin to `<li>` elements. Projects with custom nav layouts (horizontal flex lists) need explicit `li { margin: 0 }` overrides.
 
@@ -669,20 +669,20 @@ nimble.css applies `li { margin-bottom: 0.25em }` (not `:where(li)`) in the base
 ### Issue 6: `[role="button"]` gets `margin: 0 0.25em 0.25em 0`
 
 **Severity:** Migration friction
-**Status:** Open
+**Status:** Fixed — changed to `margin: 0` in `_buttons.scss`
 
-nimble.css adds margin to all `[role="button"]` elements. This affects third-party components (like LeftiumLogo) that use `role="button"` on non-button elements for click interactivity. Pico did not add margin to `[role="button"]`. The margin shifts positioned elements (like the logo's glow overlay) relative to their siblings.
+nimble.css added `margin: 0 0.25em 0.25em 0` to all button-like elements. This affected third-party components (like LeftiumLogo) that use `role="button"` on non-button elements for click interactivity, and caused unexpected spacing in flex/grid layouts. Modern layouts use `gap` for button spacing, not element-level margin.
 
-**Recommendation:** Consider wrapping in `:where()` or removing the default margin — buttons in flow content can use gap/margin via utility classes.
+**Fix:** Removed default margin from the `:where(button, ..., [role="button"])` rule. Buttons now have `margin: 0` by default.
 
 ### Issue 7: `<hr>` vertical margin 2× spacing
 
 **Severity:** Cosmetic
-**Status:** Open
+**Status:** Fixed — reduced to `var(--nc-spacing) 0` in `_typography.scss`
 
-nimble.css applies `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the base spacing. Pico used `margin: var(--pico-spacing) 0` (1× spacing). This creates noticeably larger gaps around horizontal rules.
+nimble.css applied `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the base spacing. Pico used `margin: var(--pico-spacing) 0` (1× spacing). This created noticeably larger gaps around horizontal rules.
 
-**Recommendation:** Reduce to `var(--nc-spacing) 0` to match common expectations.
+**Fix:** Changed to `margin: var(--nc-spacing) 0`.
 
 ### 6.7 multi-launch (2026-03-28)
 
@@ -730,18 +730,11 @@ nimble.css applies `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the 
 ### Issue 8: SCSS `$content-width` not `@forward`ed from entry point
 
 **Severity:** Migration friction
-**Status:** Open
+**Status:** Fixed — added `@forward 'config'` to `nimble.scss`
 
-nimble's `nimble.scss` entry point uses `@use 'config' as *` but does not `@forward 'config'`. This means SCSS consumers cannot use `@use '@leftium/nimble.css/scss' with ($content-width: 960px)` — it fails with "This variable was not declared with !default in the @used module."
+nimble's `nimble.scss` entry point used `@use 'config' as *` but did not `@forward 'config'`. This meant SCSS consumers could not use `@use '@leftium/nimble.css/scss' with ($content-width: 960px)` — it failed with "This variable was not declared with !default in the @used module."
 
-The variable IS declared with `!default` in `_config.scss`, but SCSS's module system requires the entry point to `@forward` the config module for `with (...)` to work.
-
-**Workaround:** Use the runtime CSS custom property instead:
-```css
-:root { --nc-content-width: 960px; }
-```
-
-**Recommendation:** Add `@forward 'config'` to `nimble.scss` so that all `!default` config variables are overridable via `@use ... with (...)`. This is the expected SCSS pattern and would allow compile-time customization (e.g., different prefix, custom colors, content width) without runtime overhead.
+**Fix:** Added `@forward 'config'` to `nimble.scss`. All `!default` config variables ($prefix, $content-width, $primary-hue, $spacing, $radius, $enable-*, etc.) are now overridable via `@use ... with (...)`.
 
 ### Issue 9: No built-in tooltip support
 

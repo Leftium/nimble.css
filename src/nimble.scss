@@ -3,6 +3,7 @@
 // Everything: core + progress, meter, and select
 // ==========================================================================
 
+@forward 'config';
 @use 'config' as *;
 
 // Layer order declaration — emitted first in CSS output.

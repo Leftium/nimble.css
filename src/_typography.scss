@@ -70,7 +70,7 @@ $_heading-phone: (
     padding-inline-start: 1.5em;
   }
 
-  li {
+  :where(li) {
     margin-bottom: 0.25em;
   }
 
@@ -113,7 +113,7 @@ $_heading-phone: (
     border: none;
     height: 1px;
     background-color: color-mix(in oklch, var(#{$prefix}border), transparent 40%);
-    margin: calc(var(#{$prefix}spacing) * 2) 0;
+    margin: var(#{$prefix}spacing) 0;
   }
 
   // ----- Mark -----
