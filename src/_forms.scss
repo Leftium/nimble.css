@@ -41,7 +41,7 @@
 
   // When a validation message <small> immediately follows an input,
   // pull it up tight against the field and let it carry the spacing instead.
-  :where(input, select, textarea) + :where(small) {
+  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea) + :where(small) {
     display: block;
     margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
     margin-bottom: var(#{$prefix}spacing);
@@ -60,11 +60,11 @@
   }
 
   // Color validation messages to match the field state
-  :where(input, select, textarea)[aria-invalid="false"] + :where(small) {
+  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="false"] + :where(small) {
     color: var(#{$prefix}valid);
   }
 
-  :where(input, select, textarea)[aria-invalid="true"] + :where(small) {
+  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="true"] + :where(small) {
     color: var(#{$prefix}invalid);
   }
 
