@@ -529,3 +529,37 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 - No SvelteKit `display: contents` issue (handled automatically by nimble)
 - Dark mode works automatically
 - nimble's `[role="group"]` divider `::before` pseudo-elements provide a cleaner look than Pico's approach (partial-height translucent lines vs full-height margin gaps)
+
+### 6.5 zbang (2026-03-27)
+
+**Project:** SvelteKit 2 / Svelte 5 — whizBang search engine bang finder (fuzzy search UI)
+**Source:** `/Volumes/p/BANGS/zbang/kit`
+**Pico version:** `2.1.1`
+**Pico features used:** `.container`, `$theme-color: 'zinc'` SCSS customization, `--pico-muted-border-color` / `--pico-code-background-color` / `--pico-muted-color` / `--pico-color` / `--pico-form-element-border-color` / `--pico-background-color` / `--pico-border-width` / `--pico-border-radius` CSS variables, `data-theme` dark/light toggle, `.outline` button, Open Props coexistence
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `kit/package.json` | `@picocss/pico ^2.1.1` → `@leftium/nimble.css ^0.5.0` |
+| `kit/src/app.scss` | `@use '@picocss/pico/scss/pico' with ($theme-color: 'zinc')` → `@use '@leftium/nimble.css/scss'`; `var(--pico-transition)` → `0.2s ease` |
+| `kit/src/routes/+layout.svelte` | Removed `class="container"` from `<main>`; added `--nc-content-width: 960px` (narrower than Pico's ~1200px default but wider than nimble's 60ch) |
+| `kit/src/routes/+page.svelte` | `--pico-muted-border-color` → `--nc-border` (3×); `--pico-code-background-color` → `--nc-surface-2`; `--pico-muted-color` → `--nc-secondary`; `--pico-color` → `--nc-text`; `--pico-form-element-border-color` → `--nc-border` |
+| `kit/src/lib/components/AutogrowingTextarea.svelte` | `--pico-background-color` → `--nc-surface-1`; `--pico-border-width` → `1px`; `--pico-form-element-border-color` → `--nc-border`; `--pico-border-radius` → `--nc-radius` |
+| `kit/vite.config.ts` | Removed `css.preprocessorOptions.scss.silenceDeprecations` (Pico's deprecated `@import` warnings no longer relevant) |
+
+**Issues encountered:**
+
+1. **Content width too narrow** — nimble's default `--nc-content-width: 60ch` (~480px) is much narrower than Pico's ~1200px breakpoint-based container. zbang's search results UI needs width. **Fix:** set `--nc-content-width: 960px` — a compromise narrower than Pico's default but wide enough for the search results grid.
+
+2. **No `--pico-transition` equivalent** — Pico provides `--pico-transition` (a shorthand timing value). nimble has no equivalent. **Fix:** hardcode `0.2s ease` in `app.scss`.
+
+**Issues NOT encountered:**
+- Dark/light theme toggle (`data-theme` attribute) works identically — zero changes to theme logic or `app.html` inline script
+- Open Props variables (`--size-*`, `--font-size-*`, `--font-weight-*`, `--gray-*`) are independent of both Pico and nimble — no conflicts
+- `.outline` button class transfers cleanly (zbang's outline buttons are small UI controls, not brand-colored — no neutralization needed)
+- Status-bar checkbox `all: revert` still works (nimble's `@layer` makes revert cleaner)
+- No nav element — no nav migration needed
+- No SvelteKit `display: contents` issue (handled automatically by nimble 0.5.0)
+- No SCSS color palette imports — all colors were from Open Props or hardcoded
+- Simplest migration so far — mechanical 1:1 variable mapping, no workarounds needed
