@@ -104,6 +104,33 @@ Content is centered at `720px` by default — no class needed. These opt-in util
 | `.visually-hidden` | Hidden visually, accessible to screen readers |
 | `.overflow-auto` | Scrollable container |
 
+## Third-Party Component Isolation
+
+nimble.css styles can conflict with third-party components (datatables, rich text editors, etc.) that expect unstyled elements. Add `.no-nimble` to opt out of nimble's component styles inside a subtree:
+
+```html
+<main class="fluid full-bleed">
+  <h1>Styled by nimble</h1>
+
+  <!-- Third-party component: nimble styles don't apply inside -->
+  <div class="no-nimble full-bleed">
+    <ThirdPartyDataTable />
+  </div>
+</main>
+```
+
+**What's excluded:** Typography, links, buttons, forms, tables, code, media, article, details, dialog, and non-layout utilities.
+
+**What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`), and print styles. This means layout classes work on `.no-nimble` elements.
+
+This works via CSS `@scope` (Chrome 118+, Safari 17.4+, Firefox 128+). To disable scoping entirely (smaller output, no opt-out):
+
+```scss
+@use '@leftium/nimble.css/scss' with (
+  $exclude-selector: null
+);
+```
+
 ## Customization
 
 ### CSS Custom Properties
@@ -159,6 +186,9 @@ Build a CSS file with new defaults. SCSS-unique options listed first; the rest m
   $enable-dialog: true,
   $enable-switch: true,
   $enable-details: true,
+
+  // Scoping (set to null to disable @scope wrapping)
+  $exclude-selector: '.no-nimble',
 
   // Surface fine-tuning
   $surface-chroma: 0.002,

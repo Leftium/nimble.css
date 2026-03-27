@@ -129,7 +129,39 @@ nimble.css is authored in **SCSS** and compiled to pure CSS for distribution. Th
 
 **Users never need to touch SCSS** unless they want build-time customization. The prebuilt `dist/nimble.css` is plain CSS that works everywhere.
 
-### 3.5 Base Reset
+### 3.5 Scoping Architecture: Global vs Scopeable
+
+nimble.css splits its styles into two categories:
+
+**Global styles** — always apply regardless of scoping:
+- Reset (`_reset.scss`)
+- Colors/custom properties (`_colors.scss`)
+- Document/body grid (`_document.scss`)
+- Grid column assignment (`_grid-columns.scss`)
+- Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.full-bleed`, `.wide`, `.container`
+- Print styles (`_print.scss`)
+
+**Scopeable styles** — wrapped in `@scope (:root) to (.no-nimble)` by default:
+- Typography, links, buttons, forms, tables, code, media, article, details, dialog
+- Non-layout utilities (`.striped`, `.visually-hidden`, `.overflow-auto`)
+
+The `_scopeable.scss` module uses `meta.load-css()` to load all scopeable partials, allowing the entry point (`nimble.scss`) to conditionally wrap them in `@scope`:
+
+```scss
+@if $exclude-selector {
+  @scope (:root) to (#{$exclude-selector}) {
+    @include scopeable.load;
+  }
+} @else {
+  @include scopeable.load;
+}
+```
+
+Layout utilities are intentionally global because they interact with the body grid (e.g., `.full-bleed` sets `grid-column: 1 / -1`). An element with `class="no-nimble full-bleed"` should still participate in the body grid layout even though nimble's component styles (typography, forms, etc.) don't apply inside it.
+
+See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for usage details and design rationale.
+
+### 3.6 Base Reset
 
 nimble.css embeds a trimmed version of **sanitize.css** as its reset foundation because:
 
@@ -863,9 +895,13 @@ Basic print rules: force black-on-white, show link URLs, prevent orphaned headin
 
 ## 10. Utility Classes
 
-nimble.css includes a **minimal** set of utility classes. These are the only classes nimble.css provides:
+nimble.css includes a **minimal** set of utility classes. These are the only classes nimble.css provides.
 
-### 10.1 Layout
+Utilities are split into **global** (always apply, including on `.no-nimble` elements) and **scoped** (excluded inside `.no-nimble` subtrees). See [Section 3.5](#35-scoping-architecture-global-vs-scopeable) for the architectural rationale.
+
+### 10.1 Layout (Global)
+
+These interact with the body grid and must work everywhere, including on `.no-nimble` elements:
 
 ```css
 .container       /* centered content width (useful inside fluid layout) */
@@ -874,27 +910,33 @@ nimble.css includes a **minimal** set of utility classes. These are the only cla
 .wide            /* break out to 1200px max-width */
 ```
 
-### 10.2 Buttons
+### 10.2 Buttons (Scoped)
 
 ```css
 .secondary       /* secondary button style (uses --nc-secondary) */
 .outline         /* outline button style */
 ```
 
-### 10.3 Tables
+### 10.3 Tables (Scoped)
 
 ```css
 .striped         /* striped table rows */
 .overflow-auto   /* scrollable container */
 ```
 
-### 10.4 Visibility
+### 10.4 Visibility (Scoped)
 
 ```css
 .visually-hidden /* accessible hidden (screen readers only) */
 ```
 
-**Total class count: ~8.**
+### 10.5 Component Isolation
+
+```css
+.no-nimble       /* opt out of nimble's component styles (see §15.2) */
+```
+
+**Total class count: ~9** (~8 utilities + `.no-nimble` opt-out).
 
 ## 11. Breakpoints
 
@@ -923,34 +965,40 @@ That's it. The grid-based centered layout is inherently responsive without break
 ```
 nimble.css/
   src/
-    _config.scss       # All configurable variables with !default
-    _layers.scss       # @layer order declaration (must precede all other output)
-    _reset.scss        # Trimmed sanitize.css
-    _colors.scss       # Color properties (oklch generation + light-dark())
-    _document.scss     # html, body, *, ::selection
-    _typography.scss   # headings, p, lists, blockquote, hr, mark, etc.
-    _links.scss        # a
-    _buttons.scss      # button, [role="button"], button groups
-    _forms.scss        # input, select, textarea, label, fieldset, switch
-    _tables.scss       # table, th, td
-    _code.scss         # pre, code, kbd, samp
-    _media.scss        # img, video, figure, figcaption, iframe
-    _details.scss      # details, summary
-    _dialog.scss       # dialog
-    _print.scss        # @media print rules
-    _utilities.scss    # utility classes
-    nimble.scss        # entry point (@use all above, wraps in @layer)
+    _config.scss             # All configurable variables with !default (incl. $exclude-selector)
+    _layers.scss             # @layer order declaration (must precede all other output)
+    _reset.scss              # Trimmed sanitize.css
+    _colors.scss             # Color properties (oklch generation + light-dark())
+    _document.scss           # html, body, *, ::selection
+    _grid-columns.scss       # Global: body grid column assignment (body > *)
+    _layout-utilities.scss   # Global: .fluid, .full-bleed, .wide, .container
+    _scopeable.scss          # Mixin loading scopeable modules via meta.load-css()
+    _typography.scss         # Scopeable: headings, p, lists, blockquote, hr, mark
+    _links.scss              # Scopeable: a
+    _buttons.scss            # Scopeable: button, [role="button"], button groups
+    _forms.scss              # Scopeable: input, select, textarea, label, fieldset, switch
+    _tables.scss             # Scopeable: table, th, td
+    _code.scss               # Scopeable: pre, code, kbd, samp
+    _media.scss              # Scopeable: img, video, figure, figcaption, iframe
+    _article.scss            # Scopeable: article card styling
+    _details.scss            # Scopeable: details, summary
+    _dialog.scss             # Scopeable: dialog
+    _print.scss              # Global: @media print rules
+    _utilities.scss          # Scopeable: non-layout utilities (.striped, .visually-hidden, etc.)
+    nimble.scss              # Entry point: global + conditional @scope wrapper
+    nimble-core.scss         # Core entry point (without progress/meter/select)
   dist/
-    nimble.css         # full build (generated, not committed)
-    nimble.min.css     # minified (generated, not committed)
-    nimble-base.css    # reset + base (no utilities)
-    nimble-reset.css   # just the reset
+    nimble.css               # full build (generated, not committed)
+    nimble.min.css           # minified (generated, not committed)
+    nimble-base.css          # reset + base (no utilities)
+    nimble-reset.css         # just the reset
   demo/
-    index.html         # html5-test-page based demo (vanilla HTML)
-    extended.html      # extended demo with form patterns, card layouts, etc.
+    index.html               # html5-test-page based demo (vanilla HTML)
+    extended.html            # extended demo with form patterns, card layouts, etc.
   specs/
-    nimble-css.md      # this spec
-  build.js             # Build script (Sass compile + Lightning CSS minify)
+    nimble-css.md            # this spec
+    pico-migration.md        # Pico CSS → nimble.css migration guide
+  build.js                   # Build script (Sass compile + Lightning CSS minify)
   package.json
   LICENSE
   README.md
@@ -989,6 +1037,11 @@ $enable-dialog: true !default;
 $enable-switch: true !default;
 $enable-details: true !default;
 
+// --- Scoping ---
+// Component styles wrapped in @scope (:root) to ($exclude-selector).
+// Set to null to disable (all styles apply globally).
+$exclude-selector: '.no-nimble' !default;
+
 // --- Colors (oklch parameters) ---
 $primary-hue: 250 !default;
 $primary-chroma: 0.2 !default;
@@ -1024,9 +1077,10 @@ $breakpoint-phone: 720px !default;
 // User's project stylesheet
 @use 'nimble' with (
   $prefix: '--my-',
-  $primary-hue: 25,          // orange
-  $surface-hue: 30,          // warm sand neutrals
-  $enable-dialog: false,     // exclude dialog styles
+  $primary-hue: 25,            // orange
+  $surface-hue: 30,            // warm sand neutrals
+  $enable-dialog: false,       // exclude dialog styles
+  $exclude-selector: null,     // disable @scope wrapping (no .no-nimble opt-out)
   $content-width: 800px,
 );
 ```
@@ -1128,22 +1182,61 @@ Lessons from MVP.css, new.css, and HN discussions:
 - **Pure classless is insufficient** for real-world use. You need at least: a way to distinguish primary/secondary buttons, striped tables, layout modes, and full-bleed content.
 - **Minimum viable classes**: nimble.css uses ~8 classes total. Every class has a clear, non-overlapping purpose.
 
-### 15.2 Third-Party Component Isolation
+### 15.2 Third-Party Component Isolation (`.no-nimble` Opt-Out)
 
 CSS cascade layers solve most specificity conflicts with third-party components (Svelte scoped styles, web components, etc.) because unlayered styles always beat layered styles. However, nimble.css's element styles can still "fill in" CSS properties that a component never explicitly sets, subtly changing its appearance.
 
-For the rare cases where this matters, use `revert-layer` to undo nimble's styles inside a component wrapper:
+nimble.css provides a built-in opt-out mechanism using CSS `@scope`. Component-level styles (typography, links, buttons, forms, tables, code, media, article, details, dialog, and non-layout utilities) are wrapped in:
 
 ```css
-/* Reset nimble styles inside a specific component */
-.datatable-wrapper th,
-.datatable-wrapper td,
-.datatable-wrapper input {
-  all: revert-layer;
+@scope (:root) to (.no-nimble) {
+  /* component styles */
 }
 ```
 
-`revert-layer` (supported in all browsers that support `@layer`) reverts properties to the value they'd have without the current layer. This is documented as a recommended pattern, not built into nimble.css itself.
+This means nimble's component styles apply everywhere **except** inside elements with `class="no-nimble"`. Document-level styles (reset, colors, body grid, layout utilities, print) remain global — they always apply.
+
+**Usage:**
+
+```html
+<!-- nimble styles apply here -->
+<main class="fluid full-bleed">
+  <h1>Styled by nimble</h1>
+
+  <!-- nimble component styles do NOT apply inside this element -->
+  <div class="no-nimble full-bleed">
+    <ThirdPartyDataTable />
+  </div>
+</main>
+```
+
+Note that layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) are global, so they work on `.no-nimble` elements — you can still control layout while opting out of nimble's component styling.
+
+**SCSS configuration:**
+
+The exclude selector is configurable via `$exclude-selector`:
+
+```scss
+@use '@leftium/nimble.css/scss' with (
+  $exclude-selector: '.no-nimble'   // default — @scope wraps component styles
+);
+```
+
+Set to `null` to disable scoping entirely (all styles apply globally, no `@scope` wrapper emitted):
+
+```scss
+@use '@leftium/nimble.css/scss' with (
+  $exclude-selector: null   // no @scope — smaller output, no opt-out
+);
+```
+
+**Size overhead:** The `@scope` wrapper adds ~1.7 KB (~6%) to the minified output. After gzip/brotli compression, the overhead is negligible.
+
+**Browser support:** `@scope` is supported in Chrome 118+, Safari 17.4+, and Firefox 128+ — the same modern browser targets nimble.css already requires for `light-dark()` and oklch.
+
+**Why not `revert-layer`?** Early prototyping used `all: revert-layer` on wrapper elements, but this approach was either too aggressive (broke third-party component layout by reverting grid/flex properties) or lost specificity battles with scoped component styles. `@scope` cleanly prevents nimble's styles from entering the subtree at all.
+
+**Why not opt-in (Pico's `$parent-selector` approach)?** Pico CSS supports `$parent-selector: '.pico'` so styles only apply inside a class. nimble.css's body grid requires rules on `body` itself, which can't be nested inside a class. Opt-out (default-on with `.no-nimble` escape hatch) avoids this architectural conflict.
 
 ### 15.3 Why SCSS?
 
@@ -1343,6 +1436,7 @@ Utilities, extended demo, and final validation.
 - Refactor (date/time dedup, extract progress/meter/select to add-on sub-bundles): `nimble.css` 24,963 B / `nimble.min.css` 19,355 B / gzipped ~4.4 KB / brotli ~3.9 KB
 - Flip model (nimble = core without extras, nimble-full = everything): `nimble.min.css` 15,796 B / gzipped ~3.8 KB / brotli ~3.3 KB
 - Fix progress by excluding from reset `background-repeat` rule; progress add-on fully opt-in: `nimble.min.css` 15,809 B / gzipped ~3.8 KB / brotli ~3.3 KB
+- Add `@scope`-based `.no-nimble` opt-out: split SCSS into global vs scopeable modules; component styles wrapped in `@scope (:root) to (.no-nimble)`; layout utilities kept global: `nimble.min.css` 22,655 B / `nimble-core.min.css` 18,978 B
 
 ---
 

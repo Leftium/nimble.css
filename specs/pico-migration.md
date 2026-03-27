@@ -75,19 +75,32 @@ Pico's `.container` defaults to ~1200px (varies by breakpoint). nimble's centere
 :root { --nc-content-width: 80ch; }
 ```
 
-### 1.5 Check for Pico-specific classes
+### 1.5 Isolate third-party components with `.no-nimble`
+
+If your project uses third-party components (datatables, rich text editors, etc.) that nimble's element styles interfere with, add `class="no-nimble"` to their wrapper:
+
+```html
+<div class="no-nimble full-bleed">
+  <ThirdPartyDataTable />
+</div>
+```
+
+nimble's component styles (typography, forms, tables, etc.) won't apply inside `.no-nimble` elements. Layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) still work. See the [nimble spec §15.2](nimble-css.md#152-third-party-component-isolation-no-nimble-opt-out) for details.
+
+### 1.6 Check for Pico-specific classes
 
 Replace or remove any Pico-specific classes. See the [Feature Comparison Matrix](#2-feature-comparison-matrix) for mappings.
 
-### 1.6 Verify visually
+### 1.7 Verify visually
 
 Run the dev server and check each page. The main areas to inspect:
 - Navigation layout (see step 1.3)
 - Article/card appearance
 - Form elements and buttons
 - Dark mode (if used)
+- Third-party components (see step 1.5)
 
-### 1.7 Restore responsive font-size scaling (if used)
+### 1.8 Restore responsive font-size scaling (if used)
 
 Pico's `$breakpoints` SCSS config applied responsive `root-font-size` at each breakpoint (e.g., 106.25% at 576px, 112.5% at 768px). This made `1rem` = 17–19px, scaling all rem-based dimensions. nimble has no breakpoint system and does not adjust font-size.
 
@@ -101,7 +114,7 @@ If your project relied on Pico's responsive font scaling (or customized it via `
 
 This is the **single largest source of layout dimension mismatches** — without it, all spacing, logo sizes, and content widths will be ~10–20% smaller.
 
-### 1.8 Full-bleed header backgrounds
+### 1.9 Full-bleed header backgrounds
 
 Pico's `<header>` is a normal block element spanning the viewport. nimble's body grid constrains all children to the content column. If your header has a background color that should span full width:
 
@@ -109,7 +122,7 @@ Pico's `<header>` is a normal block element spanning the viewport. nimble's body
 header { grid-column: 1 / -1; }
 ```
 
-### 1.9 Override surface colors (if needed)
+### 1.10 Override surface colors (if needed)
 
 nimble's surface scale has larger lightness steps than Pico's. If exact Pico background shades are important, override surface variables with Pico's values:
 
@@ -140,6 +153,7 @@ nimble's surface scale has larger lightness steps than Pico's. If exact Pico bac
 | `[role="search"]` (pill search) | `[role="search"]` | Same pattern. nimble applies pill-shaped ends to search groups. |
 | `data-theme="dark"` / `data-theme="light"` | `data-theme="dark"` / `data-theme="light"` | Same attribute, same behavior. nimble uses `color-scheme` under the hood. |
 | `.close` | _(none)_ | No built-in close button class. |
+| `$parent-selector: '.pico'` (opt-in) | `.no-nimble` (opt-out) | Pico wraps all styles inside a parent class (opt-in). nimble uses `@scope` to exclude styles from `.no-nimble` subtrees (opt-out). Different approach: nimble styles apply by default; Pico styles only where opted in. |
 
 ### 2.2 Semantic / Classless Elements
 
@@ -789,3 +803,40 @@ Resetting requires 5 property overrides: `margin: 0; padding: 0; border-bottom: 
 nimble buttons have `border: 1px solid` on all four sides. When buttons are laid out in a custom inline grid (not `[role="group"]`), adjacent buttons show 2px borders between them. Projects must add `border: none` and re-add only the borders they need.
 
 **Recommendation:** This is inherent to CSS box model — any element with borders on all sides will double up when adjacent. nimble's `[role="group"]` already handles this correctly for button groups. For custom grids, the fix is straightforward (`border: none` + selective re-add). No change needed in nimble.css.
+
+### 6.8 bangtastic (2026-03-28)
+
+**Project:** SvelteKit 2 / Svelte 5 — DuckDuckGo/Kagi bang search aggregator with datatable
+**Source:** `/Volumes/p/BANGS/bangtastic`
+**Pico version:** `2.0.3`
+**Pico features used:** `$parent-selector: '.pico'` SCSS opt-in, `$theme-color: 'blue'`, `.container-fluid` (via Pico class), `role="none"` on `<main>`
+**Third-party components:** `@vincjo/datatables` (Svelte datatable)
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico 2.0.3` → `@leftium/nimble.css ^0.7.0` |
+| `pnpm-lock.yaml` | Lockfile update |
+| `src/lib/css/app.scss` | `@use '@picocss/pico/scss/pico' with ($parent-selector: '.pico', $theme-color: 'blue')` → `@use '@leftium/nimble.css/scss' with ($primary-hue: 250)` |
+| `src/routes/+page.svelte` | `class="pico container-fluid" role="none"` → `class="fluid full-bleed"` |
+| `src/routes/bangs/+page.svelte` | `class="table scroll-y vincjo-datatables" style="max-width:auto"` → `class="no-nimble full-bleed table scroll-y vincjo-datatables"` |
+| `src/routes/bangs/sources/+page.svelte` | `class="pico container-fluid"` → `class="fluid full-bleed"` |
+
+**Issues encountered:**
+
+1. **Datatable styling conflict** — nimble's element styles (table, input, button) interfered with `@vincjo/datatables`'s own styling. nimble's table headers, cell padding, and input styling changed the datatable's appearance. **Fix:** added `class="no-nimble"` to the datatable wrapper. This is the first migration to use nimble's `@scope`-based opt-out feature, which was added specifically for this use case.
+
+2. **Pico's opt-in vs nimble's opt-out model** — Pico used `$parent-selector: '.pico'` to scope styles inside `.pico` elements (opt-in). The datatable page simply omitted the `.pico` class. nimble cannot use the same approach because its body grid requires rules on `body` itself. **Fix:** nimble 0.7.0 introduced `@scope (:root) to (.no-nimble)` — styles apply by default and are excluded from `.no-nimble` subtrees (opt-out).
+
+3. **`revert-layer` rejected during prototyping** — Before implementing `@scope`, `all: revert-layer` was tested on the datatable wrapper. It was either too aggressive (reverted grid/flex properties, breaking the datatable's own layout) or too selective (per-property revert lost specificity battles with the datatable's scoped styles). `@scope` cleanly prevents nimble's styles from entering the subtree without affecting the component's own styles.
+
+**Issues NOT encountered:**
+- Layout utilities (`.fluid`, `.full-bleed`) work correctly on `.no-nimble` elements — they're global
+- All three routes (`/`, `/bangs`, `/bangs/sources`) render correctly
+- No SvelteKit `display: contents` issue (handled automatically)
+- Dark mode works automatically
+- No nav elements — no nav migration needed
+- `$primary-hue: 250` SCSS customization works correctly via `@use ... with (...)`
+
+**Significance:** This migration drove the creation of nimble.css's `@scope`-based `.no-nimble` opt-out feature (v0.7.0). It validated the global-vs-scopeable architecture split and confirmed that layout utilities must remain global while component styles are scoped.
