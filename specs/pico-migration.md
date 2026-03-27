@@ -490,3 +490,42 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 - No forms or inputs — zero form migration cost
 - Scoped `main { max-width: 25em; margin: 4px auto }` already provided centering; no additional `margin-inline: auto` fix needed
 - No SvelteKit `display: contents` issue (handled automatically by nimble 0.4.0)
+
+### 6.4 youloop (2026-03-27)
+
+**Project:** SvelteKit 2 / Svelte 5 YouTube A/B loop player with custom video controls
+**Source:** `/Volumes/p/YOUTUBE/youloop`
+**Pico version:** `2.0.6`
+**Pico features used:** `.container`, `$theme-color: 'zinc'` SCSS customization, `--pico-primary` / `--pico-spacing` CSS variables, `@use '@picocss/pico/scss/colors' as *` SCSS palette import, `[role="group"]` button groups, range inputs (heavily customized multi-thumb slider), `.outline` button
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico ^2.0.6` → `@leftium/nimble.css ^0.5.0` |
+| `src/app.scss` | `@use '@picocss/pico/scss/pico' with ($theme-color: 'zinc')` → `@use '@leftium/nimble.css/scss'` (zinc is nimble's default surface hue; no override needed) |
+| `src/routes/+layout.svelte` | Moved `app.scss` import here (was in `+page.svelte`); removed `class="container"` from `<main>`; set `--nc-content-width: 1200px`; added `nav h1` sizing; hardcoded brand color to Pico's `$zinc-550`; added `class="secondary"` to About link |
+| `src/routes/+page.svelte` | Removed `import '../app.scss'` (moved to layout); removed `class="container"`; added `class="secondary"` to `youtu.be` link |
+| `src/lib/player/Player.svelte` | Replaced `@use '@picocss/pico/scss/colors' as *` with hardcoded hex values; `--pico-spacing` → `--nc-spacing`; added `appearance: none` + full track/thumb base styling for range inputs; reworked `[role="group"]` button overrides; added `.paste-button` neutral outline style |
+
+**Issues encountered:**
+
+1. **No SCSS color palette in nimble** — Pico exposes `@use '@picocss/pico/scss/colors' as *` giving access to `$zinc-450`, `$grey`, `$azure-250`, etc. nimble has no equivalent. **Fix:** hardcode hex values from Pico's `scss/colors/_index.scss`. Reference commit `v2.0.6` for exact values.
+
+2. **Range inputs need full `appearance: none` + track/thumb styling** — Pico provides complete cross-browser range input styling (track height, thumb size, margin-top centering). nimble only sets `accent-color` and `width: 100%`, leaving the native appearance. For custom multi-thumb sliders, this means the component must supply the full `appearance: none`, `-webkit-slider-runnable-track`, `-webkit-slider-thumb`, and `-moz-range-*` rules that Pico provided implicitly. Key Pico dimensions: track `0.375rem` tall, thumb `1.25rem` diameter, thumb `margin-top: -(thumb/2) + (track/2)`.
+
+3. **`[role="group"]` rounded corners with custom button backgrounds** — nimble's `[role="group"] > *` (real specificity, not `:where()`) sets `border-radius: 0` on all children, then `[role="group"] > :first-child` / `:last-child` restore rounding via logical border properties. When buttons have custom `background-color` overrides, the simplest approach is `border-radius: var(--nc-radius); overflow: hidden` on the group container itself, letting the container clip children to rounded corners. This avoids specificity battles entirely. nimble's built-in `::before` partial-height dividers between buttons work well with this approach.
+
+4. **Primary color mismatch** — Pico's zinc theme primary is `$zinc-550: #646b79` (muted blue-grey). nimble's `--nc-primary` is a vivid purple-blue (oklch hue 250, chroma 0.2). The YouLoop brand text was using `var(--pico-primary)` and appeared dark grey; with nimble it appeared bright blue. **Fix:** hardcode the brand color to `#646b79` rather than using `--nc-primary`.
+
+5. **Link color neutralization** — Pico's zinc theme had muted primary-colored links. nimble's links use the vivid `--nc-primary`. For neutral/secondary links, add `class="secondary"` which nimble supports on `<a>` elements (sets `color: var(--nc-secondary)`).
+
+6. **Outline button color** — Pico's `.outline` button in the zinc theme appeared neutral (muted grey border/text). nimble's `.outline` uses `--nc-primary` (vivid blue). **Fix:** custom class (`.paste-button`) overriding `color` to `--nc-text` and `border-color` to `--nc-border`.
+
+7. **Range thumb `:active` scale** — Pico applies `transform: scale(1.25)` on range thumb when dragged. nimble does not style range thumbs. Must be added manually if desired.
+
+**Issues NOT encountered:**
+- Nav: youloop's `<nav>` contains only an inline `<h1>` with links (no `<ul>`) — no flexbox migration needed
+- No SvelteKit `display: contents` issue (handled automatically by nimble)
+- Dark mode works automatically
+- nimble's `[role="group"]` divider `::before` pseudo-elements provide a cleaner look than Pico's approach (partial-height translucent lines vs full-height margin gaps)
