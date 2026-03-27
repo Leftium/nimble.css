@@ -72,17 +72,16 @@
       padding-bottom: 0.5em;
     }
 
-    // Kill last-child bottom margin so it doesn't stack with
-    // details[open] padding-bottom. Descendant selector (not >)
-    // reaches inside ::details-content which wraps the content.
-    // No :where() — needs specificity to override typography margins.
-    details :last-child {
-      margin-bottom: 0;
-    }
+  }
 
-    // Summary bottom padding provides the gap to content when open.
-    // No extra margin-bottom or ::details-content padding needed.
-
+  // Kill last-child bottom margin so it doesn't stack with
+  // details[open] padding-bottom.  Outside @layer so it beats
+  // framework-scoped selectors (e.g. .code-block.svelte-xxx)
+  // which are unlayered and win over any in-layer rule.
+  // Repeated :last-child bumps specificity (0,0,2,1) to beat
+  // scoped selectors like .foo.svelte-xxx (0,0,2,0).
+  details :last-child:last-child {
+    margin-bottom: 0;
   }
 
   // Animate content on open/close (progressive enhancement)

@@ -558,7 +558,32 @@ Layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) still work ins
 
 ### 6.1 rift-transcription
 
-**Status:** Not started
+**Status:** Complete
+**Date:** 2026-03-28
+**nimble.css version:** 0.7.0
+
+**Changes made:**
+1. Added `@leftium/nimble.css` as dependency
+2. Created `src/app.css` with `@import '@leftium/nimble.css'`
+3. Updated `+layout.svelte` to import `app.css`
+4. Removed duplicated `main` layout from all 3 pages (`max-width: 640px; margin: 0 auto; font-family: system-ui, ...`) — nimble's body grid handles centering at default `60ch` width
+5. Removed `code` element styles from all 3 pages — nimble provides themed equivalent
+6. Removed scoped `button`, `button:hover`, `select` styles on main page — nimble handles form controls
+7. Removed hardcoded link colors (`#4a90d9`) from all 3 pages — nimble provides link styling
+8. Removed CopyButton's custom button styles — nimble handles it
+9. Added `width: auto; margin-bottom: 0` override for select/input inside `.controls` flex rows — nimble's full-width form defaults don't suit inline controls
+10. Replaced hardcoded `white`/`#eee` in `.sticky-header` with `var(--nc-surface-1)`/`var(--nc-border)` for dark mode support
+11. Kept all table styles on local-setup page (project uses smaller font-size than nimble default)
+12. Kept all `pre`/`pre code` styles on sherpa and local-setup (project adds border, specific font)
+13. Kept `.copy-btn` overlay styles on sherpa/local-setup (positioned absolute, white background — intentionally different from standard buttons)
+
+**Content width:** Using nimble default (`60ch` ≈ 720px) instead of original `640px`. Wider but not dramatically different — can set `--nc-content-width: 640px` if needed.
+
+**TranscriptArea:** `.no-nimble` turned out to be unnecessary — the component's scoped styles (`.input`, `.preview`) explicitly set every property that matters (padding, margin, font, border, background, width, position) and beat nimble's `:where()` selectors. The debug `<details>` inside the component gets nimble's details styling (border, animation) which is a visual improvement.
+
+**Issues found and fixed:**
+- Round 1: White gap under select/input from nimble's `margin-bottom` on form controls — fixed with `width: auto; margin-bottom: 0` on `.controls` children
+- Round 1: Buttons had white text on gray background — nimble's `color: var(--nc-primary-contrast)` applied while scoped `background: #f5f5f5` overrode bg — fixed by removing custom button styles and using nimble defaults
 
 ### 6.2 gg
 
