@@ -39,6 +39,32 @@
       list-style-type: '▼ ';
     }
 
+    // ----- Button-styled summary -----
+    // When summary has [role="button"], the button base styles
+    // (display: inline-block, margin: 0 0.25em …) conflict with
+    // the negative-margin stretch.  Override to restore full-width
+    // block behavior and replace the list marker with a ::before
+    // chevron that inherits the button's contrast color.
+
+    :where(summary[role="button"]) {
+      display: block;
+      width: auto;
+      margin: 0 -1em;          // restore stretch (button sets 0 0.25em 0.25em 0)
+      list-style: none;         // remove ▶/▼ marker — replaced by ::before
+    }
+
+    :where(summary[role="button"])::before {
+      content: '▶\00a0';
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 0.75em;
+      vertical-align: middle;
+    }
+
+    :where(details[open] > summary[role="button"])::before {
+      transform: rotate(90deg);
+    }
+
     // When open, restore vertical padding for content spacing.
     :where(details[open]) {
       padding-bottom: 0.75em;
