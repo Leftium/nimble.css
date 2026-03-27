@@ -465,3 +465,28 @@ Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 - Dark mode (`prefers-color-scheme` + `[data-theme='dark']`) worked automatically
 - `role="button"` on `<summary>` styled correctly
 - No SvelteKit `display: contents` issue (handled automatically by nimble 0.4.0)
+
+### 6.3 photodrop (2026-03-27)
+
+**Project:** SvelteKit 1 / Svelte 3 single-page app — QR codes + Dropbox photo sharing kiosk
+**Source:** `/Volumes/p/_archive/photodrop`
+**Pico version:** `github:picocss/pico#v2` (pre-release v2 branch)
+**Pico features used:** `.container`, `role="button"` on `<a>` (primary buttons), `role="button" class="secondary"` on `<summary>`, `role="button" class="secondary outline"` on `<summary>`, `<details>` accordion, `<hr>`
+
+**Files changed:**
+
+| File | Change |
+|---|---|
+| `package.json` | `@picocss/pico` (GitHub) → `@leftium/nimble.css ^0.4.0` |
+| `src/app.scss` | `@use '@picocss/pico/scss/pico'` → `@use '@leftium/nimble.css/scss'` |
+| `src/routes/+page.svelte` | Removed `class="container"` from `<main>` (body grid + scoped `margin: auto` handles centering) |
+
+**Issues encountered:** None.
+
+**Issues NOT encountered:**
+- `role="button"`, `.secondary`, `.outline` all transfer cleanly (same pattern, same styling)
+- `<details>`/`<summary>` accordion styling preserved
+- No nav elements — no nav migration needed
+- No forms or inputs — zero form migration cost
+- Scoped `main { max-width: 25em; margin: 4px auto }` already provided centering; no additional `margin-inline: auto` fix needed
+- No SvelteKit `display: contents` issue (handled automatically by nimble 0.4.0)
