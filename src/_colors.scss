@@ -43,13 +43,13 @@
 // Modeled after PicoCSS/veneer card shadow with stronger presence.
 @function _content-shadow($light-color, $dark-color) {
   @return
-    _shadow-layer-spread(0.15rem, 0,  $light-color, 0.02,  $dark-color, 0.06),
-    _shadow-layer-spread(0.3rem,  0,  $light-color, 0.03,  $dark-color, 0.08),
-    _shadow-layer-spread(0.75rem, 0,  $light-color, 0.04,  $dark-color, 0.10),
-    _shadow-layer-spread(1.35rem, 0,  $light-color, 0.04,  $dark-color, 0.12),
-    _shadow-layer-spread(2.5rem,  0,  $light-color, 0.05,  $dark-color, 0.14),
-    _shadow-layer-spread(6rem,    0,  $light-color, 0.06,  $dark-color, 0.16),
-    _shadow-layer-spread(0rem, 0.0625rem, $light-color, 0.015, $dark-color, 0.04);
+    _shadow-layer-spread(0.15rem, 0,  $light-color, 0.02,  $dark-color, 0.015),
+    _shadow-layer-spread(0.3rem,  0,  $light-color, 0.03,  $dark-color, 0.02),
+    _shadow-layer-spread(0.75rem, 0,  $light-color, 0.04,  $dark-color, 0.025),
+    _shadow-layer-spread(1.35rem, 0,  $light-color, 0.04,  $dark-color, 0.03),
+    _shadow-layer-spread(2.5rem,  0,  $light-color, 0.05,  $dark-color, 0.035),
+    _shadow-layer-spread(6rem,    0,  $light-color, 0.06,  $dark-color, 0.04),
+    _shadow-layer-spread(0rem, 0.0625rem, $light-color, 0.015, $dark-color, 0.01);
 }
 
 @layer nimble.base {
