@@ -41,6 +41,7 @@
 // Build a 7-layer progressive content shadow.
 // Each layer uses light-dark() so opacity adapts to the color scheme.
 // Modeled after PicoCSS/veneer card shadow with stronger presence.
+// The shadow gap is structural (grid columns), not spread-based.
 @function _content-shadow($light-color, $dark-color) {
   @return
     _shadow-layer-spread(0.15rem, 0,  $light-color, 0.02,  $dark-color, 0.015),

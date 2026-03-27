@@ -17,14 +17,19 @@
     scrollbar-gutter: stable;
   }
 
-  // Grid centering: define the 3-column grid on body.
-  // Column assignment (grid-column: 2) is in _grid-columns.scss
+  // Grid centering: 5-column grid on body.
+  //   1fr | shadow-gap | content | shadow-gap | 1fr
+  //    1        2           3          4         5
+  // Content children go to column 3; the shadow pseudo spans 2–4.
+  // Column assignment (grid-column: 3) is in _grid-columns.scss
   // so it can be scoped — allowing .no-nimble elements to escape.
   body {
     display: grid;
     grid-template-columns:
       1fr
-      min(var(#{$prefix}content-width), #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing))')})
+      var(#{$prefix}content-shadow-gap)
+      min(var(#{$prefix}content-width), #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing) - 2 * var(#{$prefix}content-shadow-gap))')})
+      var(#{$prefix}content-shadow-gap)
       1fr;
     min-height: 100dvh;
     position: relative;
