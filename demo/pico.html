@@ -451,7 +451,7 @@
       <!-- Modal -->
       <section id="modal">
         <h2>Modal</h2>
-        <button id="open-dialog">Launch demo modal</button>
+        <button class="contrast" id="open-dialog">Launch demo modal</button>
       </section>
       <!-- ./ Modal -->
 
@@ -483,9 +483,7 @@
 
       <!-- Article -->
       <article id="article">
-        <header>
-          <h2>Article</h2>
-        </header>
+        <h2>Article</h2>
         <p>
           Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non
           ante vulputate hendrerit. Vivamus sit amet suscipit sapien. Nulla iaculis eros a elit
@@ -543,15 +541,19 @@
 
     <!-- Modal example -->
     <dialog id="demo-dialog">
-      <h3>Confirm your action!</h3>
-      <p>
-        Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
-        pellentesque. Nullam finibus risus non semper euismod.
-      </p>
-      <footer>
-        <button class="secondary" id="cancel-dialog">Cancel</button>
-        <button autofocus id="confirm-dialog">Confirm</button>
-      </footer>
+      <article>
+        <header>
+          <h3>Confirm your action!</h3>
+        </header>
+        <p>
+          Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
+          pellentesque. Nullam finibus risus non semper euismod.
+        </p>
+        <footer style="text-align: end">
+          <button class="secondary" id="cancel-dialog">Cancel</button>
+          <button autofocus id="confirm-dialog">Confirm</button>
+        </footer>
+      </article>
     </dialog>
     <!-- ./ Modal example -->
 
