@@ -8,68 +8,12 @@
 
 @layer nimble.base {
 
-  // ---------------------------------------------------------------------------
-  // Cross-browser <progress> strategy
-  //
-  // iOS Safari partially honors `appearance: none` on <progress> — it strips
-  // the native pill shape but doesn't enable custom pseudo-element rendering,
-  // creating a broken hybrid.  Desktop Safari ignores it entirely.  There's no
-  // CSS-only way to distinguish iOS Safari from Chromium (both parse
-  // ::-webkit-* pseudo-elements).
-  //
-  // Solution:
-  //   Safari + Chromium → native system rendering (no custom overrides).
-  //   Firefox           → custom styled via @supports (-moz-orient: inline),
-  //                       a Firefox-only property that scopes all visual
-  //                       properties away from WebKit/Blink.
-  // ---------------------------------------------------------------------------
-
+  // Native system progress bars on all platforms.
+  // Custom styling via appearance: none is broken on iOS Safari (partial
+  // stripping of native chrome) and cannot be scoped away from WebKit/Blink
+  // via CSS alone.  Native bars look fine everywhere.
   :where(progress) {
     width: 100%;
-  }
-
-  // ---- Firefox only (@supports -moz-orient is true only in Firefox) ----
-  @supports (-moz-orient: inline) {
-    :where(progress) {
-      -moz-appearance: none;
-      appearance: none;
-      height: 0.5rem;
-      overflow: hidden;
-      border: 0;
-      border-radius: var(#{$prefix}radius);
-      background-color: var(#{$prefix}surface-3);
-      color: var(#{$prefix}primary);
-    }
-
-    :where(progress)::-moz-progress-bar {
-      background-color: var(#{$prefix}primary);
-      border-radius: var(#{$prefix}radius);
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-      :where(progress:indeterminate)::-moz-progress-bar {
-        width: 100%;
-        background:
-          linear-gradient(to right,
-            var(#{$prefix}surface-3) 0%,
-            var(#{$prefix}primary) 25%,
-            var(#{$prefix}primary) 25%,
-            var(#{$prefix}surface-3) 50%,
-            var(#{$prefix}surface-3) 50%,
-            var(#{$prefix}primary) 75%,
-            var(#{$prefix}primary) 75%,
-            var(#{$prefix}surface-3) 100%);
-        background-size: 200% 100%;
-        animation: nc-progress-indeterminate 12s linear infinite;
-      }
-    }
-  }
-
-  // Safari + Chromium: native system rendering (no custom overrides).
-
-  @keyframes nc-progress-indeterminate {
-    from { background-position: 0% 0%; }
-    to { background-position: -200% 0%; }
   }
 
 }
