@@ -52,21 +52,11 @@
         text-decoration-color: var(--nc-text);
       }
 
-      /* Reusable 3-column grid with uniform spacing */
-      .grid-3,
-      .grid-subscribe {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--nc-spacing);
-        margin-bottom: var(--nc-spacing);
-      }
-      .grid-3 > * > input,
-      .grid-3 > * > select,
-      .grid-subscribe > * {
+      /* Remove bottom margins on form elements inside grids */
+      .grid > * > input,
+      .grid > * > select,
+      .grid > button {
         margin-bottom: 0;
-      }
-      .grid-subscribe {
-        align-items: start;
       }
 
       /* Date/time/color inputs: fill their grid column */
@@ -152,7 +142,7 @@
           iaculis eros a elit pharetra egestas.
         </p>
         <form onsubmit="return false">
-          <div class="grid-subscribe">
+          <div class="grid" style="align-items: start">
             <input
               type="text"
               name="firstname"
@@ -210,30 +200,30 @@
 
         <!-- Inline text elements -->
         <h3>Inline text elements</h3>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-          <p><a href="#" onclick="event.preventDefault()">Primary link</a></p>
-          <p><a href="#" class="secondary" onclick="event.preventDefault()">Secondary link</a></p>
-          <p><a href="#" class="contrast" onclick="event.preventDefault()">Contrast link</a></p>
+        <div class="grid">
+          <span><a href="#" onclick="event.preventDefault()">Primary link</a></span>
+          <span><a href="#" class="secondary" onclick="event.preventDefault()">Secondary link</a></span>
+          <span><a href="#" class="contrast" onclick="event.preventDefault()">Contrast link</a></span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-          <p><strong>Bold</strong></p>
-          <p><em>Italic</em></p>
-          <p><u>Underline</u></p>
+        <div class="grid">
+          <span><strong>Bold</strong></span>
+          <span><em>Italic</em></span>
+          <span><u>Underline</u></span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-          <p><del>Deleted</del></p>
-          <p><ins>Inserted</ins></p>
-          <p><s>Strikethrough</s></p>
+        <div class="grid">
+          <span><del>Deleted</del></span>
+          <span><ins>Inserted</ins></span>
+          <span><s>Strikethrough</s></span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-          <p><small>Small</small></p>
-          <p>Text <sub>Sub</sub></p>
-          <p>Text <sup>Sup</sup></p>
+        <div class="grid">
+          <span><small>Small</small></span>
+          <span>Text <sub>Sub</sub></span>
+          <span>Text <sup>Sup</sup></span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-          <p><abbr title="Abbreviation">Abbr.</abbr></p>
-          <p><kbd>Kbd</kbd></p>
-          <p><mark>Highlighted</mark></p>
+        <div class="grid">
+          <span><abbr title="Abbreviation">Abbr.</abbr></span>
+          <span><kbd>Kbd</kbd></span>
+          <span><mark>Highlighted</mark></span>
         </div>
 
         <!-- Headings -->
@@ -277,10 +267,12 @@
       <!-- Buttons -->
       <section id="buttons">
         <h2>Buttons</h2>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--nc-spacing);">
+        <div class="grid">
           <button>Primary</button>
           <button class="secondary">Secondary</button>
           <button class="contrast">Contrast</button>
+        </div>
+        <div class="grid">
           <button class="outline">Primary outline</button>
           <button class="outline secondary">Secondary outline</button>
           <button class="outline contrast">Contrast outline</button>
@@ -319,7 +311,7 @@
           <input type="range" min="0" max="100" value="50" id="range" name="range">
 
           <!-- States -->
-          <div class="grid-3">
+          <div class="grid">
             <div>
               <label for="valid">Valid</label>
               <input type="text" id="valid" name="valid" placeholder="Valid" aria-invalid="false">
@@ -334,7 +326,7 @@
             </div>
           </div>
 
-          <div class="grid-3">
+          <div class="grid">
             <!-- Date -->
             <div>
               <label for="date">Date</label>
@@ -354,7 +346,7 @@
             </div>
           </div>
 
-          <div class="grid-3">
+          <div class="grid">
             <!-- Checkboxes -->
             <fieldset>
               <legend><strong>Checkboxes</strong></legend>

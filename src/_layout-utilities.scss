@@ -33,6 +33,20 @@
       position: relative;
     }
 
+    // Responsive equal-column grid
+    // Mobile: single column. Above phone breakpoint: auto-fit columns.
+    // margin-bottom matches vertical rhythm of p, ul, etc.
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(#{$prefix}spacing);
+      margin-bottom: var(#{$prefix}spacing);
+
+      @media (min-width: #{$breakpoint-phone}) {
+        grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
+      }
+    }
+
     // Break out to wide max-width
     .wide {
       grid-column: 1 / -1;
