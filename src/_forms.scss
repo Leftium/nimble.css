@@ -31,6 +31,12 @@
     margin-bottom: var(#{$prefix}spacing);
   }
 
+  // When an input is the last visible child of a block that already has
+  // margin-bottom (e.g. <p>), kill the input's margin to avoid doubling.
+  :where(p, div) > :where(input, select, textarea):nth-last-child(1 of :not(datalist, script, style)) {
+    margin-bottom: 0;
+  }
+
   // ----- Focus -----
 
   :where(input, select, textarea):focus-visible {
@@ -93,6 +99,13 @@
     padding: var(#{$prefix}spacing);
     min-width: 0; // Override UA min-content default — prevents overflow on narrow viewports
     max-width: 100%;
+  }
+
+  // Kill last-child bottom margin so it doesn't stack with fieldset padding.
+  // Uses :nth-last-child(of ...) to skip invisible elements (datalist, script).
+  :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)),
+  :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)) > :nth-last-child(1 of :not(datalist, script, style)) {
+    margin-bottom: 0;
   }
 
   :where(legend) {
