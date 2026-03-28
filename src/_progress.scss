@@ -8,77 +8,64 @@
 
 @layer nimble.base {
 
+  // ---------------------------------------------------------------------------
+  // Cross-browser <progress> strategy
+  //
+  // iOS Safari partially honors `appearance: none` on <progress> — it strips
+  // the native pill shape but doesn't enable custom pseudo-element rendering,
+  // creating a broken hybrid.  Desktop Safari ignores it entirely.  There's no
+  // CSS-only way to distinguish iOS Safari from Chromium (both parse
+  // ::-webkit-* pseudo-elements).
+  //
+  // Solution:
+  //   Safari + Chromium → native system rendering (no custom overrides).
+  //   Firefox           → custom styled via @supports (-moz-orient: inline),
+  //                       a Firefox-only property that scopes all visual
+  //                       properties away from WebKit/Blink.
+  // ---------------------------------------------------------------------------
+
   :where(progress) {
-    -webkit-appearance: none;
-    appearance: none;
-    position: relative;
     width: 100%;
-    height: 0.5rem;
-    overflow: hidden;
-    border: 0;
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-    color: var(#{$prefix}primary); // Firefox uses color for the bar
   }
 
-  :where(progress)::-webkit-progress-bar {
-    border-radius: var(#{$prefix}radius);
-    background-color: var(#{$prefix}surface-3);
-  }
+  // ---- Firefox only (@supports -moz-orient is true only in Firefox) ----
+  @supports (-moz-orient: inline) {
+    :where(progress) {
+      -moz-appearance: none;
+      appearance: none;
+      height: 0.5rem;
+      overflow: hidden;
+      border: 0;
+      border-radius: var(#{$prefix}radius);
+      background-color: var(#{$prefix}surface-3);
+      color: var(#{$prefix}primary);
+    }
 
-  :where(progress)::-webkit-progress-value {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-    transition: inline-size 0.3s ease;
-  }
+    :where(progress)::-moz-progress-bar {
+      background-color: var(#{$prefix}primary);
+      border-radius: var(#{$prefix}radius);
+    }
 
-  :where(progress)::-moz-progress-bar {
-    background-color: var(#{$prefix}primary);
-    border-radius: var(#{$prefix}radius);
-  }
-
-  // Indeterminate: evenly-spaced blue bands travel continuously rightward.
-  // Gradient is 200% wide with two identical 10%-wide bands at 15% and 65%.
-  // They're 50% apart — exactly one visible width (100/200 = 50% of gradient).
-  // Animating position by -200% = one full gradient width → seamless loop.
-  :where(progress):not([value]) {
-    --nc-progress-track:
-      linear-gradient(to right,
-        var(#{$prefix}surface-3) 0%,
-        var(#{$prefix}primary) 25%,
-        var(#{$prefix}primary) 25%,
-        var(#{$prefix}surface-3) 50%,
-        var(#{$prefix}surface-3) 50%,
-        var(#{$prefix}primary) 75%,
-        var(#{$prefix}primary) 75%,
-        var(#{$prefix}surface-3) 100%);
-    --nc-progress-track-size: 200% 100%;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    @supports selector(progress::after) {
-      :where(progress):not([value])::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--nc-progress-track);
-        background-size: var(--nc-progress-track-size);
+    @media (prefers-reduced-motion: no-preference) {
+      :where(progress:indeterminate)::-moz-progress-bar {
+        width: 100%;
+        background:
+          linear-gradient(to right,
+            var(#{$prefix}surface-3) 0%,
+            var(#{$prefix}primary) 25%,
+            var(#{$prefix}primary) 25%,
+            var(#{$prefix}surface-3) 50%,
+            var(#{$prefix}surface-3) 50%,
+            var(#{$prefix}primary) 75%,
+            var(#{$prefix}primary) 75%,
+            var(#{$prefix}surface-3) 100%);
+        background-size: 200% 100%;
         animation: nc-progress-indeterminate 12s linear infinite;
       }
     }
-
-    :where(progress):not([value])::-webkit-progress-bar {
-      background: var(--nc-progress-track);
-      background-size: var(--nc-progress-track-size);
-      animation: nc-progress-indeterminate 12s linear infinite;
-    }
-
-    :where(progress):not([value])::-moz-progress-bar {
-      background: var(--nc-progress-track);
-      background-size: var(--nc-progress-track-size);
-      animation: nc-progress-indeterminate 12s linear infinite;
-    }
   }
+
+  // Safari + Chromium: native system rendering (no custom overrides).
 
   @keyframes nc-progress-indeterminate {
     from { background-position: 0% 0%; }
