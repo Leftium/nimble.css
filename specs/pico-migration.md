@@ -143,7 +143,7 @@ nimble's surface scale has larger lightness steps than Pico's. If exact Pico bac
 | Pico CSS class/pattern | nimble.css equivalent | Notes |
 |---|---|---|
 | `.container` | `.container` | Different implementation: Pico uses `max-width` + breakpoint steps; nimble uses CSS Grid centering on `body` (no `.container` needed for basic centering). nimble's `.container` is for re-centering inside `.fluid` layouts. |
-| `.grid` | _(none)_ | Use native CSS Grid or Flexbox directly. |
+| `.grid` | `.grid` | Both provide responsive equal-column grid. Pico: hard breakpoint at ~510px. nimble: hard breakpoint at `$breakpoint-phone` (720px). Both use `auto-fit` above breakpoint, `1fr` below. nimble also adds `margin-bottom` for vertical rhythm. |
 | `.overflow-auto` | `.overflow-auto` | Same purpose. |
 | `.secondary` | `.secondary` | Same purpose (secondary button color). |
 | `.outline` | `.outline` | Same purpose (outline button style). |

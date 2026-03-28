@@ -48,7 +48,7 @@
 Nimble.css deliberately excludes or defers:
 
 - **RTL support** (can be added later; not in v1).
-- **Custom grid system** (use native CSS Grid/Flexbox instead).
+- **Full grid system** (nimble provides a single `.grid` utility for responsive equal-column layouts; complex grid patterns should use native CSS Grid/Flexbox directly).
 - **Responsive font sizes per breakpoint** (PicoCSS has 6 breakpoints just for font-size; we use 1-2 at most).
 - **Tooltips** (use a dedicated library).
 - **Progress bar styling** (use native `<progress>` with accent-color).
@@ -138,7 +138,7 @@ nimble.css splits its styles into two categories:
 - Colors/custom properties (`_colors.scss`)
 - Document/body grid (`_document.scss`)
 - Grid column assignment (`_grid-columns.scss`)
-- Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.full-bleed`, `.wide`, `.container`
+- Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.full-bleed`, `.grid`, `.wide`, `.container`
 - Print styles (`_print.scss`)
 
 **Scopeable styles** — wrapped in `@scope (:root) to (.no-nimble)` by default:
@@ -495,6 +495,24 @@ This approach (from simple.css) is superior to PicoCSS's max-width + breakpoint 
   padding-inline: var(--nc-spacing);
 }
 ```
+
+**Responsive equal-column grid:**
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--nc-spacing);
+  margin-bottom: var(--nc-spacing);
+}
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
+  }
+}
+```
+
+Drop-in responsive layout: children stack in a single column on mobile and share equal columns on desktop. The number of columns is determined by the number of direct children. Uses the phone breakpoint (`$breakpoint-phone: 720px`) as the collapse point — similar to Pico's `.grid` but using the project's breakpoint and spacing variables. `margin-bottom` matches the vertical rhythm of block elements (`p`, `ul`, etc.).
 
 **Fluid layout** (opt-in):
 
@@ -907,6 +925,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 .container       /* centered content width (useful inside fluid layout) */
 .fluid           /* full viewport width with padding */
 .full-bleed      /* break out of centered container to full width */
+.grid            /* responsive equal-column grid (1fr mobile, auto-fit desktop) */
 .wide            /* break out to 1200px max-width */
 ```
 
@@ -936,7 +955,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 .no-nimble       /* opt out of nimble's component styles (see §15.2) */
 ```
 
-**Total class count: ~9** (~8 utilities + `.no-nimble` opt-out).
+**Total class count: ~10** (~9 utilities + `.no-nimble` opt-out).
 
 ## 11. Breakpoints
 
@@ -971,7 +990,7 @@ nimble.css/
     _colors.scss             # Color properties (oklch generation + light-dark())
     _document.scss           # html, body, *, ::selection
     _grid-columns.scss       # Global: body grid column assignment (body > *)
-    _layout-utilities.scss   # Global: .fluid, .full-bleed, .wide, .container
+    _layout-utilities.scss   # Global: .fluid, .full-bleed, .grid, .wide, .container
     _scopeable.scss          # Mixin loading scopeable modules via meta.load-css()
     _typography.scss         # Scopeable: headings, p, lists, blockquote, hr, mark
     _links.scss              # Scopeable: a
@@ -1180,7 +1199,7 @@ Lessons from MVP.css, new.css, and HN discussions:
 
 - **MVP.css** abuses semantic HTML (using `aside` for cards, `a strong` for buttons) to avoid classes. This harms accessibility and confuses developers.
 - **Pure classless is insufficient** for real-world use. You need at least: a way to distinguish primary/secondary buttons, striped tables, layout modes, and full-bleed content.
-- **Minimum viable classes**: nimble.css uses ~8 classes total. Every class has a clear, non-overlapping purpose.
+- **Minimum viable classes**: nimble.css uses ~9 classes total. Every class has a clear, non-overlapping purpose.
 
 ### 15.2 Third-Party Component Isolation (`.no-nimble` Opt-Out)
 
