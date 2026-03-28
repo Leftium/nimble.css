@@ -81,11 +81,11 @@
   }
 
   :where(sub) {
-    bottom: -0.25em;
+    bottom: -0.25em;         // OP ~size-1 (em-relative, negative)
   }
 
   :where(sup) {
-    top: -0.5em;
+    top: -0.5em;             // OP ~size-2 (em-relative, negative)
   }
 
   // --- Embedded content ---

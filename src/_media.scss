@@ -18,9 +18,9 @@
   }
 
   :where(figcaption) {
-    font-size: 0.9em;
+    font-size: 0.9em;        // no OP match; OP normalize: --font-size-1 (1rem)
     color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
-    margin-top: 0.5em;
+    margin-top: 0.5em;       // OP ~size-2 (em-relative)
   }
 
 }

@@ -13,7 +13,7 @@
       background-color: var(#{$prefix}surface-4);
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
-      max-width: min(90vw, 40rem);
+      max-width: min(90vw, 40rem); // no OP match (above scale)
       max-height: 85vh;
       padding: var(#{$prefix}spacing);
     }
@@ -40,7 +40,7 @@
 
     dialog::backdrop {
       background: rgb(0 0 0 / 0.5);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px); // OP --size-px-1
       animation: nc-backdrop-in 0.2s ease;
     }
 

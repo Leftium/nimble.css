@@ -14,23 +14,24 @@
       border-radius: var(#{$prefix}radius);
       // No vertical padding — summary provides its own via the
       // negative-margin/padding trick for vertical centering.
-      padding: 0 1em;
+      padding: 0 1em;          // OP ~size-3 (em-relative)
+                               // OP normalize: padding-inline: --size-3, padding-block: --size-2
     }
 
     :where(details) {
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
     }
 
     :where(summary) {
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 600;    // OP --font-weight-6 (OP normalize uses weight-7: 700 for dt/summary)
       // Stretch summary across the horizontal padding area, then
       // re-apply vertical + horizontal padding on itself. When
       // collapsed the text is vertically centered with equal padding.
       // Vertical padding matches button padding (0.5em) so collapsed
       // details height equals button height (2px border + 2.5em).
-      margin: 0 -1em;
-      padding: 0.5em 1em;
+      margin: 0 -1em;          // OP ~size-3 (em-relative, negative)
+      padding: 0.5em 1em;     // OP ~size-2 ~size-3 (em-relative)
       // Custom markers fix iOS Safari's tiny native disclosure triangle.
       // Full-size Unicode triangles inherit font metrics and sit on the
       // baseline like native markers.
@@ -51,7 +52,7 @@
     :where(summary[role="button"]) {
       display: block;
       width: auto;
-      margin: 0 -1em;          // restore stretch (button sets margin: 0)
+      margin: 0 -1em;          // OP ~size-3 (em-relative, negative); restore stretch
       list-style: none;         // remove ▶/▼ marker — replaced by ::before
     }
 
@@ -59,7 +60,7 @@
       content: '▶\00a0';
       display: inline-block;
       transition: transform 0.2s ease;
-      font-size: 0.75em;
+      font-size: 0.75em;       // no OP match (3/4)
       vertical-align: middle;
     }
 
@@ -69,7 +70,7 @@
 
     // When open, restore vertical padding for content spacing.
     :where(details[open]) {
-      padding-bottom: 0.5em;
+      padding-bottom: 0.5em;   // OP ~size-2 (em-relative)
     }
 
   }

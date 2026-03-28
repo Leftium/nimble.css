@@ -16,7 +16,7 @@
     -moz-appearance: none;
     appearance: none;
     width: 100%;
-    height: 0.5rem;
+    height: 0.5rem;          // OP --size-2
     overflow: hidden;
     border: 0;
     border-radius: var(#{$prefix}radius);
@@ -32,7 +32,7 @@
     border-radius: var(#{$prefix}radius);
     background-color: var(#{$prefix}surface-3);
     border: 0;
-    height: 0.5rem;
+    height: 0.5rem;          // OP --size-2
   }
 
   // WebKit: value bars for each semantic state

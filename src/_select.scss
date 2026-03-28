@@ -32,7 +32,7 @@
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
       background-color: var(#{$prefix}surface-1);
-      padding: 0.25em;
+      padding: 0.25em;         // OP ~size-1 (em-relative)
       // Fade in/out animation
       opacity: 0;
       transition: opacity 0.2s, overlay 0.2s allow-discrete, display 0.2s allow-discrete;
@@ -50,7 +50,8 @@
 
     // Options inside the picker
     :where(select) option {
-      padding: 0.5em 0.75em;
+      padding: 0.5em 0.75em;   // 0.5em: OP ~size-2; 0.75em: no OP match
+                               // OP normalize: select uses 0.75ch block, --size-relative-4 inline
       border-radius: var(#{$prefix}radius);
       transition: background-color 0.15s;
     }

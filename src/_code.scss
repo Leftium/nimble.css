@@ -9,10 +9,10 @@
 
   :where(code, kbd, samp) {
     font-family: var(#{$prefix}font-mono);
-    font-size: 0.875em;
+    font-size: 0.875em;      // no OP match (7/8); OP normalize inherits font-size
     background-color: var(#{$prefix}surface-2);
     border-radius: var(#{$prefix}radius);
-    padding: 0.15em 0.35em;
+    padding: 0.15em 0.35em;  // no OP match; OP normalize: --size-1 --size-2
   }
 
   :where(pre) {

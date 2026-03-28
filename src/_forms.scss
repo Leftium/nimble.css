@@ -13,14 +13,15 @@
          select, textarea) {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
-    padding: 0.5em 0.75em;
+    padding: 0.5em 0.75em;  // 0.5em: OP ~size-2; 0.75em: no OP match
+                            // OP normalize: padding-block: --size-1, padding-inline: --size-2
     min-height: calc(1em * 1.5 + 1em + 2px); // line-height + vertical padding + border
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     color: var(#{$prefix}text);
     font: inherit;
-    font-size: 1rem; // >=16px prevents iOS Safari auto-zoom on focus
+    font-size: 1rem; // OP --size-3; >=16px prevents iOS Safari auto-zoom on focus
     transition: border-color 0.2s, box-shadow 0.2s;
   }
 
@@ -51,7 +52,7 @@
     display: block;
     margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
     margin-bottom: var(#{$prefix}spacing);
-    font-size: 0.875em;
+    font-size: 0.875em;     // no OP match (7/8)
     color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
   }
 
@@ -78,17 +79,17 @@
 
   :where(label) {
     display: block;
-    margin-bottom: 0.25em;
+    margin-bottom: 0.25em;   // OP ~size-1 (em-relative)
   }
 
   :where(label:has(+ input, + select, + textarea)) {
-    font-weight: 600;
+    font-weight: 600;    // OP --font-weight-6
   }
 
   // file and range are short/inline controls — increase the label gap to match
   // the visual weight of the spacing above and beside them.
   :where(label:has(+ [type="file"], + [type="range"])) {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
   }
 
   // ----- Fieldset -----
@@ -109,8 +110,8 @@
   }
 
   :where(legend) {
-    font-weight: 600;
-    padding-inline: 0.25em;
+    font-weight: 600;    // OP --font-weight-6
+    padding-inline: 0.25em;  // OP ~size-1 (em-relative)
   }
 
   // ----- Checkbox & Radio -----
@@ -118,16 +119,16 @@
 
   :where([type="checkbox"], [type="radio"]) {
     accent-color: var(#{$prefix}primary);
-    width: 1.125em;
-    height: 1.125em;
+    width: 1.125em;          // no OP match (OP normalize: --size-3 = 1rem)
+    height: 1.125em;         // no OP match (OP normalize: --size-3 = 1rem)
     margin: 0; // Remove browser default margin so flex labels align flush left
   }
 
   :where(label:has([type="checkbox"], [type="radio"])) {
     display: flex;
     align-items: center;
-    gap: 0.35em;
-    margin-bottom: 0.5em;
+    gap: 0.35em;             // no OP match (near ~size-1)
+    margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
   }
 
   // Last checkbox/radio label in a group drops its bottom margin
@@ -139,8 +140,8 @@
   // ----- Search (pill shape) -----
 
   :where([type="search"]) {
-    border-radius: 5rem;
-    padding-inline: 1.25em;
+    border-radius: 5rem;     // OP --size-10 (pill)
+    padding-inline: 1.25em;  // OP ~size-4 (em-relative)
   }
 
   // ----- Range -----
@@ -170,9 +171,9 @@
   }
 
   :where([type="file"])::file-selector-button {
-    padding: 0.5em 1em;
-    margin-right: 0.75em;
-    margin-inline-end: 0.75em;
+    padding: 0.5em 1em;      // OP ~size-2 ~size-3 (em-relative)
+    margin-right: 0.75em;    // no OP match (between ~size-2/~size-3)
+    margin-inline-end: 0.75em; // no OP match (between ~size-2/~size-3)
     background-color: var(#{$prefix}primary);
     color: var(#{$prefix}primary-contrast);
     border: 1px solid var(#{$prefix}primary);
@@ -191,7 +192,7 @@
   // Natural width so picker icon stays near content (excluded from full-width rule above).
   // appearance: none is applied outside @layer (see below) to fix iOS Safari sizing.
   :where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]) {
-    min-width: 10em; // Prevent collapse when empty (e.g. time with no value)
+    min-width: 10em; // no OP match; prevent collapse when empty (e.g. time with no value)
     margin-bottom: var(#{$prefix}spacing);
   }
 
@@ -201,7 +202,7 @@
     --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
     margin-bottom: var(#{$prefix}spacing);
 
-    --_color-pad: 0.25em;
+    --_color-pad: 0.25em;    // OP ~size-1 (em-relative)
 
     height: var(--_color-size);
     width: calc((var(--_color-size) - 2 * var(--_color-pad)) * 1.618 + 2 * var(--_color-pad)); // Golden ratio inner swatch
@@ -229,14 +230,14 @@
     :where(label:has([type="checkbox"][role="switch"])) {
       display: flex;
       align-items: center;
-      gap: 0.5em;
+      gap: 0.5em;              // OP ~size-2 (em-relative)
     }
 
     :where([type="checkbox"][role="switch"]) {
       appearance: none;
-      width: 2.5em;
-      height: 1.25em;
-      border-radius: 1em;
+      width: 2.5em;            // no OP match (custom switch width)
+      height: 1.25em;          // OP ~size-4 (em-relative)
+      border-radius: 1em;      // OP ~size-3 (pill, em-relative)
       background-color: var(#{$prefix}border);
       position: relative;
       cursor: pointer;

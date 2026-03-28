@@ -11,8 +11,8 @@
   // ----- Base button -----
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
-    --_btn-padding-v: 0.5em;
-    --_btn-padding-h: 1em;
+    --_btn-padding-v: 0.5em;   // OP ~size-2 (em-relative)
+    --_btn-padding-h: 1em;     // OP ~size-3 (em-relative)
 
     padding: var(--_btn-padding-v) var(--_btn-padding-h);
     background-color: var(#{$prefix}primary);
@@ -20,7 +20,7 @@
     border: 1px solid var(#{$prefix}primary);
     border-radius: var(#{$prefix}radius);
     font: inherit;
-    font-size: 1rem;
+    font-size: 1rem;            // OP --size-3
     line-height: 1.5;
     cursor: pointer;
     text-decoration: none;
@@ -30,10 +30,10 @@
     transition: background-color 0.2s, border-color 0.2s;
   }
 
-  // Vertical rhythm for flow-level buttons (not [role="button"] on
-  // arbitrary elements like logo containers — those opt in manually).
-  :where(button, [type="submit"], [type="reset"], [type="button"]) {
-    margin-block-end: 0.25em;
+  // Vertical rhythm for flow-level buttons and link-as-button elements
+  // so wrapped rows don't collide.
+  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
+    margin-block-end: 0.25em;   // OP ~size-1 (em-relative)
   }
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover {
@@ -66,10 +66,10 @@
   // ----- Inline (buttons within flow text) -----
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline {
-    --_btn-padding-v: 0.05em;
-    --_btn-padding-h: 0.4em;
-    margin: 0.1em 0.15em;
-    font-size: 0.875em;
+    --_btn-padding-v: 0.05em;   // no OP match (micro)
+    --_btn-padding-h: 0.4em;    // no OP match (near ~size-2)
+    margin: 0.1em 0.15em;       // no OP match (micro)
+    font-size: 0.875em;         // no OP match (7/8)
     vertical-align: baseline;
   }
 
@@ -87,7 +87,7 @@
 
   :where([role="group"]) {
     display: inline-flex;
-    margin-bottom: var(#{$prefix}spacing);
+    margin-bottom: 0.25em;               // OP ~size-1 (em-relative); match individual buttons
   }
 
   [role="group"] > * {
@@ -171,15 +171,15 @@
   // ----- Search groups (pill shape) -----
 
   [role="search"] [role="group"] > :first-child {
-    border-start-start-radius: 5rem;
-    border-end-start-radius: 5rem;
-    padding-inline-start: 1.25em;
+    border-start-start-radius: 5rem;     // OP --size-10 (pill)
+    border-end-start-radius: 5rem;       // OP --size-10 (pill)
+    padding-inline-start: 1.25em;        // OP ~size-4 (em-relative)
   }
 
   [role="search"] [role="group"] > :last-child {
-    border-start-end-radius: 5rem;
-    border-end-end-radius: 5rem;
-    padding-inline-end: 1.25em;
+    border-start-end-radius: 5rem;       // OP --size-10 (pill)
+    border-end-end-radius: 5rem;         // OP --size-10 (pill)
+    padding-inline-end: 1.25em;          // OP ~size-4 (em-relative)
   }
 
 }

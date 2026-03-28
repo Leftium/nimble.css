@@ -10,8 +10,8 @@
 
   html {
     font-family: var(#{$prefix}font-sans);
-    font-size: 100%;    // = 16px in most browsers
-    line-height: 1.5;
+    font-size: 100%;    // = 16px (OP --size-3) in most browsers
+    line-height: 1.5;   // OP --font-lineheight-3
     color: var(#{$prefix}text);
     background-color: var(#{$prefix}surface-1);
     scrollbar-gutter: stable;
