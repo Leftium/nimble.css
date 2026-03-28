@@ -14,7 +14,28 @@
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
       max-width: min(90vw, 40rem);
+      max-height: 85vh;
       padding: var(#{$prefix}spacing);
+    }
+
+    // Reinforce UA centering for showModal() — some browsers lose
+    // the default position/inset/margin when author layers are present.
+    :where(dialog[open]) {
+      position: fixed;
+      inset: 0;
+      margin: auto;
+    }
+
+    // When dialog wraps an article, let the article provide all
+    // visual chrome (background, border, padding, radius).
+    :where(dialog:has(> article)) {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    :where(dialog > article) {
+      margin-bottom: 0;
     }
 
     dialog::backdrop {
