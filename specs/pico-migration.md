@@ -823,9 +823,9 @@ nimble buttons have `border: 1px solid` on all four sides. When buttons are laid
 | `package.json` | `@picocss/pico 2.0.3` → `@leftium/nimble.css ^0.7.0` |
 | `pnpm-lock.yaml` | Lockfile update |
 | `src/lib/css/app.scss` | `@use '@picocss/pico/scss/pico' with ($parent-selector: '.pico', $theme-color: 'blue')` → `@use '@leftium/nimble.css/scss' with ($primary-hue: 250)` |
-| `src/routes/+page.svelte` | `class="pico container-fluid" role="none"` → `class="fluid full-bleed"` |
-| `src/routes/bangs/+page.svelte` | `class="table scroll-y vincjo-datatables" style="max-width:auto"` → `class="no-nimble full-bleed table scroll-y vincjo-datatables"` |
-| `src/routes/bangs/sources/+page.svelte` | `class="pico container-fluid"` → `class="fluid full-bleed"` |
+| `src/routes/+page.svelte` | `class="pico container-fluid" role="none"` → `class="fluid bleed-full"` |
+| `src/routes/bangs/+page.svelte` | `class="table scroll-y vincjo-datatables" style="max-width:auto"` → `class="no-nimble bleed-full table scroll-y vincjo-datatables"` |
+| `src/routes/bangs/sources/+page.svelte` | `class="pico container-fluid"` → `class="fluid bleed-full"` |
 
 **Issues encountered:**
 
@@ -836,7 +836,7 @@ nimble buttons have `border: 1px solid` on all four sides. When buttons are laid
 3. **`revert-layer` rejected during prototyping** — Before implementing `@scope`, `all: revert-layer` was tested on the datatable wrapper. It was either too aggressive (reverted grid/flex properties, breaking the datatable's own layout) or too selective (per-property revert lost specificity battles with the datatable's scoped styles). `@scope` cleanly prevents nimble's styles from entering the subtree without affecting the component's own styles.
 
 **Issues NOT encountered:**
-- Layout utilities (`.fluid`, `.full-bleed`) work correctly on `.no-nimble` elements — they're global
+- Layout utilities (`.fluid`, `.bleed-full`) work correctly on `.no-nimble` elements — they're global
 - All three routes (`/`, `/bangs`, `/bangs/sources`) render correctly
 - No SvelteKit `display: contents` issue (handled automatically)
 - Dark mode works automatically
