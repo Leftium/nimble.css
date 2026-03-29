@@ -1,7 +1,7 @@
 // ==========================================================================
 // nimble.css — Grid Column Assignment
-// Assigns body's direct children to the centered content column (column 3).
-// 5-column grid: 1fr | shadow-gap | content | shadow-gap | 1fr
+// Assigns body's direct children to the centered content column (column 2).
+// 3-column grid: 1fr | content | 1fr
 // Global (not scoped) so the body grid layout always applies.
 // ==========================================================================
 
@@ -11,7 +11,7 @@
 @layer nimble.base {
 
   body > * {
-    grid-column: 3;
+    grid-column: 2;
     min-width: 0; // Allow grid children to shrink below intrinsic content width
   }
 
@@ -22,30 +22,30 @@
   // but NOT for CSS selector matching — so body > * misses the actual
   // content elements. This rule mirrors the body > * rule above.
   body > [style*='display: contents'] > * {
-    grid-column: 3;
+    grid-column: 2;
     min-width: 0;
   }
 
   // Content shadow: absolutely-positioned pseudo spanning full body height.
-  // Width matches grid columns 2–4 (gap + content + gap) via the same
-  // min() expression used in the grid definition, plus the two gap columns.
-  // Hidden on small viewports where content is edge-to-edge.
-  @media (min-width: #{$breakpoint-phone}) {
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(
-        #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')},
-        #{string.unquote('calc(100% - 2 * var(#{$prefix}spacing))')}
-      );
-      box-shadow: var(#{$prefix}content-shadow);
-      pointer-events: none;
-      z-index: -1;
-    }
+  // Width = content column + shadow gap on each side, creating a visual
+  // separation between the shadow edge and the content.
+  // The clamp() formula handles visibility: shadow shows at full width when
+  // there's at least 2*gap of space on each side between shadow edge and
+  // viewport edge, otherwise snaps to 0. No breakpoint needed.
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(0px,
+      #{string.unquote('calc((100% - 2 * var(#{$prefix}spacing) - var(#{$prefix}content-width) - 4 * var(#{$prefix}content-shadow-gap)) * 9999)')},
+      #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')}
+    );
+    box-shadow: var(#{$prefix}content-shadow);
+    pointer-events: none;
+    z-index: -1;
   }
 
 }

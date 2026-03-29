@@ -10,16 +10,13 @@
 
       /* Site footer */
       body > footer {
-        grid-column: 1 / -1;
         margin-top: 2rem;
         margin-bottom: calc(-1 * var(--nc-spacing));
         padding: 1.5rem;
         border-top: 1px solid var(--nc-border);
         background-color: var(--nc-surface-2);
       }
-      @media (min-width: 48rem) {
-        body > footer { grid-column: 2 / 5; }
-      }
+
       body > footer ul { list-style: none; padding-left: 0; }
       body > footer a { color: color-mix(in oklch, var(--nc-text), transparent 40%); text-decoration: none; }
       body > footer a:hover { text-decoration: underline; }
@@ -242,12 +239,16 @@
     </main>
 
     <!-- Layout breakout demos must be direct children of <body> for grid-column to work -->
-    <div class="full-bleed" style="background: var(--nc-surface-2); padding: 2rem 1rem; text-align: center;">
-      <p><strong>.full-bleed</strong> — spans the entire viewport width. Useful for hero sections, banners, and images.</p>
+    <div class="bleed-edge" style="background: var(--nc-surface-2); padding: 2rem 1rem; text-align: center;">
+      <p><strong>.bleed-edge</strong> — spans to the shadow/paper edge (content + gap on each side).</p>
     </div>
 
-    <div class="wide" style="background: var(--nc-surface-3); padding: 2rem; text-align: center; border-radius: var(--nc-radius);">
-      <p><strong>.wide</strong> — breaks out to 1200px max-width. Good for dashboards and wide content.</p>
+    <div class="bleed-wide" style="background: var(--nc-surface-3); padding: 2rem; text-align: center; border-radius: var(--nc-radius);">
+      <p><strong>.bleed-wide</strong> — breaks out to 1200px max-width. Good for dashboards and wide content.</p>
+    </div>
+
+    <div class="bleed-full" style="background: var(--nc-surface-2); padding: 2rem 1rem; text-align: center;">
+      <p><strong>.bleed-full</strong> — spans the entire viewport width. Useful for hero sections, banners, and images.</p>
     </div>
 
     <main>
@@ -309,7 +310,7 @@
       <!-- ============================================================ -->
       <section id="no-nimble">
         <h2>Component Isolation (<code>.no-nimble</code>)</h2>
-        <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles. This requires <code>no-nimble.js</code> which wraps scopeable rules in <code>@scope</code> at runtime. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.full-bleed</code>, <code>.wide</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
+        <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles. This requires <code>no-nimble.js</code> which wraps scopeable rules in <code>@scope</code> at runtime. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.bleed-edge</code>, <code>.bleed-wide</code>, <code>.bleed-full</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
         <p>Compare the elements below with the styled versions above — these should render in browser defaults.</p>
 
         <div class="no-nimble">
@@ -360,7 +361,7 @@
 
     </main>
 
-    <footer>
+    <footer class="bleed-edge">
       <nav class="grid">
         <div>
           <strong>nimble.css</strong>

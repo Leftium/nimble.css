@@ -88,7 +88,7 @@ import '@leftium/nimble.css';</code></pre>
         <p>See the <a href="https://github.com/Leftium/nimble.css#readme">README</a> for the full list of config variables.</p>
       </section>
     </main>
-    <footer>
+    <footer class="bleed-edge">
       <nav class="grid">
         <div>
           <strong>nimble.css</strong>
@@ -118,16 +118,13 @@ import '@leftium/nimble.css';</code></pre>
     </footer>
     <style>
       body > footer {
-        grid-column: 1 / -1;
         margin-top: 2rem;
         margin-bottom: calc(-1 * var(--nc-spacing));
         padding: 1.5rem;
         border-top: 1px solid var(--nc-border);
         background-color: var(--nc-surface-2);
       }
-      @media (min-width: 48rem) {
-        body > footer { grid-column: 2 / 5; }
-      }
+
       body > footer ul { list-style: none; padding-left: 0; }
       body > footer a { color: color-mix(in oklch, var(--nc-text), transparent 40%); text-decoration: none; }
       body > footer a:hover { text-decoration: underline; }

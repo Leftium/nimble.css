@@ -2,8 +2,15 @@
 // nimble.css — Layout Utilities
 // Global layout classes that interact with the body grid.
 // Always available, including on .no-nimble elements.
+//
+// Breakout hierarchy (narrow → wide):
+//   (default)    — content column (--nc-content-width)
+//   .bleed-edge  — content + shadow gap on each side (shadow boundary)
+//   .bleed-wide  — up to $wide-width (1200px), centered
+//   .bleed-full  — full viewport width
 // ==========================================================================
 
+@use 'sass:string';
 @use 'config' as *;
 
 @if $enable-utilities {
@@ -24,10 +31,39 @@
       padding-inline: var(#{$prefix}spacing);
     }
 
-    // Break out of centered container to full width.
+    // Break out to shadow/paper edge (content + gap on each side).
+    // Uses the same shadow-visibility condition as the body::before pseudo:
+    // when the shadow is visible, caps at content-width + 2*gap (shadow boundary);
+    // when the shadow is hidden (narrow viewport), goes full width.
     // position: relative creates a stacking context so background
     // covers adjacent siblings' content shadows.
-    .full-bleed {
+    .bleed-edge {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: clamp(
+        #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')},
+        #{string.unquote('calc((100% - 2 * var(#{$prefix}spacing) - var(#{$prefix}content-width) - 4 * var(#{$prefix}content-shadow-gap)) * -9999)')},
+        100%
+      );
+      margin-inline: auto;
+      box-shadow: none;
+      position: relative;
+    }
+
+    // Break out to wide max-width
+    .bleed-wide {
+      grid-column: 1 / -1;
+      box-shadow: none;
+      width: 100%;
+      max-width: #{$wide-width};
+      margin-inline: auto;
+      padding-inline: var(#{$prefix}spacing);
+    }
+
+    // Break out of centered container to full viewport width.
+    // position: relative creates a stacking context so background
+    // covers adjacent siblings' content shadows.
+    .bleed-full {
       grid-column: 1 / -1;
       box-shadow: none;
       position: relative;
@@ -45,16 +81,6 @@
       @media (min-width: #{$breakpoint-phone}) {
         grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
       }
-    }
-
-    // Break out to wide max-width
-    .wide {
-      grid-column: 1 / -1;
-      box-shadow: none;
-      width: 100%;
-      max-width: #{$wide-width};
-      margin-inline: auto;
-      padding-inline: var(#{$prefix}spacing);
     }
 
   }
