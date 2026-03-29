@@ -18,7 +18,7 @@ $enable-details: true !default;
 // so they don't apply inside elements matching this selector.
 // Document-level styles (reset, colors, body grid) remain global.
 // Set to null to disable scoping (all styles apply globally).
-$exclude-selector: '.no-nimble' !default;
+$exclude-selector: null !default;
 
 // --- Colors (oklch parameters) ---
 
