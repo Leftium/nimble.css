@@ -149,7 +149,11 @@ Detect the broken Safari behavior via `@supports` and conditionally exclude `@sc
 
 ### 1.7 Resolution
 
-**Option A was chosen.** The `$exclude-selector` default was changed from `'.no-nimble'` to `null` in `src/_config.scss`. This removes the `@scope` wrapper from the compiled output entirely.
+**Option A was chosen as the CSS-layer fix**, combined with **Option F (JS progressive enhancement)** for users who need `.no-nimble` support.
+
+#### Step 1: CSS — Disable `@scope` by default
+
+The `$exclude-selector` default was changed from `'.no-nimble'` to `null` in `src/_config.scss`. The prebuilt CSS output contains no `@scope` wrapper and works on all browsers.
 
 ```scss
 // src/_config.scss (before)
@@ -159,9 +163,35 @@ $exclude-selector: '.no-nimble' !default;
 $exclude-selector: null !default;
 ```
 
-Users who need the `.no-nimble` opt-out and are not targeting desktop Safari can re-enable it:
+#### Step 2: JS — Optional `nimble-scope.js` for `.no-nimble` support
+
+An optional `nimble-scope.js` script (~20 lines) provides `.no-nimble` component isolation as a progressive enhancement. It:
+
+1. Walks the nimble.css stylesheet's rules at runtime
+2. Re-wraps them in `@scope (:root) to (.no-nimble)` using `adoptedStyleSheets`
+3. Detects the desktop Safari bug (by testing whether a scoped rule actually applies) and skips wrapping on broken browsers
+
+```html
+<!-- Base CSS — works everywhere, no JS required -->
+<link rel="stylesheet" href="nimble.css">
+
+<!-- Optional: enables .no-nimble, auto-skips broken browsers -->
+<script src="nimble-scope.js"></script>
+```
+
+There is **no FOUC risk** because the base styles always apply. The JS only adds the scoping boundary — it doesn't change how anything looks. Elements inside `.no-nimble` lose their nimble styles slightly after page load, which is acceptable (third-party components typically render after the initial paint).
+
+#### Why this two-tier approach
+
+- **CSS works standalone.** nimble.css is a CSS library; it must not require JS for basic functionality.
+- **`.no-nimble` is opt-in via JS.** Users who need component isolation add one `<script>` tag. No SCSS build step required.
+- **Desktop Safari is handled automatically.** The JS detects the bug and gracefully degrades — `.no-nimble` simply has no effect on desktop Safari. This is acceptable because desktop Safari is ~3-4% of global traffic, and `.no-nimble` is itself a niche feature.
+- **SCSS opt-in still available.** Power users can still set `$exclude-selector: '.no-nimble'` at build time for a pure-CSS solution (with the caveat that desktop Safari will be broken). This path is documented with a warning.
+
+Users who need `.no-nimble` and also need desktop Safari support can re-enable it via SCSS, but must accept the desktop Safari limitation:
 
 ```scss
+// ⚠️ WARNING: Broken on desktop Safari 18.x — see specs/safari-bugs.md §1
 @use 'nimble' with (
   $exclude-selector: '.no-nimble'
 );
@@ -173,7 +203,23 @@ Users who need the `.no-nimble` opt-out and are not targeting desktop Safari can
 - CSS cascade layers already provide the primary cascade management strategy. Most third-party component conflicts are resolved by layers alone.
 - The fix reduced `nimble.min.css` from ~23.3 KB to ~23.1 KB (the `@scope` wrapper itself added ~200 bytes of overhead).
 
-### 1.8 WebKit Bug Characteristics
+### 1.8 Related WebKit Bugs
+
+There are **10 open `@scope` bugs** in WebKit Bugzilla as of 2026-03-29. The most relevant:
+
+| Bug | Summary | Status | Filed |
+|---|---|---|---|
+| [#307982](https://bugs.webkit.org/show_bug.cgi?id=307982) | REGRESSION (17.4-26): `@scope` with custom-element scope root stops applying to `:scope` and descendants | P2, unassigned | 2026-02-16 |
+| [#285130](https://bugs.webkit.org/show_bug.cgi?id=285130) | insertRule does not work for inserting `@scope` styles | P2, unassigned | 2024-12-24 |
+| [#297043](https://bugs.webkit.org/show_bug.cgi?id=297043) | Fix `@scope` invalidation when scope-end mutates | P2, assigned (m_dubet) | 2025-07-23 |
+
+**ETA for fix: Unknown, likely 6-12 months.** Most bugs are P2 and unassigned. Safari ships major updates tied to macOS releases (~every 6 months). Even if fixed in WebKit trunk immediately, stable desktop Safari users won't see the fix until the next macOS point release.
+
+**Community workarounds: None found.** `@scope` is new enough that most projects aren't using it in production. The few relevant discussions recommend avoiding `@scope` until browser support matures.
+
+Our bug (styles parsed but not applied to certain element types within `@scope` + `@layer`) is not yet filed. Bug #307982 is the closest match (regression in style application with `@scope`), but involves custom elements and Shadow DOM rather than plain HTML elements.
+
+### 1.10 WebKit Bug Characteristics
 
 This bug has the following unusual characteristics that may help identify it if filing a WebKit bug:
 
