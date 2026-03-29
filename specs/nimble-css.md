@@ -161,7 +161,7 @@ By default, `$exclude-selector` is `null` and no `@scope` wrapper is emitted. Th
 
 For users who need component isolation (`.no-nimble` opt-out), two paths are available:
 
-1. **JS progressive enhancement (recommended):** Include `nimble-scope.js` alongside the CSS. The script wraps rules in `@scope` at runtime and auto-detects broken browsers.
+1. **JS progressive enhancement (recommended):** Include `no-nimble.js` alongside the CSS. The script uses sentinel CSS custom properties to find the boundary between global and scopeable rules, wraps the scopeable portion in `@scope` at runtime, and auto-detects broken browsers.
 2. **SCSS build-time opt-in:** Set `$exclude-selector: '.no-nimble'` for a pure-CSS solution (with the caveat that desktop Safari will be affected).
 
 Layout utilities are intentionally global because they interact with the body grid (e.g., `.full-bleed` sets `grid-column: 1 / -1`). An element with `class="no-nimble full-bleed"` should still participate in the body grid layout even though nimble's component styles (typography, forms, etc.) don't apply inside it.
@@ -962,7 +962,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 .no-nimble       /* opt out of nimble's component styles (see §15.2) */
 ```
 
-The `.no-nimble` class requires opt-in activation — either via `nimble-scope.js` (recommended) or the `$exclude-selector` SCSS flag. Without activation, the class has no effect. See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for details.
+The `.no-nimble` class requires opt-in activation — either via `no-nimble.js` (recommended) or the `$exclude-selector` SCSS flag. Without activation, the class has no effect. See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for details.
 
 **Total class count: ~10** (~9 utilities + `.no-nimble` opt-out).
 
@@ -1249,10 +1249,10 @@ By default, `.no-nimble` is **not active** in the prebuilt CSS. The `@scope` wra
 
 ```html
 <link rel="stylesheet" href="nimble.css">
-<script src="nimble-scope.js"></script>
+<script src="no-nimble.js"></script>
 ```
 
-The `nimble-scope.js` script (~20 lines) wraps nimble's component rules in `@scope` at runtime using `adoptedStyleSheets`. It auto-detects the desktop Safari bug and gracefully degrades (`.no-nimble` has no effect on broken browsers). No FOUC — base styles always apply; the JS only adds the scoping boundary.
+The `no-nimble.js` script locates nimble's stylesheet via sentinel CSS custom properties (`--nimble-scope-start`) embedded in the compiled CSS. It splits each `@layer` block at the sentinel boundary — rules before are global, rules after are scopeable — then wraps the scopeable portion in `@scope (:root) to (.no-nimble)` using `adoptedStyleSheets`. It auto-detects the desktop Safari `@scope` + `@layer` bug via a real element probe test and gracefully degrades (`.no-nimble` has no effect on broken browsers). If the stylesheet already contains a `CSSScopeRule` (from the SCSS `$exclude-selector` flag), it no-ops to avoid double-scoping. No FOUC — base styles always apply; the JS only adds the scoping boundary.
 
 *Path 2: SCSS build-time opt-in:*
 
@@ -1476,7 +1476,7 @@ Utilities, extended demo, and final validation.
 - Flip model (nimble = core without extras, nimble-full = everything): `nimble.min.css` 15,796 B / gzipped ~3.8 KB / brotli ~3.3 KB
 - Fix progress by excluding from reset `background-repeat` rule; progress add-on fully opt-in: `nimble.min.css` 15,809 B / gzipped ~3.8 KB / brotli ~3.3 KB
   - Add `@scope`-based `.no-nimble` opt-out: split SCSS into global vs scopeable modules; component styles wrapped in `@scope (:root) to (.no-nimble)`; layout utilities kept global: `nimble.min.css` 22,655 B / `nimble-core.min.css` 18,978 B
-  - Disable `@scope` by default due to desktop Safari 18.x bug (styles parsed but not applied to input/select/textarea/details inside `@scope` + `@layer`). `.no-nimble` becomes opt-in via `nimble-scope.js` (JS progressive enhancement) or `$exclude-selector` SCSS flag. See `specs/safari-bugs.md`.
+  - Disable `@scope` by default due to desktop Safari 18.x bug (styles parsed but not applied to input/select/textarea/details inside `@scope` + `@layer`). `.no-nimble` becomes opt-in via `no-nimble.js` (JS progressive enhancement) or `$exclude-selector` SCSS flag. See `specs/safari-bugs.md`.
 
 ---
 

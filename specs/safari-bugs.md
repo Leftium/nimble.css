@@ -163,23 +163,27 @@ $exclude-selector: '.no-nimble' !default;
 $exclude-selector: null !default;
 ```
 
-#### Step 2: JS — Optional `nimble-scope.js` for `.no-nimble` support
+#### Step 2: JS — Optional `no-nimble.js` for `.no-nimble` support
 
-An optional `nimble-scope.js` script (~20 lines) provides `.no-nimble` component isolation as a progressive enhancement. It:
+An optional `no-nimble.js` script provides `.no-nimble` component isolation as a progressive enhancement. It:
 
-1. Walks the nimble.css stylesheet's rules at runtime
-2. Re-wraps them in `@scope (:root) to (.no-nimble)` using `adoptedStyleSheets`
-3. Detects the desktop Safari bug (by testing whether a scoped rule actually applies) and skips wrapping on broken browsers
+1. Locates the nimble.css stylesheet via sentinel CSS custom properties (`--nimble-scope-start`) embedded in the compiled CSS
+2. Splits each `@layer` block at the sentinel boundary — rules before are global (reset, colors, document, grid, layout utilities, print), rules after are scopeable (typography, forms, tables, buttons, component utilities)
+3. Wraps the scopeable portion in `@scope (:root) to (.no-nimble)` using `adoptedStyleSheets`
+4. Detects the desktop Safari `@scope` + `@layer` bug (via a real element probe test) and skips wrapping on broken browsers
+5. Guards against double-scoping — if the stylesheet already contains a `CSSScopeRule` (from the SCSS `$exclude-selector` flag), it no-ops
 
 ```html
 <!-- Base CSS — works everywhere, no JS required -->
 <link rel="stylesheet" href="nimble.css">
 
 <!-- Optional: enables .no-nimble, auto-skips broken browsers -->
-<script src="nimble-scope.js"></script>
+<script src="no-nimble.js"></script>
 ```
 
 There is **no FOUC risk** because the base styles always apply. The JS only adds the scoping boundary — it doesn't change how anything looks. Elements inside `.no-nimble` lose their nimble styles slightly after page load, which is acceptable (third-party components typically render after the initial paint).
+
+**Sentinel markers:** The compiled CSS contains two sentinel rules — `@layer nimble.base { :root { --nimble-scope-start: 1 } }` and `@layer nimble.utilities { :root { --nimble-scope-start: 1 } }` — placed between global and scopeable modules in the SCSS source. Lightning CSS merges `@layer` blocks during minification, so the sentinels end up inside the merged blocks. The JS splits within each layer block at the sentinel, not just at the top level. CSS comments cannot be used as markers because Lightning CSS strips them.
 
 #### Why this two-tier approach
 
