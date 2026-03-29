@@ -129,7 +129,7 @@ Projects with form elements (rift-transcription, veneer, weather-sense) have han
 - Create or update `src/app.css` with nimble import
 - Update `+layout.svelte` to import app.css
 - Remove duplicated `max-width`/`margin`/`padding`/`font-family` from 3 pages
-- Set `--nc-content-width: 640px` (narrower than nimble's 720px default)
+- Set `--nc-content-width: 640px` (narrower than nimble's `60ch` default)
 - Possibly add `.no-nimble` on TranscriptArea container
 - Remove or reduce custom form styles that nimble now provides
 
@@ -241,7 +241,7 @@ Projects with form elements (rift-transcription, veneer, weather-sense) have han
 - **Custom elements everywhere** — `<d-item>`, `<d-title>`, `<d-metadata>`, `<s-points>`, `<s-comments>`, `<s-time>`, `<s-url>`, `<s-scroll>`, `<s-index>`, `<wrap-page>`, `<s-config>`, `<s-top-icon>`. nimble won't style any of these — no conflicts.
 - **`wrap-page` element** — Has `box-shadow` and border styling at the `42.875em` breakpoint. nimble's body grid replaces the centering but `wrap-page` styling is project-specific.
 - **Open Props tokens** — Used throughout (`--size-1` through `--size-6`, `--font-size-0` through `--font-size-2`, `--font-weight-2/4/6`, `--shadow-6`). These are independent of nimble and should remain.
-- **Content width** — Currently `42.875em` (686px). nimble defaults to `60ch` (~720px). Either keep `42.875em` via `--nc-content-width` or adjust.
+- **Content width** — Currently `42.875em` (686px). nimble defaults to `60ch`. Either keep `42.875em` via `--nc-content-width` or adjust.
 - **CSS `light-dark()` function** — Project uses this modern CSS feature for dark mode. nimble also uses `light-dark()`. Good alignment.
 - **Config page form controls** — Radio button groups use CSS `columns: 150px` (multi-column layout). nimble's form styling may change radio/checkbox appearance. Verify.
 - **Progressive enhancement** — `.js-only` / `.no-js-only` classes toggled on `<html>`. No conflict with nimble.
@@ -577,7 +577,7 @@ Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.conta
 12. Kept all `pre`/`pre code` styles on sherpa and local-setup (project adds border, specific font)
 13. Kept `.copy-btn` overlay styles on sherpa/local-setup (positioned absolute, white background — intentionally different from standard buttons)
 
-**Content width:** Using nimble default (`60ch` ≈ 720px) instead of original `640px`. Wider but not dramatically different — can set `--nc-content-width: 640px` if needed.
+**Content width:** Using nimble default (`60ch`) instead of original `640px`. Wider but not dramatically different — can set `--nc-content-width: 640px` if needed.
 
 **TranscriptArea:** `.no-nimble` turned out to be unnecessary — the component's scoped styles (`.input`, `.preview`) explicitly set every property that matters (padding, margin, font, border, background, width, position) and beat nimble's `:where()` selectors. The debug `<details>` inside the component gets nimble's details styling (border, animation) which is a visual improvement.
 

@@ -261,7 +261,7 @@ Content is always centered with real padding. No breakpoints needed. This means:
 - The `.container` class exists but serves a different purpose (re-centering inside `.fluid` layouts).
 - Breakout content uses `.bleed-edge` (shadow boundary), `.bleed-wide` (1200px), or `.bleed-full` (viewport).
 
-**Migration note:** If your Pico project wraps everything in `<main class="container">`, you can keep it (nimble's `.container` applies `max-width` + `margin-inline: auto`), but you may not need it. The body grid already centers direct children at `--nc-content-width` (720px).
+**Migration note:** If your Pico project wraps everything in `<main class="container">`, you can keep it (nimble's `.container` applies `max-width` + `margin-inline: auto`), but you may not need it. The body grid already centers direct children at `--nc-content-width` (`60ch`).
 
 ### 3.3 Container Width
 

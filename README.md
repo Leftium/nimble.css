@@ -92,14 +92,15 @@ That's it. Write semantic HTML and it just works.
 
 ## Utility Classes
 
-Content is centered at `720px` by default — no class needed. These opt-in utilities handle the rest. Disable all with `$enable-utilities: false`.
+Content is centered at `60ch` by default — no class needed. These opt-in utilities handle the rest. Disable all with `$enable-utilities: false`.
 
 | Class | Description |
 |---|---|
 | `.fluid` | Full viewport width with padding (opt out of centering) |
 | `.container` | Re-center content inside a `.fluid` layout |
-| `.full-bleed` | Break out of centered layout to full width |
-| `.wide` | Break out to wide max-width (1200px) |
+| `.bleed-full` | Break out of centered layout to full viewport width |
+| `.bleed-wide` | Break out to wide max-width (1200px) |
+| `.bleed-edge` | Break out to shadow/paper edge (tracks shadow visibility) |
 | `.striped` | Striped table rows (apply to table wrapper) |
 | `.visually-hidden` | Hidden visually, accessible to screen readers |
 | `.overflow-auto` | Scrollable container |
@@ -109,11 +110,11 @@ Content is centered at `720px` by default — no class needed. These opt-in util
 nimble.css styles can conflict with third-party components (datatables, rich text editors, etc.) that expect unstyled elements. Add `.no-nimble` to opt out of nimble's component styles inside a subtree:
 
 ```html
-<main class="fluid full-bleed">
+<main class="fluid bleed-full">
   <h1>Styled by nimble</h1>
 
   <!-- Third-party component: nimble styles don't apply inside -->
-  <div class="no-nimble full-bleed">
+  <div class="no-nimble bleed-full">
     <ThirdPartyDataTable />
   </div>
 </main>
@@ -121,7 +122,7 @@ nimble.css styles can conflict with third-party components (datatables, rich tex
 
 **What's excluded:** Typography, links, buttons, forms, tables, code, media, article, details, dialog, and non-layout utilities.
 
-**What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`), and print styles. This means layout classes work on `.no-nimble` elements.
+**What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.bleed-full`, `.bleed-wide`, `.bleed-edge`, `.container`), and print styles. This means layout classes work on `.no-nimble` elements.
 
 This works via CSS `@scope` (Chrome 118+, Safari 17.4+, Firefox 128+). To disable scoping entirely (smaller output, no opt-out):
 
@@ -161,7 +162,7 @@ Override at runtime — no build step needed. Hover and focus states auto-derive
   /* Layout */
   --nc-spacing: 1rem;
   --nc-radius: 0.25rem;
-  --nc-content-width: 720px;
+  --nc-content-width: 60ch;
 }
 ```
 
@@ -219,7 +220,7 @@ Build a CSS file with new defaults. SCSS-unique options listed first; the rest m
   // Layout
   $spacing: 1rem,
   $radius: 0.25rem,
-  $content-width: 720px,
+  $content-width: 60ch,
 );
 ```
 
