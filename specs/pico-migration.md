@@ -80,16 +80,18 @@ Pico's `.container` defaults to ~1200px (varies by breakpoint). nimble's centere
 If your project uses third-party components (datatables, rich text editors, etc.) that nimble's element styles interfere with, add `class="no-nimble"` to their wrapper:
 
 ```html
-<div class="no-nimble full-bleed">
+<div class="no-nimble bleed-full">
   <ThirdPartyDataTable />
 </div>
 ```
 
-nimble's component styles (typography, forms, tables, etc.) won't apply inside `.no-nimble` elements. Layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) still work. See the [nimble spec §15.2](nimble-css.md#152-third-party-component-isolation-no-nimble-opt-out) for details.
+nimble's component styles (typography, forms, tables, etc.) won't apply inside `.no-nimble` elements. Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.container`) still work. See the [nimble spec §15.2](nimble-css.md#152-third-party-component-isolation-no-nimble-opt-out) for details.
 
 ### 1.6 Check for Pico-specific classes
 
 Replace or remove any Pico-specific classes. See the [Feature Comparison Matrix](#2-feature-comparison-matrix) for mappings.
+
+> **Note:** nimble.css v0.12+ renamed breakout classes: `.full-bleed` → `.bleed-full`, `.wide` → `.bleed-wide`, and added `.bleed-edge`. Migration log entries (§6.x) written before this rename still reference the old class names. Projects migrated before v0.12 should update: `.full-bleed` → `.bleed-full`, `.wide` → `.bleed-wide`.
 
 ### 1.7 Verify visually
 
@@ -116,10 +118,11 @@ This is the **single largest source of layout dimension mismatches** — without
 
 ### 1.9 Full-bleed header backgrounds
 
-Pico's `<header>` is a normal block element spanning the viewport. nimble's body grid constrains all children to the content column. If your header has a background color that should span full width:
+Pico's `<header>` is a normal block element spanning the viewport. nimble's body grid constrains all children to the content column. If your header has a background color that should span full width, use a bleed utility class:
 
-```css
-header { grid-column: 1 / -1; }
+```html
+<header class="bleed-full">...</header>   <!-- full viewport width -->
+<header class="bleed-edge">...</header>   <!-- aligns with shadow boundary -->
 ```
 
 ### 1.10 Override surface colors (if needed)
@@ -204,8 +207,9 @@ These work identically in both libraries (write semantic HTML, get styled output
 | Centered content | `.container` class (max-width + breakpoints) | Body CSS Grid (automatic) | nimble centers by default; no class needed. |
 | Content width | ~1200px (varies by breakpoint) | `60ch` (`--nc-content-width`, aligns with OpenProps `--size-content-3`) | Overridable via CSS custom property. |
 | Full-width layout | No built-in fluid mode | `.fluid` class on body | |
-| Full-bleed breakout | Not supported | `.full-bleed` class | |
-| Wide breakout | Not supported | `.wide` class | |
+| Shadow-edge breakout | Not supported | `.bleed-edge` class | Aligns with shadow boundary; full-width when shadow hidden |
+| Wide breakout | Not supported | `.bleed-wide` class | Up to 1200px, centered |
+| Full-bleed breakout | Not supported | `.bleed-full` class | Full viewport width |
 
 ### 2.5 Theming / Customization
 
@@ -255,7 +259,7 @@ body > * { grid-column: 2; }
 Content is always centered with real padding. No breakpoints needed. This means:
 - You don't need `class="container"` on a wrapper element for basic centering.
 - The `.container` class exists but serves a different purpose (re-centering inside `.fluid` layouts).
-- Full-bleed content is possible with `grid-column: 1 / -1`.
+- Breakout content uses `.bleed-edge` (shadow boundary), `.bleed-wide` (1200px), or `.bleed-full` (viewport).
 
 **Migration note:** If your Pico project wraps everything in `<main class="container">`, you can keep it (nimble's `.container` applies `max-width` + `margin-inline: auto`), but you may not need it. The body grid already centers direct children at `--nc-content-width` (720px).
 

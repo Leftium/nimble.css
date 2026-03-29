@@ -138,7 +138,7 @@ nimble.css splits its styles into two categories:
 - Colors/custom properties (`_colors.scss`)
 - Document/body grid (`_document.scss`)
 - Grid column assignment (`_grid-columns.scss`)
-- Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.full-bleed`, `.grid`, `.wide`, `.container`
+- Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.grid`, `.container`
 - Print styles (`_print.scss`)
 
 **Scopeable styles** — emitted globally by default, optionally wrappable in `@scope`:
@@ -164,7 +164,7 @@ For users who need component isolation (`.no-nimble` opt-out), two paths are ava
 1. **JS progressive enhancement (recommended):** Include `no-nimble.js` alongside the CSS. The script uses sentinel CSS custom properties to find the boundary between global and scopeable rules, wraps the scopeable portion in `@scope` at runtime, and auto-detects broken browsers.
 2. **SCSS build-time opt-in:** Set `$exclude-selector: '.no-nimble'` for a pure-CSS solution (with the caveat that desktop Safari will be affected).
 
-Layout utilities are intentionally global because they interact with the body grid (e.g., `.full-bleed` sets `grid-column: 1 / -1`). An element with `class="no-nimble full-bleed"` should still participate in the body grid layout even though nimble's component styles (typography, forms, etc.) don't apply inside it.
+Layout utilities are intentionally global because they interact with the body grid (e.g., `.bleed-full` sets `grid-column: 1 / -1`). An element with `class="no-nimble bleed-full"` should still participate in the body grid layout even though nimble's component styles (typography, forms, etc.) don't apply inside it.
 
 See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for usage details and design rationale.
 
@@ -265,7 +265,7 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
   /* --- Spacing & Layout --- */
   --nc-radius:             /* default border radius */
   --nc-spacing:            /* base spacing unit */
-  --nc-content-width:      /* max-width for centered container (~720px) */
+  --nc-content-width:      /* max-width for centered container (60ch, ~480-600px depending on font) */
 }
 ```
 
@@ -277,7 +277,7 @@ Compared to the original draft's ~25, we cut:
 - `transition` -- hardcoded `0.2s ease-in-out`
 - `text-1` / `text-2` -- replaced by single `--nc-text`; muted text uses `color-mix()` inline
 - `text-heading` -- headings differentiate via size, not color
-- `wide-width` -- hardcoded in `.wide` utility
+- `wide-width` -- hardcoded in `.bleed-wide` utility
 - `line-height`, `font-size` -- hardcoded sensible defaults (1.5, 100%)
 
 ### 4.4 Why These Specific Properties
@@ -482,24 +482,35 @@ body > * {
 This approach (from simple.css) is superior to PicoCSS's max-width + breakpoint approach because:
 - Content is centered with real padding (not zero-padding with width tricks).
 - No breakpoints needed for basic centering.
-- Full-bleed elements can use `grid-column: 1 / -1`.
+- Full-bleed elements can use `.bleed-full` (or `grid-column: 1 / -1`).
 
 **Content width defaults:**
-- `--nc-content-width: 720px` (approximately 65ch at 16px base, good for readability)
+- `--nc-content-width: 60ch` (aligns with Open Props `--size-content-3`; ~480-600px depending on font, good for readability)
 - Overridable per-element or globally
 
 **Breaking out of the container:**
 
+Breakout hierarchy (narrow -> wide):
+- `.bleed-edge` — content + shadow gap on each side (shadow boundary); goes full-width when shadow is hidden
+- `.bleed-wide` — up to 1200px, centered
+- `.bleed-full` — full viewport width
+
 ```css
-.full-bleed {
+.bleed-edge {
   grid-column: 1 / -1;
+  max-width: clamp(content-width + 2*gap, ..., 100%); /* shadow-aware */
+  margin-inline: auto;
 }
 
-.wide {
+.bleed-wide {
   grid-column: 1 / -1;
   max-width: 1200px;
   margin-inline: auto;
   padding-inline: var(--nc-spacing);
+}
+
+.bleed-full {
+  grid-column: 1 / -1;
 }
 ```
 
@@ -567,7 +578,7 @@ line-height: 1.5;
 PicoCSS scales font-size from 100% to 131.25% across 6 breakpoints. nimble.css uses a simpler approach:
 
 - Base size stays at `100%` for all viewports.
-- On the phone breakpoint, headings scale down slightly.
+- Headings use the same size at all viewport widths (no breakpoint scaling). The differences were too small to justify a jarring layout shift.
 - Users who want larger text on large screens can set `font-size: 112.5%` on `:root`.
 
 ### 8.3 Heading Scale
@@ -581,11 +592,7 @@ h5: 1.125rem  (18px)   line-height: 1.4
 h6: 1rem      (16px)   line-height: 1.5
 ```
 
-On the phone breakpoint (`max-width: 720px`):
-
-```
-h1: 1.75rem   h2: 1.5rem   h3: 1.3rem
-```
+Heading sizes are the same at all viewport widths. The previous phone-breakpoint scale-down (h1: 1.75rem, h2: 1.5rem, h3: 1.3rem) was removed — the differences were too small (3-4px) to justify a jarring layout shift, and `text-wrap: balance` handles long headings on narrow screens.
 
 ### 8.4 Vertical Rhythm
 
@@ -931,9 +938,10 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 ```css
 .container       /* centered content width (useful inside fluid layout) */
 .fluid           /* full viewport width with padding */
-.full-bleed      /* break out of centered container to full width */
+.bleed-edge      /* break out to shadow/paper boundary (content + gap); full-width when shadow hidden */
+.bleed-wide      /* break out to 1200px max-width */
+.bleed-full      /* break out to full viewport width */
 .grid            /* responsive equal-column grid (1fr mobile, auto-fit desktop) */
-.wide            /* break out to 1200px max-width */
 ```
 
 ### 10.2 Buttons (Scoped)
@@ -964,7 +972,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 
 The `.no-nimble` class requires opt-in activation — either via `no-nimble.js` (recommended) or the `$exclude-selector` SCSS flag. Without activation, the class has no effect. See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for details.
 
-**Total class count: ~10** (~9 utilities + `.no-nimble` opt-out).
+**Total class count: ~11** (~10 utilities + `.no-nimble` opt-out).
 
 ## 11. Breakpoints
 
@@ -976,15 +984,17 @@ nimble.css uses:
 
 | Name | Value | Purpose |
 |---|---|---|
-| `phone` | `max-width: 720px` | Scale down headings, make form inputs full-width |
+| `phone` | `max-width: 720px` | Make form inputs full-width, collapse `.grid` to single column |
 | `tablet` (optional) | `max-width: 1024px` | May be used for wide-content breakout adjustments |
 
 That's it. The grid-based centered layout is inherently responsive without breakpoints.
 
 ### 11.2 What Changes at the Phone Breakpoint
 
-- Headings h1-h3 scale down (see Section 8.3).
 - Form inputs, select, and textarea go full-width.
+- `.grid` collapses to a single column.
+
+The content shadow visibility is **not** controlled by the phone breakpoint — it uses a `clamp()` formula that snaps the shadow to 0 width when there isn't enough space for meaningful gaps between the shadow edge and viewport edge. This means the shadow disappears at a content-width-dependent threshold, not at a fixed pixel breakpoint.
 
 ## 12. File Structure & Build
 
@@ -999,7 +1009,7 @@ nimble.css/
     _colors.scss             # Color properties (oklch generation + light-dark())
     _document.scss           # html, body, *, ::selection
     _grid-columns.scss       # Global: body grid column assignment (body > *)
-    _layout-utilities.scss   # Global: .fluid, .full-bleed, .grid, .wide, .container
+    _layout-utilities.scss   # Global: .fluid, .bleed-edge, .bleed-wide, .bleed-full, .grid, .container
     _scopeable.scss          # Mixin loading scopeable modules via meta.load-css()
     _typography.scss         # Scopeable: headings, p, lists, blockquote, hr, mark
     _links.scss              # Scopeable: a
@@ -1093,7 +1103,7 @@ $font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro',
 // --- Spacing & Layout ---
 $spacing: 1rem !default;
 $radius: 0.25rem !default;
-$content-width: 720px !default;
+$content-width: 60ch !default;
 $wide-width: 1200px !default;
 
 // --- Breakpoints ---
@@ -1208,7 +1218,7 @@ Published via GitHub Pages, built by CI. No built CSS in the repo.
 Lessons from MVP.css, new.css, and HN discussions:
 
 - **MVP.css** abuses semantic HTML (using `aside` for cards, `a strong` for buttons) to avoid classes. This harms accessibility and confuses developers.
-- **Pure classless is insufficient** for real-world use. You need at least: a way to distinguish primary/secondary buttons, striped tables, layout modes, and full-bleed content.
+- **Pure classless is insufficient** for real-world use. You need at least: a way to distinguish primary/secondary buttons, striped tables, layout modes, and bleed/breakout content.
 - **Minimum viable classes**: nimble.css uses ~9 classes total. Every class has a clear, non-overlapping purpose.
 
 ### 15.2 Third-Party Component Isolation (`.no-nimble` Opt-Out)
@@ -1229,17 +1239,17 @@ This means nimble's component styles apply everywhere **except** inside elements
 
 ```html
 <!-- nimble styles apply here -->
-<main class="fluid full-bleed">
+<main class="fluid bleed-full">
   <h1>Styled by nimble</h1>
 
   <!-- nimble component styles do NOT apply inside this element -->
-  <div class="no-nimble full-bleed">
+  <div class="no-nimble bleed-full">
     <ThirdPartyDataTable />
   </div>
 </main>
 ```
 
-Note that layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) are global, so they work on `.no-nimble` elements — you can still control layout while opting out of nimble's component styling.
+Note that layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.container`) are global, so they work on `.no-nimble` elements — you can still control layout while opting out of nimble's component styling.
 
 **Enabling `.no-nimble` — two paths:**
 
@@ -1459,7 +1469,7 @@ One partial per element group. Each can be implemented and visually tested indep
 
 Utilities, extended demo, and final validation.
 
-- [x] `src/_utilities.scss` — `.container`, `.fluid`, `.full-bleed`, `.wide`, `.striped`, `.visually-hidden`, `.overflow-auto` (in `@layer nimble.utilities`, behind `$enable-utilities`)
+- [x] `src/_utilities.scss` — `.container`, `.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.striped`, `.visually-hidden`, `.overflow-auto` (in `@layer nimble.utilities`, behind `$enable-utilities`)
 - [x] Wire `_utilities.scss` in `nimble.scss`
 - [x] Fix input backgrounds — replaced `surface-3` with `color-mix(in oklch, surface-1, surface-2 20%)` via private `--_input-bg` variable
 - [x] `demo/extended.html` — layout modes, button variants + groups (including same-type groups), form patterns (login/registration/search with pill-shaped search bar), surface hierarchy swatches, dark mode toggle, striped table, dialog demo
@@ -1467,7 +1477,7 @@ Utilities, extended demo, and final validation.
 - [x] Light-mode `text-2` lightened from L=0.450 to L=0.580 for visible distinction from `text-1` (L=0.280)
 - [x] Button group fixes — stripped margin on children, box-shadow dividers between same-type siblings, pill-shaped search groups via `[role="search"] [role="group"]`
 - [x] Outline button hover keeps outline style (subtle `primary-focus` tint instead of solid fill)
-- [x] `.wide` utility: added `width: 100%` so it stretches within `grid-column: 1 / -1`
+- [x] `.bleed-wide` utility (formerly `.wide`): added `width: 100%` so it stretches within `grid-column: 1 / -1`
 - [x] Measure `dist/nimble.min.css` against size budget — 11,924 B min / **3,131 B gzipped** (budget: <8 KB min+gz)
 - [x] Verify: all four feature flags (`$enable-dialog`, `$enable-switch`, `$enable-details`, `$enable-utilities`) correctly exclude output when disabled
 - Output: `nimble.css` 15,467 B / `nimble.min.css` 11,924 B / gzipped ~3.1 KB

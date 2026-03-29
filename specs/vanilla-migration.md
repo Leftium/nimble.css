@@ -26,7 +26,7 @@ Adding nimble.css to these projects provides:
 - **CSS reset** (replaces `sanitize.css` where present)
 - **Typography baseline** (heading scale, body text, list spacing, `text-wrap: balance`)
 - **Form styling** (inputs, selects, textareas, buttons, checkboxes, switches)
-- **Body grid layout** (centered content column, full-bleed/wide breakouts)
+- **Body grid layout** (centered content column, `.bleed-edge`/`.bleed-wide`/`.bleed-full` breakouts)
 - **Light/dark mode** via `light-dark()` and `color-scheme`
 - **Cascade layers** (`@layer nimble.reset, nimble.base, nimble.utilities`) — unlayered project CSS always wins
 
@@ -541,7 +541,7 @@ When nimble's element styles conflict with a component's own styling:
 <TranscriptArea class="no-nimble" />
 ```
 
-Layout utilities (`.fluid`, `.full-bleed`, `.wide`, `.container`) still work inside `.no-nimble`. Only nimble's component styles (typography, forms, tables) are excluded.
+Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.container`) still work inside `.no-nimble`. Only nimble's component styles (typography, forms, tables) are excluded.
 
 **Candidates for `.no-nimble` in these projects:**
 - rift-transcription: TranscriptArea overlay container
