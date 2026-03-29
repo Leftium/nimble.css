@@ -736,6 +736,8 @@ nimble.css applied `hr { margin: calc(var(--nc-spacing) * 2) 0 }` — twice the 
 
 8. **Hidden placeholder `<blockquote>` takes space** — `visibility: hidden` reserves layout space. **Fix:** `blockquote[style*="hidden"] { display: none }` scoped to the editor header.
 
+9. **Double padding from `.container` on body-grid child** — `<main class="container">` carried over from Pico migration. Pico's `.container` provided both centering and `padding-inline`. nimble's body grid already centers `<main>` in the content column (with `--nc-spacing` gap baked into the column formula), so `.container` added a second `padding-inline: --nc-spacing`. **Fix:** remove `class="container"` from `<main>`. (Issue #13)
+
 **Issues NOT encountered:**
 - `[role="group"]` button groups transfer cleanly — nimble's partial-height dividers are an improvement over Pico's approach
 - `<details>`/`<summary>` accordion works with nimble's open/close animation
@@ -844,3 +846,21 @@ nimble buttons have `border: 1px solid` on all four sides. When buttons are laid
 - `$primary-hue: 250` SCSS customization works correctly via `@use ... with (...)`
 
 **Significance:** This migration drove the creation of nimble.css's `@scope`-based `.no-nimble` opt-out feature (v0.7.0). It validated the global-vs-scopeable architecture split and confirmed that layout utilities must remain global while component styles are scoped.
+
+### Issue 13: `.container` on a body-grid child causes double padding
+
+**Severity:** Migration friction
+**Status:** Fixed in multi-launch (app-side)
+
+Pico's `.container` provided both centering (`max-width` + `margin-inline: auto`) and horizontal breathing room (`padding-inline`). Projects migrating from Pico often retain `class="container"` on `<main>` or other body-grid children.
+
+In nimble, the body grid already provides the horizontal gap: the column formula `min(--nc-content-width, calc(100% - 2 * --nc-spacing))` guarantees `--nc-spacing` clearance from the viewport/shadow edge. nimble applies no styles to `<main>` by default. Adding `.container` (which sets `padding-inline: var(--nc-spacing)`) on top of the grid column creates a second layer of inset, visually doubling the side padding.
+
+**Fix:** Remove `class="container"` from direct body-grid children (`<main>`, `<div>`, etc.). The body grid handles centering; `.container` is only needed inside `.fluid` layouts to re-introduce a centered max-width.
+
+```diff
+- <main class="container">
++ <main>
+```
+
+**Note:** This only affects elements that are direct children of `<body>` (or framework wrappers like SvelteKit's `display: contents` div). Inner elements with their own `max-width` and no `margin-inline: auto` are a different issue — see §3.8.
