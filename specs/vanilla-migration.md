@@ -709,3 +709,11 @@ Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.conta
 - Open Props SCSS (`@use 'open-props-scss' as *`) is imported in 13 files — this coexists fine with nimble, but the `--app-*` variable system built on top of it would need remapping
 - Net CSS reduction: ~170-200 lines out of 2,785 (6-7%), with 50-100 lines of bridge/override code needed
 - Only `presets/+page.svelte` (57 lines, basic content page) would meaningfully benefit from nimble defaults
+
+**Custom element analysis (evaluated 2026-03-31):**
+
+Considered porting custom elements back to standard HTML to increase nimble's classless coverage. Investigation showed this does not change the calculus:
+
+- **Category A — Reader Mode preventions (5 elements):** `d-article`, `d-header`, `d-main`, `d-footer`, `d-section` were deliberately renamed from standard elements (commit `fe0e8bc`, 2026-02-22) to prevent Safari Reader Mode on the veneer viewer page. The viewer renders markdown with `<p>`, `<h1>`, etc. inside an `article > header + main + footer` structure — the exact heuristic Safari uses. Reverting them re-introduces a real UX bug. Even if reverted, nimble's classless styling for those elements doesn't match veneer's bespoke layout (glassmorphism gradient scrim, sticky preview, swiper integration, dynamic width via `--table-width`) — you'd immediately need `.no-nimble` or heavy overrides on the article, defeating the purpose.
+- **Category B — Layout elements (~28 elements):** `gh`, `gd`, `gz`, `grid-table`, `nav-buttons`, `pl-*`, `fi-*`, `d-wrap`, `d-card`, `s-icon`, etc. were never standard HTML — they're structural CSS hooks. Converting to `<div class="...">` is a cosmetic refactor that gives nimble zero additional surface area, since nimble doesn't style generic divs.
+- **Conclusion:** The custom elements are not the bottleneck. The project's design system (`--app-*` variables, Open Props SCSS pervasiveness, bespoke layouts) is fundamentally a different paradigm than nimble's classless approach.
