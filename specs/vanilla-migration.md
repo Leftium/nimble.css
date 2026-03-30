@@ -679,8 +679,33 @@ Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.conta
 
 ### 6.5 weather-sense
 
-**Status:** Not started
+**Status:** Skipped
+**Date:** 2026-03-30
+
+**Rationale:** Cost/benefit analysis determined migration is not worthwhile. The project previously migrated *away* from PicoCSS to sanitize.css specifically to avoid framework interference with its highly custom UI. Adding nimble.css would partially reverse that decision.
+
+**Key findings:**
+- ~1,783 lines of custom CSS across 12 files, with the main dashboard being the heaviest (529 lines)
+- Nearly every form element uses `appearance: none` with bespoke styling: gradient-border checkboxes, glassmorphic buttons with `backdrop-filter` and `color-mix()`, cross-browser custom range slider
+- `.no-nimble` would be needed on the main dashboard checkboxes, DailyTiles buttons, RadarTimeline range slider, and wmo-codes buttons — essentially every interactive element
+- Only `/radar` (table) and `/aqi` (details/summary, article cards) would benefit from nimble defaults, and both already work fine with minimal CSS
+- The existing `.container` class (max-width 960px) would collide with nimble's body grid
+- Net CSS reduction: approximately zero — lines saved by removing sanitize.css imports and `.container` would be offset by `.no-nimble` wrappers and override rules
 
 ### 6.6 veneer
 
-**Status:** Not started
+**Status:** Skipped
+**Date:** 2026-03-30
+
+**Rationale:** Marginal benefit (~6-7% CSS reduction) does not justify the integration effort and risk.
+
+**Key findings:**
+- ~2,785 lines of custom CSS across 23 files
+- `forms.scss` (169 lines) is nearly identical to nimble's form layer but uses a different variable system (`--app-*` vs `--nc-*`). Replacing it would require remapping custom properties across the project.
+- ~30 custom HTML elements (`d-article`, `d-header`, `gh`, `gd`, `pl-*`, `fi-*`, `grid-table`, `nav-buttons`, etc.) mean nimble's classless element styling has very limited reach — most UI intentionally avoids standard elements to prevent iOS Safari Reader Mode activation
+- `html { font-size: 115% }` conflicts with nimble's `100%` default, affecting all rem/em-based sizing
+- nimble's `body { display: grid }` would break veneer's existing layout approach
+- `fieldset` border conflict: nimble adds borders, veneer strips them
+- Open Props SCSS (`@use 'open-props-scss' as *`) is imported in 13 files — this coexists fine with nimble, but the `--app-*` variable system built on top of it would need remapping
+- Net CSS reduction: ~170-200 lines out of 2,785 (6-7%), with 50-100 lines of bridge/override code needed
+- Only `presets/+page.svelte` (57 lines, basic content page) would meaningfully benefit from nimble defaults
