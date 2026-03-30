@@ -43,6 +43,7 @@ jobs:
           cp index.html _site/
           cp demo/* _site/demo/
           cp dist/* _site/dist/
+          cp no-nimble.js _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
