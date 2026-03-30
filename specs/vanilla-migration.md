@@ -3,7 +3,7 @@
 > A plan and tracker for adding nimble.css to projects that use no CSS framework — just hand-written CSS, sanitize.css, and/or Open Props design tokens.
 
 **Status:** Living document
-**Last updated:** 2026-03-28
+**Last updated:** 2026-03-30
 
 ---
 
@@ -587,15 +587,95 @@ Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.conta
 
 ### 6.2 gg
 
-**Status:** Not started
+**Status:** Complete
+**Date:** 2026-03-28
+**nimble.css version:** 0.9.0
+
+**Changes made:**
+1. Added `@leftium/nimble.css` to `devDependencies`
+2. Created `src/app.css` with `@import '@leftium/nimble.css'`
+3. Updated `+layout.svelte` to import `app.css`
+4. Removed hand-rolled `:global(body)` reset (margin, font-family, line-height, color)
+5. Removed `.container` class with `max-width: 960px; margin: 0 auto; padding` — nimble's body grid handles centering
+6. Removed custom `h1` margin, `h3` margin, and generic `div` flex styles — nimble provides heading margins
+7. Removed custom button styles (padding, border, border-radius, background, color, hover, active states) — nimble provides button styling
+8. Removed `small` color rule — nimble handles it
+9. Added `.button-group` class for button rows (flex, wrap, gap) with `width: auto; margin-bottom: 0` on child buttons to override nimble's full-width form defaults
+
+**Eruda panel:** No conflicts — the Eruda plugin CSS is architecturally isolated in a separate DOM subtree, as predicted.
+
+**Content width:** Using nimble default (`60ch`) — wider than previous `960px` max-width but acceptable for the demo page.
 
 ### 6.3 leftium-logo
 
-**Status:** Not started
+**Status:** Complete
+**Date:** 2026-03-28
+**nimble.css version:** 0.9.0
+
+**Changes made:**
+1. Added `@leftium/nimble.css` to `devDependencies`
+2. Created `src/app.css` with `@import '@leftium/nimble.css'`
+3. Updated `+layout.svelte` to import `app.css`
+4. Removed hand-rolled `:global(body)` reset (margin, background-color, color) — kept `overflow: hidden` (project-specific, prevents scrolling on home page)
+5. Removed `:global(a)` / `:global(a:hover)` / `:global(a:visited)` link color rules and dark mode media query — nimble provides themed link colors with `light-dark()`
+6. Replaced PicoCSS `!important` defenses in `LeftiumLogo.svelte` with normal rules — nimble's `:where()` selectors have lower specificity than scoped styles, so `!important` is no longer needed:
+   - `max-width: unset !important` → `max-width: unset`
+   - `padding: 0 !important` → `padding: 0`
+   - `border: none !important` → `border: none`
+   - `border-radius: 0 !important` → `border-radius: 0`
+   - `outline: none !important` → removed (kept plain `outline: none` in `:focus`)
+   - `box-shadow: none !important` → `box-shadow: none`
+7. Set `--nc-content-width: 100vw` on home page to allow full-viewport logo display
+8. Simplified test index page (`/test`):
+   - Removed `main` max-width/margin/padding/font-family — nimble's body grid handles it (kept `max-width: 800px; margin-inline: auto` on `main` for narrower test layout)
+   - Removed `h1` color/text-align, `p` color/margin — nimble provides defaults
+   - Replaced hardcoded colors (`#e0e0e0`, `#fafafa`, `#007acc`, `#f0f8ff`, `#333`, `#666`) with nimble CSS variables (`--nc-border`, `--nc-surface-2`, `--nc-primary`, `--nc-radius`)
+   - Removed `a[href='/']` link styles — nimble handles links
+   - Added `:global(body) { overflow-y: auto !important }` on test page (overrides home page's `overflow: hidden`)
+9. Adjusted label alignment: `align-items: baseline` → `align-items: first baseline`, radio inputs use `align-self: center`, added `margin-bottom: 0` on labels
+
+**`.no-nimble` on LeftiumLogo:** Not needed — replacing `!important` with normal declarations was sufficient since nimble's `:where()` selectors never win against scoped component styles.
+
+**Custom elements:** `<logo-container>` and `<grid-logo>` unaffected by nimble, as predicted.
 
 ### 6.4 hn
 
-**Status:** Not started
+**Status:** Complete
+**Date:** 2026-03-28
+**nimble.css version:** 0.11.0 (migrated at 0.9.0, bumped through 0.10 → 0.11 same day)
+
+**Changes made (across 5 commits):**
+
+*Initial migration (v0.9.0):*
+1. Replaced `sanitize.css` with `@leftium/nimble.css` in `devDependencies`
+2. Rewrote `app.css`: replaced 20-line hand-written reset (color-scheme, max-width, margin, background, font-family, link colors) with nimble import + `--nc-content-width: min(42.875em, 100%)`
+3. Removed `sanitize.css` import from `+layout.svelte`
+4. Removed `<wrap-page>` wrapper element and its `box-shadow`/border styles — nimble's body grid handles centering
+5. Kept `open-props` imports and all `--size-*`, `--font-size-*`, `--font-weight-*`, `--shadow-*` tokens
+6. Config page: removed `max-width: 800px; margin: 0 auto` from `main` — nimble body grid handles it
+7. Config page: adjusted radio button alignment (`align-items: baseline` → `flex-start`, added `margin-top: 0.25em` on radio inputs)
+8. Config page: changed `input[type='radio']` from `margin-right` to `vertical-align: -0.2em`
+9. Config page: added explicit `color` rules on buttons/hover to override nimble's primary-contrast button color
+10. Story page: added `border-radius: 0`, `border: none`, `color: inherit`, and `transition: none` on scroll buttons to reset nimble's button styling
+11. Config page: added `align-self: center; margin: 0` on `.custom-time-label input[type='radio']` and `margin: 0` on datetime-local inputs
+
+*v0.10 content shadow:*
+12. Adopted nimble.css v0.10's content shadow feature — replaced `<wrap-page>` box-shadow with nimble's built-in `--nc-content-shadow-gap: 0px` for flush edge-to-edge layout
+
+*v0.11 bump:*
+13. Bumped to nimble.css v0.11, removed redundant max-width from settings page
+
+**Open Props coexistence:** Confirmed — no conflicts between `open-props` tokens (`--size-*`, `--font-size-*`, `--font-weight-*`, `--shadow-*`) and nimble's `--nc-*` namespace, as predicted from prior zbang/leftium.com migrations.
+
+**Custom elements:** `<d-item>`, `<d-title>`, `<d-metadata>`, `<s-points>`, `<s-comments>`, `<s-time>`, `<s-url>`, `<s-scroll>`, `<s-index>`, `<wrap-page>`, `<s-config>`, `<s-top-icon>` — all unaffected by nimble, as predicted.
+
+**Content width:** Preserved at `min(42.875em, 100%)` via `--nc-content-width`.
+
+**Issues found and fixed:**
+- Scroll buttons (previous/next day) inherited nimble's button border-radius and transition — fixed by resetting `border-radius: 0; border: none; transition: none`
+- Radio buttons in config page had alignment issues with nimble's form styling — fixed with `margin-top`, `vertical-align`, and `align-self` adjustments
+- Buttons had nimble's primary-contrast color instead of subtle gray — fixed by adding explicit `color` on button and button:hover
+- `<wrap-page>` box-shadow was replaced by nimble's content shadow feature (v0.10), with `--nc-content-shadow-gap: 0px` for flush layout
 
 ### 6.5 weather-sense
 
