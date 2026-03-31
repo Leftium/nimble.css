@@ -11,6 +11,10 @@
     color: #000;
   }
 
+  body::before {
+    box-shadow: none;
+  }
+
   a[href]::after {
     content: " (" attr(href) ")";
     font-size: 0.85em;      // no OP match (near ~size-3)
