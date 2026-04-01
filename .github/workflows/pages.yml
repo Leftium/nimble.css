@@ -34,16 +34,9 @@ jobs:
 
       - run: node build.js
 
-      # Assemble _site so demo/../dist paths resolve correctly:
-      #   _site/demo/index.html  →  href="../dist/nimble.css"
-      #   _site/dist/nimble.css
+      # site/ is the serve root; build.js already wrote dist/ into site/dist/
       - name: Assemble site
-        run: |
-          mkdir -p _site/demo _site/dist
-          cp index.html _site/
-          cp demo/* _site/demo/
-          cp dist/* _site/dist/
-          cp no-nimble.js _site/
+        run: cp -r site/ _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:

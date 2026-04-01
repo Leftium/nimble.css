@@ -26,6 +26,7 @@ const { values: flags } = parseArgs({
 // ---------------------------------------------------------------------------
 const ROOT = new URL('.', import.meta.url).pathname;
 const DIST = resolve(ROOT, 'dist');
+const SITE_DIST = resolve(ROOT, 'site/dist');
 
 // Entry points → output filenames
 const entries = [
@@ -50,6 +51,7 @@ const targets = {
 // Build
 // ---------------------------------------------------------------------------
 mkdirSync(DIST, { recursive: true });
+mkdirSync(SITE_DIST, { recursive: true });
 
 for (const entry of entries) {
   const inputPath = resolve(ROOT, entry.input);
@@ -86,6 +88,7 @@ function processOutput(css, outName) {
 
   // Write unminified
   writeFileSync(resolve(DIST, `${outName}.css`), css);
+  writeFileSync(resolve(SITE_DIST, `${outName}.css`), css);
 
   // --- Lightning CSS minify ---
   const minified = transform({
@@ -100,6 +103,7 @@ function processOutput(css, outName) {
   });
 
   writeFileSync(resolve(DIST, `${outName}.min.css`), minified.code);
+  writeFileSync(resolve(SITE_DIST, `${outName}.min.css`), minified.code);
 
   // Report sizes
   const fullSize = cssBuffer.length;
@@ -108,4 +112,4 @@ function processOutput(css, outName) {
   console.log(`  ${outName}.min.css  ${minSize} B`);
 }
 
-console.log('\nBuild complete → dist/');
+console.log('\nBuild complete → dist/ + site/dist/');

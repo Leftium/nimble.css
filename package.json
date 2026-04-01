@@ -33,9 +33,11 @@
   ],
   "scripts": {
     "build": "node build.js",
+    "dev": "browser-sync start --server site --index index.html --port 80",
     "prepublishOnly": "node build.js"
   },
   "devDependencies": {
+    "browser-sync": "^3.0.0",
     "lightningcss": "^1.29.0",
     "sass": "^1.86.0"
   },
