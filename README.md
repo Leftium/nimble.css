@@ -1,6 +1,11 @@
-# nimble.css
+<div align="center"><img src="https://leftium.github.io/nimble.css/static/logo.svg" alt="nimble.css logo" width="200" />
+
+  # Nimble.css
+</div>
 
 Minimal CSS library for great-looking default HTML styles; no classes required. ~3.4 KB brotli (core).
+
+
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
