@@ -13,7 +13,7 @@
     "./progress": "./dist/nimble-progress.min.css",
     "./meter": "./dist/nimble-meter.min.css",
     "./select": "./dist/nimble-select.min.css",
-    "./no-nimble": "./no-nimble.js",
+    "./no-nimble": "./site/no-nimble.js",
     "./scss": "./src/nimble.scss",
     "./scss/core": "./src/nimble-core.scss",
     "./scss/progress": "./src/_progress.scss",
@@ -29,7 +29,7 @@
   "files": [
     "dist/",
     "src/",
-    "no-nimble.js"
+    "site/no-nimble.js"
   ],
   "scripts": {
     "build": "node build.js",
