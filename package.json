@@ -1,6 +1,6 @@
 {
   "name": "@leftium/nimble.css",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "A minimal class/classless CSS library combining Open Props design tokens with PicoCSS aesthetics",
   "type": "module",
   "main": "dist/nimble.min.css",
