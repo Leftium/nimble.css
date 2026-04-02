@@ -85,7 +85,7 @@ If your project uses third-party components (datatables, rich text editors, etc.
 </div>
 ```
 
-nimble's component styles (typography, forms, tables, etc.) won't apply inside `.no-nimble` elements. Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.container`) still work. See the [nimble spec §15.2](nimble-css.md#152-third-party-component-isolation-no-nimble-opt-out) for details.
+nimble's component styles (typography, forms, tables, etc.) won't apply inside `.no-nimble` elements. Layout utilities (`.fluid`, `.bleed-wide`, `.bleed-full`, `.container`) and content shadow (`.bleed-edge`) still work. See the [nimble spec §15.2](nimble-css.md#152-third-party-component-isolation-no-nimble-opt-out) for details.
 
 ### 1.6 Check for Pico-specific classes
 

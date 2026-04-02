@@ -27,13 +27,8 @@
     display: inline-block;
     text-align: center;
     margin: 0;
+    margin-block-end: 0.25em;   // OP ~size-1 (em-relative); vertical rhythm for wrapped rows
     transition: background-color 0.2s, border-color 0.2s;
-  }
-
-  // Vertical rhythm for flow-level buttons and link-as-button elements
-  // so wrapped rows don't collide.
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
-    margin-block-end: 0.25em;   // OP ~size-1 (em-relative)
   }
 
   :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover {

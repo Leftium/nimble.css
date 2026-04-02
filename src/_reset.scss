@@ -18,8 +18,6 @@
   }
 
   :where(html) {
-    // Correct the line height in all browsers
-    line-height: 1.5;
     // Prevent adjustments of font size after orientation changes in iOS
     -webkit-text-size-adjust: 100%;
     // Use a better default tab size
@@ -28,13 +26,6 @@
 
   :where(body) {
     margin: 0;
-  }
-
-  // --- Sections ---
-
-  :where(h1) {
-    font-size: 2em;
-    margin-block: 0.67em;
   }
 
   // --- Grouping content ---
@@ -49,11 +40,6 @@
     padding: 0;
   }
 
-  :where(pre) {
-    font-family: monospace, monospace; // Correct font sizing
-    font-size: 1em;
-  }
-
   // --- Text-level semantics ---
 
   :where(abbr[title]) {
@@ -62,11 +48,6 @@
 
   :where(b, strong) {
     font-weight: bolder;
-  }
-
-  :where(code, kbd, samp) {
-    font-family: monospace, monospace; // Correct font sizing
-    font-size: 1em;
   }
 
   :where(small) {
@@ -88,16 +69,9 @@
     top: -0.5em;             // OP ~size-2 (em-relative, negative)
   }
 
-  // --- Embedded content ---
-
-  :where(iframe) {
-    border-style: none;
-  }
-
   // --- Tabular data ---
 
   :where(table) {
-    border-collapse: collapse;
     border-color: currentColor; // Correct border-color in Chrome/Edge/Safari
     text-indent: 0;             // Remove text indentation in Chrome/Edge/Safari
   }
@@ -113,17 +87,12 @@
     -webkit-appearance: button; // Correct clickable type in iOS/Safari
   }
 
-  :where(fieldset) {
-    border: 1px solid #a0a0a0;
-  }
-
   :where(progress) {
     vertical-align: baseline;
   }
 
   :where(textarea) {
     resize: vertical; // Only vertical resize by default
-    overflow: auto;   // Remove default scrollbar in IE
   }
 
   :where([type="search"]) {
@@ -143,12 +112,6 @@
   :where(::-webkit-file-upload-button) {
     -webkit-appearance: button; // Correct clickable type in iOS/Safari
     font: inherit;
-  }
-
-  // --- Interactive ---
-
-  :where(summary) {
-    display: list-item; // Correct display in Chrome
   }
 
   // --- Accessibility ---

@@ -5,12 +5,11 @@
 //
 // Breakout hierarchy (narrow → wide):
 //   (default)    — content column (--nc-content-width)
-//   .bleed-edge  — content + shadow gap on each side (shadow boundary)
+//   .bleed-edge  — content + shadow gap (requires shadow add-on)
 //   .bleed-wide  — up to $wide-width (1200px), centered
 //   .bleed-full  — full viewport width
 // ==========================================================================
 
-@use 'sass:string';
 @use 'config' as *;
 
 @if $enable-utilities {
@@ -29,25 +28,6 @@
       display: block;
       max-width: none;
       padding-inline: var(#{$prefix}spacing);
-    }
-
-    // Break out to shadow/paper edge (content + gap on each side).
-    // Uses the same shadow-visibility condition as the body::before pseudo:
-    // when the shadow is visible, caps at content-width + 2*gap (shadow boundary);
-    // when the shadow is hidden (narrow viewport), goes full width.
-    // position: relative creates a stacking context so background
-    // covers adjacent siblings' content shadows.
-    .bleed-edge {
-      grid-column: 1 / -1;
-      width: 100%;
-      max-width: clamp(
-        #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')},
-        #{string.unquote('calc((100% - 2 * var(#{$prefix}spacing) - var(#{$prefix}content-width) - 4 * var(#{$prefix}content-shadow-gap)) * -9999)')},
-        100%
-      );
-      margin-inline: auto;
-      box-shadow: none;
-      position: relative;
     }
 
     // Break out to wide max-width

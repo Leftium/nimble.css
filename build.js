@@ -35,6 +35,7 @@ const entries = [
   { input: 'src/nimble-base.scss',      outName: 'nimble-base' },
   { input: 'src/nimble-reset.scss',     outName: 'nimble-reset' },
   { input: 'src/nimble-utilities.scss', outName: 'nimble-utilities' },
+  { input: 'src/nimble-shadow.scss',     outName: 'nimble-shadow' },
   { input: 'src/nimble-progress.scss',  outName: 'nimble-progress' },
   { input: 'src/nimble-meter.scss',     outName: 'nimble-meter' },
   { input: 'src/nimble-select.scss',    outName: 'nimble-select' },

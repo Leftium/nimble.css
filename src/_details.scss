@@ -16,9 +16,6 @@
       // negative-margin/padding trick for vertical centering.
       padding: 0 1em;          // OP ~size-3 (em-relative)
                                // OP normalize: padding-inline: --size-3, padding-block: --size-2
-    }
-
-    :where(details) {
       margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
     }
 

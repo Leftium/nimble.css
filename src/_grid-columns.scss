@@ -5,7 +5,6 @@
 // Global (not scoped) so the body grid layout always applies.
 // ==========================================================================
 
-@use 'sass:string';
 @use 'config' as *;
 
 @layer nimble.base {
@@ -15,7 +14,6 @@
     min-width: 0; // Allow grid children to shrink below intrinsic content width
   }
 
-
   // Fix for frameworks (SvelteKit, etc.) that insert a
   // <div style="display: contents"> wrapper between <body> and content.
   // display: contents removes the element from the box tree for layout,
@@ -24,28 +22,6 @@
   body > [style*='display: contents'] > * {
     grid-column: 2;
     min-width: 0;
-  }
-
-  // Content shadow: fixed-position pseudo spanning the full viewport height.
-  // Width = content column + shadow gap on each side, creating a visual
-  // separation between the shadow edge and the content.
-  // The clamp() formula handles visibility: shadow shows at full width when
-  // there's at least 2*gap of space on each side between shadow edge and
-  // viewport edge, otherwise snaps to 0. No breakpoint needed.
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: clamp(0px,
-      #{string.unquote('calc((100% - 2 * var(#{$prefix}spacing) - var(#{$prefix}content-width) - 4 * var(#{$prefix}content-shadow-gap)) * 9999)')},
-      #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}content-shadow-gap))')}
-    );
-    box-shadow: var(#{$prefix}content-shadow);
-    pointer-events: none;
-    z-index: -1;
   }
 
 }

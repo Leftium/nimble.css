@@ -7,7 +7,6 @@
 // interpreting them as Sass color functions. We use unquote() wrappers.
 // ==========================================================================
 
-@use 'sass:math';
 @use 'sass:string';
 @use 'config' as *;
 
@@ -22,35 +21,6 @@
 // Helper: build a light-dark() string
 @function _light-dark($light, $dark) {
   @return string.unquote('light-dark(#{$light}, #{$dark})');
-}
-
-// Helper: build a single shadow layer with light-dark() color
-@function _shadow-layer($blur, $light-color, $light-alpha, $dark-color, $dark-alpha) {
-  @return string.unquote(
-    '0 0 #{$blur} light-dark(oklch(#{$light-color} / #{$light-alpha}), oklch(#{$dark-color} / #{$dark-alpha}))'
-  );
-}
-
-// Helper: build a shadow layer with spread value
-@function _shadow-layer-spread($blur, $spread, $light-color, $light-alpha, $dark-color, $dark-alpha) {
-  @return string.unquote(
-    '0 0 #{$blur} #{$spread} light-dark(oklch(#{$light-color} / #{$light-alpha}), oklch(#{$dark-color} / #{$dark-alpha}))'
-  );
-}
-
-// Build a 7-layer progressive content shadow.
-// Each layer uses light-dark() so opacity adapts to the color scheme.
-// Modeled after PicoCSS/veneer card shadow with stronger presence.
-// The shadow gap is structural (grid columns), not spread-based.
-@function _content-shadow($light-color, $dark-color) {
-  @return
-    _shadow-layer-spread(0.15rem, 0,  $light-color, 0.02,  $dark-color, 0.015),
-    _shadow-layer-spread(0.3rem,  0,  $light-color, 0.03,  $dark-color, 0.02),
-    _shadow-layer-spread(0.75rem, 0,  $light-color, 0.04,  $dark-color, 0.025),
-    _shadow-layer-spread(1.35rem, 0,  $light-color, 0.04,  $dark-color, 0.03),
-    _shadow-layer-spread(2.5rem,  0,  $light-color, 0.05,  $dark-color, 0.035),
-    _shadow-layer-spread(6rem,    0,  $light-color, 0.06,  $dark-color, 0.04),
-    _shadow-layer-spread(0rem, 0.0625rem, $light-color, 0.015, $dark-color, 0.01);
 }
 
 @layer nimble.base {
@@ -138,16 +108,6 @@
     #{$prefix}spacing: #{$spacing};
     #{$prefix}radius: #{$radius};
     #{$prefix}content-width: #{$content-width};
-
-    #{$prefix}content-shadow-gap: 1rem;
-
-    // ----- Content Shadow -----
-    // Soft elevation shadow on body grid children (the center column).
-    // Uses surface hue for tonal consistency; adapts to light/dark mode.
-    // Override with --nc-content-shadow: none to disable.
-    #{$prefix}content-shadow: #{_content-shadow(
-      $content-shadow-color-light, $content-shadow-color-dark
-    )};
   }
 
   // ----- Manual theme override -----

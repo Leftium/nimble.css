@@ -1,6 +1,6 @@
 // ==========================================================================
 // nimble.css — Entry Point
-// Everything: core + progress, meter, and select
+// Everything: core + shadow, progress, meter, and select
 // ==========================================================================
 
 @forward 'config';
@@ -16,6 +16,7 @@
 @use 'colors';
 @use 'document';
 @use 'grid-columns';
+@use 'shadow';
 @use 'layout-utilities';
 @use 'print';
 

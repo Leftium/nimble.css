@@ -3,14 +3,14 @@
   # Nimble.css
 </div>
 
-Minimal CSS library for great-looking default HTML styles; no classes required. ~4.1 KB brotli (core).
+Minimal CSS library for great-looking default HTML styles; no classes required. ~3.8 KB brotli (core).
 
 
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — core is only ~4.1 KB brotli (21.5 KB minified)
+- **Tiny** — core is only ~3.8 KB brotli (19.6 KB minified)
 
 ## Demos
 
@@ -46,14 +46,15 @@ import '@leftium/nimble.css';
 </details>
 
 <details>
-<summary>For 4.1 KB core size</summary>
+<summary>For 3.8 KB core size</summary>
 
-`nimble.min.css` (23.6 KB) includes everything.
+`nimble.min.css` (23.3 KB) includes everything.
 
-To trim size, use `nimble-core.min.css` (21.5 KB) + only the add-ons you need:
+To trim size, use `nimble-core.min.css` (19.6 KB) + only the add-ons you need:
 
 | Add-on | Minified |
 |---|---|
+| `nimble-shadow.min.css` | 1.7 KB |
 | `nimble-meter.min.css` | 1.0 KB |
 | `nimble-select.min.css` | 1.1 KB |
 
@@ -61,6 +62,7 @@ Mix and match with CDN links (comment out what you don't need):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-shadow.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-meter.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-select.min.css">
 ```
@@ -69,7 +71,8 @@ Or with SCSS (comment out what you don't need):
 
 ```scss
 @use '@leftium/nimble.css/scss/core';       // core
-@use '@leftium/nimble.css/scss/meter';      // add-ons
+@use '@leftium/nimble.css/scss/shadow';     // add-ons
+@use '@leftium/nimble.css/scss/meter';
 @use '@leftium/nimble.css/scss/select';
 ```
 
@@ -80,8 +83,8 @@ For advanced use, `nimble-core` is composed of these non-overlapping layers:
 
 | Sub-bundle | Minified | Contents |
 |---|---|---|
-| `nimble-reset.min.css` | 1.8 KB | Modern CSS reset |
-| `nimble-base.min.css` | 4.9 KB | Colors + document + typography |
+| `nimble-reset.min.css` | 1.5 KB | Modern CSS reset |
+| `nimble-base.min.css` | 4.0 KB | Colors + document + typography |
 | `nimble-utilities.min.css` | 274 B | Utility classes |
 
 </details>
@@ -100,7 +103,7 @@ Content is centered at `60ch` by default — no class needed. These opt-in utili
 | `.container` | Re-center content inside a `.fluid` layout |
 | `.bleed-full` | Break out of centered layout to full viewport width |
 | `.bleed-wide` | Break out to wide max-width (1200px) |
-| `.bleed-edge` | Break out to shadow/paper edge (tracks shadow visibility) |
+| `.bleed-edge` | Break out to shadow/paper edge (requires shadow add-on) |
 | `.striped` | Striped table rows (apply to table wrapper) |
 | `.visually-hidden` | Hidden visually, accessible to screen readers |
 | `.overflow-auto` | Scrollable container |
@@ -122,7 +125,7 @@ nimble.css styles can conflict with third-party components (datatables, rich tex
 
 **What's excluded:** Typography, links, buttons, forms, tables, code, media, article, details, dialog, and non-layout utilities.
 
-**What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.bleed-full`, `.bleed-wide`, `.bleed-edge`, `.container`), and print styles. This means layout classes work on `.no-nimble` elements.
+**What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.bleed-full`, `.bleed-wide`, `.container`), content shadow (if enabled), and print styles. This means layout classes work on `.no-nimble` elements.
 
 This works via CSS `@scope` (Chrome 118+, Safari 17.4+, Firefox 128+). To disable scoping entirely (smaller output, no opt-out):
 

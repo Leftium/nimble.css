@@ -1142,11 +1142,13 @@ PicoCSS commits built CSS files to the repo, cluttering git history. nimble.css 
     "./base": "./dist/nimble-base.min.css",
     "./reset": "./dist/nimble-reset.min.css",
     "./utilities": "./dist/nimble-utilities.min.css",
+    "./shadow": "./dist/nimble-shadow.min.css",
     "./meter": "./dist/nimble-meter.min.css",
     "./select": "./dist/nimble-select.min.css",
     "./no-nimble": "./site/no-nimble.js",
     "./scss": "./src/nimble.scss",
     "./scss/core": "./src/nimble-core.scss",
+    "./scss/shadow": "./src/_shadow.scss",
     "./scss/meter": "./src/_meter.scss",
     "./scss/select": "./src/_select.scss"
   },
@@ -1494,7 +1496,8 @@ Utilities, extended demo, and final validation.
 - Fix progress by excluding from reset `background-repeat` rule; progress add-on fully opt-in: `nimble.min.css` 15,809 B / gzipped ~3.8 KB / brotli ~3.3 KB
   - Add `@scope`-based `.no-nimble` opt-out: split SCSS into global vs scopeable modules; component styles wrapped in `@scope (:root) to (.no-nimble)`; layout utilities kept global: `nimble.min.css` 22,655 B / `nimble-core.min.css` 18,978 B
   - Disable `@scope` by default due to desktop Safari 18.x bug (styles parsed but not applied to input/select/textarea/details inside `@scope` + `@layer`). `.no-nimble` becomes opt-in via `no-nimble.js` (JS progressive enhancement) or `$exclude-selector` SCSS flag. See `specs/safari-bugs.md`.
-- v0.15.0 (current): `nimble.min.css` 23,567 B / `nimble-core.min.css` 21,468 B / core brotli 4,146 B. Growth from scoping sentinels, content shadow, `.grid` utility, `.bleed-*` utilities rework, article card improvements, details animation, dialog backdrop, form fixes, `display: contents` wrapper handling.
+- v0.15.0: `nimble.min.css` 23,567 B / `nimble-core.min.css` 21,468 B / core brotli 4,146 B. Growth from scoping sentinels, content shadow, `.grid` utility, `.bleed-*` utilities rework, article card improvements, details animation, dialog backdrop, form fixes, `display: contents` wrapper handling.
+- v0.15.1 (current): `nimble.min.css` 23,253 B / `nimble-core.min.css` 19,578 B / core brotli 3,868 B. Extract content shadow to add-on (`nimble-shadow`); trim redundant reset rules (h1, pre, code/kbd/samp, fieldset, table border-collapse, iframe, summary, html line-height, textarea overflow); merge duplicate selector blocks in buttons/details.
 
 ---
 
@@ -1502,21 +1505,21 @@ Utilities, extended demo, and final validation.
 
 | Metric | Estimated | Actual |
 |---|---|---|
-| Core (brotli) | ~5.0 KB | **4.1 KB** |
-| Core (min) | — | 21.5 KB |
-| Core (unmin) | — | 27.1 KB |
-| Full build (brotli) | — | **4.6 KB** |
-| Full build (min) | — | 23.6 KB |
-| Full build (unmin) | — | 29.8 KB |
-| Budget ceiling | 8 KB min+gz | 4.1 KB brotli (core) |
+| Core (brotli) | ~5.0 KB | **3.8 KB** |
+| Core (min) | — | 19.6 KB |
+| Core (unmin) | — | 24.8 KB |
+| Full build (brotli) | — | **4.5 KB** |
+| Full build (min) | — | 23.3 KB |
+| Full build (unmin) | — | 29.3 KB |
+| Budget ceiling | 8 KB min+gz | 3.8 KB brotli (core) |
 
-The output remains well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly. The full build includes select add-on; core excludes it.
+The output remains well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly. The full build includes shadow, select, meter, and progress add-ons; core excludes them.
 
 ## Appendix: Comparison Matrix
 
 | Feature | nimble.css | PicoCSS | Open Props Normalize | simple.css | new.css | MVP.css |
 |---|---|---|---|---|---|---|
-| Min+gz size | **~4.1 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
+| Min+gz size | **~3.8 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
 | CSS vars on :root | ~20 | 100+ | ~0 (on-demand) | ~15 | ~12 | ~15 |
 | Breakpoints | 1 | 5 | 0 | 1 | 0 | 1 |
 | Surface colors | Yes (4) | No | Yes | No | No | No |
