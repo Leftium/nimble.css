@@ -2,9 +2,9 @@
 
 > A minimal class/classless CSS library combining the best of Open Props and PicoCSS.
 
-**Version:** 0.1.0-draft
+**Version:** 0.15.0
 **Status:** Draft
-**Date:** 2026-03-24
+**Date:** 2026-04-03
 
 ---
 
@@ -1134,16 +1134,23 @@ PicoCSS commits built CSS files to the repo, cluttering git history. nimble.css 
 
 ```json
 {
-  "name": "nimble.css",
+  "name": "@leftium/nimble.css",
   "main": "dist/nimble.min.css",
   "exports": {
     ".": "./dist/nimble.min.css",
+    "./core": "./dist/nimble-core.min.css",
     "./base": "./dist/nimble-base.min.css",
     "./reset": "./dist/nimble-reset.min.css",
     "./utilities": "./dist/nimble-utilities.min.css",
-    "./scss": "./src/nimble.scss"
+    "./meter": "./dist/nimble-meter.min.css",
+    "./select": "./dist/nimble-select.min.css",
+    "./no-nimble": "./site/no-nimble.js",
+    "./scss": "./src/nimble.scss",
+    "./scss/core": "./src/nimble-core.scss",
+    "./scss/meter": "./src/_meter.scss",
+    "./scss/select": "./src/_select.scss"
   },
-  "files": ["dist/", "src/"]
+  "files": ["dist/", "src/", "site/no-nimble.js"]
 }
 ```
 
@@ -1487,6 +1494,7 @@ Utilities, extended demo, and final validation.
 - Fix progress by excluding from reset `background-repeat` rule; progress add-on fully opt-in: `nimble.min.css` 15,809 B / gzipped ~3.8 KB / brotli ~3.3 KB
   - Add `@scope`-based `.no-nimble` opt-out: split SCSS into global vs scopeable modules; component styles wrapped in `@scope (:root) to (.no-nimble)`; layout utilities kept global: `nimble.min.css` 22,655 B / `nimble-core.min.css` 18,978 B
   - Disable `@scope` by default due to desktop Safari 18.x bug (styles parsed but not applied to input/select/textarea/details inside `@scope` + `@layer`). `.no-nimble` becomes opt-in via `no-nimble.js` (JS progressive enhancement) or `$exclude-selector` SCSS flag. See `specs/safari-bugs.md`.
+- v0.15.0 (current): `nimble.min.css` 23,567 B / `nimble-core.min.css` 21,468 B / core brotli 4,146 B. Growth from scoping sentinels, content shadow, `.grid` utility, `.bleed-*` utilities rework, article card improvements, details animation, dialog backdrop, form fixes, `display: contents` wrapper handling.
 
 ---
 
@@ -1494,21 +1502,21 @@ Utilities, extended demo, and final validation.
 
 | Metric | Estimated | Actual |
 |---|---|---|
-| Full build (brotli) | ~5.0 KB | **3.3 KB** |
-| Full build (gzip) | — | 3.8 KB |
-| Full build (min) | — | 15.4 KB |
-| Full build (unmin) | — | 19.9 KB |
-| Full build + extras (min) | — | 18.9 KB |
-| With all flags off (unmin) | — | ~13.0 KB |
-| Budget ceiling | 8 KB min+gz | 3.3 KB brotli / 3.8 KB gzip (48% of budget) |
+| Core (brotli) | ~5.0 KB | **4.1 KB** |
+| Core (min) | — | 21.5 KB |
+| Core (unmin) | — | 27.1 KB |
+| Full build (brotli) | — | **4.6 KB** |
+| Full build (min) | — | 23.6 KB |
+| Full build (unmin) | — | 29.8 KB |
+| Budget ceiling | 8 KB min+gz | 4.1 KB brotli (core) |
 
-The final output is well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly.
+The output remains well under all budget targets. The `light-dark()` function and CSS cascade layers compress extremely well because they reuse the same variable names repeatedly. The full build includes select add-on; core excludes it.
 
 ## Appendix: Comparison Matrix
 
 | Feature | nimble.css | PicoCSS | Open Props Normalize | simple.css | new.css | MVP.css |
 |---|---|---|---|---|---|---|
-| Min+gz size | **~3.3 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
+| Min+gz size | **~4.1 KB** | ~13 KB | ~3 KB* | ~4 KB | ~4.5 KB | ~8.5 KB |
 | CSS vars on :root | ~20 | 100+ | ~0 (on-demand) | ~15 | ~12 | ~15 |
 | Breakpoints | 1 | 5 | 0 | 1 | 0 | 1 |
 | Surface colors | Yes (4) | No | Yes | No | No | No |

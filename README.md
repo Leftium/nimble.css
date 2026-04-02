@@ -3,14 +3,14 @@
   # Nimble.css
 </div>
 
-Minimal CSS library for great-looking default HTML styles; no classes required. ~3.4 KB brotli (core).
+Minimal CSS library for great-looking default HTML styles; no classes required. ~4.1 KB brotli (core).
 
 
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — core is only ~3.4 KB brotli (15.9 KB minified)
+- **Tiny** — core is only ~4.1 KB brotli (21.5 KB minified)
 
 ## Demos
 
@@ -39,8 +39,6 @@ import '@leftium/nimble.css';
 <details>
 <summary>Or use CDN</summary>
 
-Via jsDelivr (npm):
-
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css">
 ```
@@ -48,23 +46,21 @@ Via jsDelivr (npm):
 </details>
 
 <details>
-<summary>For 3.4 KB core size</summary>
+<summary>For 4.1 KB core size</summary>
 
-`nimble.min.css` (19.4 KB) includes everything.
+`nimble.min.css` (23.6 KB) includes everything.
 
-To trim size, use `nimble-core.min.css` (15.9 KB) + only the add-ons you need:
+To trim size, use `nimble-core.min.css` (21.5 KB) + only the add-ons you need:
 
 | Add-on | Minified |
 |---|---|
-| `nimble-progress.min.css` | 1.6 KB |
 | `nimble-meter.min.css` | 1.0 KB |
-| `nimble-select.min.css` | 1.0 KB |
+| `nimble-select.min.css` | 1.1 KB |
 
 Mix and match with CDN links (comment out what you don't need):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-progress.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-meter.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble-select.min.css">
 ```
@@ -73,8 +69,7 @@ Or with SCSS (comment out what you don't need):
 
 ```scss
 @use '@leftium/nimble.css/scss/core';       // core
-@use '@leftium/nimble.css/scss/progress';   // add-ons
-@use '@leftium/nimble.css/scss/meter';
+@use '@leftium/nimble.css/scss/meter';      // add-ons
 @use '@leftium/nimble.css/scss/select';
 ```
 
@@ -86,8 +81,8 @@ For advanced use, `nimble-core` is composed of these non-overlapping layers:
 | Sub-bundle | Minified | Contents |
 |---|---|---|
 | `nimble-reset.min.css` | 1.8 KB | Modern CSS reset |
-| `nimble-base.min.css` | 3.8 KB | Colors + document + typography |
-| `nimble-utilities.min.css` | 572 B | Utility classes |
+| `nimble-base.min.css` | 4.9 KB | Colors + document + typography |
+| `nimble-utilities.min.css` | 274 B | Utility classes |
 
 </details>
 
@@ -247,13 +242,19 @@ The key architectural difference: nimble.css is self-contained SCSS with no runt
 
 ```bash
 pnpm install
-node build.js
+pnpm build
 ```
 
 Output goes to `dist/`. Use `--prefix` to set a custom CSS property prefix:
 
 ```bash
-node build.js --prefix '--my-'
+pnpm build -- --prefix '--my-'
+```
+
+For local development with live reload:
+
+```bash
+pnpm dev
 ```
 
 ## License

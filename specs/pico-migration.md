@@ -186,8 +186,8 @@ These work identically in both libraries (write semantic HTML, get styled output
 | `<small>` | Styled | Styled | Equivalent. |
 | `<footer>` | Styled | Minimal | Pico styles footer with muted text. nimble applies no special footer styling. |
 | `<img>`, `<video>`, `<svg>` | Responsive | Responsive | Equivalent (`max-width: 100%`). |
-| `<progress>` | Styled | Add-on (`@import '@leftium/nimble.css/progress'`) | Not included in core; opt-in sub-bundle. |
-| `<meter>` | Styled | Add-on (`@import '@leftium/nimble.css/meter'`) | Not included in core; opt-in sub-bundle. |
+| `<progress>` | Styled | Native (`accent-color`) | Uses native system styling; cross-browser custom styling not feasible (iOS Safari, Firefox cannot reliably reset native appearance). |
+| `<meter>` | Styled | Add-on (`@import '@leftium/nimble.css/meter'`) | Not included in core; opt-in sub-bundle. Styled bars with semantic colors (valid/primary/invalid). |
 | `<select>` (custom) | Native | Add-on (`@import '@leftium/nimble.css/select'`) | nimble's custom select uses `appearance: base-select`; opt-in sub-bundle. |
 | `<nav>` | **Styled (horizontal flexbox)** | **Not styled** | **Key difference.** nimble intentionally omits nav styling. Must add your own. See [Section 3.1](#31-navigation). |
 
