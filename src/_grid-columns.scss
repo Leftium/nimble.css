@@ -1,7 +1,9 @@
 // ==========================================================================
 // nimble.css — Grid Column Assignment
 // Assigns body's direct children to the centered content column (column 2).
-// 3-column grid: 1fr | content | 1fr
+// 3-column grid: 1fr | content+padding | 1fr
+// Children get real padding-inline for consistent spacing model
+// (same as article, dialog, .container).
 // Global (not scoped) so the body grid layout always applies.
 // ==========================================================================
 
@@ -12,6 +14,7 @@
   body > * {
     grid-column: 2;
     min-width: 0; // Allow grid children to shrink below intrinsic content width
+    padding-inline: var(#{$prefix}spacing);
   }
 
   // Fix for frameworks (SvelteKit, etc.) that insert a
@@ -22,6 +25,7 @@
   body > [style*='display: contents'] > * {
     grid-column: 2;
     min-width: 0;
+    padding-inline: var(#{$prefix}spacing);
   }
 
 }

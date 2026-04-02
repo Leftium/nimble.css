@@ -41,11 +41,13 @@
     }
 
     // Break out of centered container to full viewport width.
+    // Resets padding-inline from body > * since this spans all columns.
     // position: relative creates a stacking context so background
     // covers adjacent siblings' content shadows.
     .bleed-full {
       grid-column: 1 / -1;
       box-shadow: none;
+      padding-inline: 0;
       position: relative;
     }
 
