@@ -3,6 +3,7 @@
 // Everything except progress, meter, and select add-ons
 // ==========================================================================
 
+@forward 'config';
 @use 'config' as *;
 @use 'scopeable';
 
