@@ -25,10 +25,11 @@
   // On narrow viewports min(..., 100%) caps at viewport width; the real
   // padding-inline on children provides the spacing — no pseudo-padding.
   body {
+    #{$prefix}column-width: #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}spacing))')};
     display: grid;
     grid-template-columns:
       1fr
-      #{string.unquote('min(calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}spacing)), 100%)')}
+      #{string.unquote('min(var(#{$prefix}column-width), 100%)')}
       1fr;
     min-height: 100dvh;
     padding-block: var(#{$prefix}spacing);
