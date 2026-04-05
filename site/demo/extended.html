@@ -43,11 +43,11 @@
     <header>
       <h1 style="display:inline-flex;align-items:start;gap:0.3em"><img src="../static/logo.svg" alt="" style="height:1em">Nimble.css — Extended Demo</h1>
       <p>Showcasing layout modes, utility classes, button variants, form patterns, surface hierarchy, dark mode toggling, and <a href="#no-nimble"><code>.no-nimble</code> component isolation</a>. See also: <a href="index.html">HTML5 Test Page</a>.</p>
-      <nav style="display:flex;flex-direction:column;align-items:start">
-        <button id="theme-toggle" type="button">Toggle Dark Mode</button>
-        <button id="shadow-toggle" type="button">Toggle Shadow</button>
-      </nav>
     </header>
+    <nav id="sticky-toggles" style="position:sticky;top:0;z-index:999;display:flex;gap:1.5em;padding:0.5em 1em;background:var(--nc-surface-1, white);border-bottom:1px solid var(--nc-border, #ccc)">
+      <label style="display:inline-flex;align-items:center;gap:0.4em;margin:0"><input id="theme-toggle" type="checkbox" role="switch"> Dark Mode</label>
+      <label style="display:inline-flex;align-items:center;gap:0.4em;margin:0"><input id="shadow-toggle" type="checkbox" role="switch" checked> Shadow</label>
+    </nav>
 
     <main>
 
@@ -402,35 +402,24 @@
     <script src="../no-nimble.js"></script>
     <script>
       // Theme toggle
-      const toggle = document.getElementById('theme-toggle');
+      const themeToggle = document.getElementById('theme-toggle');
       const html = document.documentElement;
 
-      // Initialize: set data-theme to match current appearance so first click flips it
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-      toggle.textContent = prefersDark ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+      themeToggle.checked = prefersDark;
 
-      toggle.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        if (current === 'dark') {
-          html.setAttribute('data-theme', 'light');
-          toggle.textContent = 'Toggle Dark Mode';
-        } else {
-          html.setAttribute('data-theme', 'dark');
-          toggle.textContent = 'Toggle Light Mode';
-        }
+      themeToggle.addEventListener('change', () => {
+        html.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
       });
 
       // Shadow toggle
       const shadowToggle = document.getElementById('shadow-toggle');
-      shadowToggle.addEventListener('click', () => {
-        const current = getComputedStyle(document.documentElement).getPropertyValue('--nc-content-shadow').trim();
-        if (current === 'none') {
+      shadowToggle.addEventListener('change', () => {
+        if (shadowToggle.checked) {
           document.documentElement.style.removeProperty('--nc-content-shadow');
-          shadowToggle.textContent = 'Toggle Shadow';
         } else {
           document.documentElement.style.setProperty('--nc-content-shadow', 'none');
-          shadowToggle.textContent = 'Toggle Shadow (off)';
         }
       });
 
