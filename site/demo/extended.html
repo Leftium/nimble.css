@@ -43,7 +43,7 @@
     <header>
       <h1 style="display:inline-flex;align-items:start;gap:0.3em"><img src="../static/logo.svg" alt="" style="height:1em">Nimble.css — Extended Demo</h1>
       <p>Showcasing layout modes, utility classes, button variants, form patterns, surface hierarchy, dark mode toggling, and <a href="#no-nimble"><code>.no-nimble</code> component isolation</a>. See also: <a href="index.html">HTML5 Test Page</a>.</p>
-      <nav>
+      <nav style="display:flex;flex-direction:column;align-items:start">
         <button id="theme-toggle" type="button">Toggle Dark Mode</button>
         <button id="shadow-toggle" type="button">Toggle Shadow</button>
       </nav>
@@ -314,15 +314,18 @@
       <!-- COMPONENT ISOLATION (.no-nimble) -->
       <!-- ============================================================ -->
       <section id="no-nimble">
-        <h2>Component Isolation (<code>.no-nimble</code>)</h2>
-        <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles. This requires <code>no-nimble.js</code> which wraps scopeable rules in <code>@scope</code> at runtime. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.bleed-edge</code>, <code>.bleed-wide</code>, <code>.bleed-full</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
-        <p>Compare the elements below with the styled versions above — these should render in browser defaults.</p>
+        <article>
+          <header>
+            <h2>Component Isolation (<code>.no-nimble</code>)</h2>
+            <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles. This requires <code>no-nimble.js</code> which wraps scopeable rules in <code>@scope</code> at runtime. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.bleed-edge</code>, <code>.bleed-wide</code>, <code>.bleed-full</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
+            <p>Compare the elements below with the styled versions above — these should render in browser defaults.</p>
+          </header>
 
-        <div class="no-nimble">
-          <h3>Heading Inside .no-nimble</h3>
-          <p>This paragraph is inside a <code>.no-nimble</code> container. It should use browser-default font sizing, margins, and line-height instead of nimble.css typography.</p>
+          <div class="no-nimble">
+            <h3>Heading Inside .no-nimble</h3>
+            <p>This paragraph is inside a <code>.no-nimble</code> container. It should use browser-default font sizing, margins, and line-height instead of nimble.css typography.</p>
 
-          <h4>Buttons</h4>
+            <h4>Buttons</h4>
           <p>
             <button>Default Button</button>
             <button class="secondary">Secondary</button>
@@ -361,7 +364,8 @@
             <summary>Details/Summary</summary>
             <p>This should also render without nimble.css details styling.</p>
           </details>
-        </div>
+          </div>
+        </article>
       </section>
 
     </main>
@@ -399,8 +403,14 @@
     <script>
       // Theme toggle
       const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+
+      // Initialize: set data-theme to match current appearance so first click flips it
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      toggle.textContent = prefersDark ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+
       toggle.addEventListener('click', () => {
-        const html = document.documentElement;
         const current = html.getAttribute('data-theme');
         if (current === 'dark') {
           html.setAttribute('data-theme', 'light');
