@@ -16,6 +16,10 @@
       <h1 style="display:inline-flex;align-items:start;gap:0.3em"><img src="../static/logo.svg" alt="" style="height:1em">Nimble.css — HTML5 Test Page</h1>
       <p>Based on <a href="https://cbracco.github.io/html5-test-page/">html5-test-page</a>. All standard HTML elements for visual regression testing.</p>
     </header>
+    <nav id="sticky-toggles" style="position:sticky;top:0;z-index:999;display:flex;gap:1.5em;padding:0.5em 1em;background:var(--nc-surface-1, white);border-bottom:1px solid var(--nc-border, #ccc)">
+      <label style="display:inline-flex;align-items:center;gap:0.4em;margin:0"><input id="theme-toggle" type="checkbox" role="switch"> Dark Mode</label>
+      <label style="display:inline-flex;align-items:center;gap:0.4em;margin:0"><input id="nimble-toggle" type="checkbox" role="switch" checked> Nimble CSS</label>
+    </nav>
     <nav>
       <ul>
         <li>
@@ -65,7 +69,7 @@
         <header><h2>Text</h2></header>
 
         <article id="text__headings">
-          <header><h3>Headings</h3></header>
+          <header><h3>Headings</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <h1>Heading 1</h1>
             <h2>Heading 2</h2>
@@ -78,7 +82,7 @@
         </article>
 
         <article id="text__paragraphs">
-          <header><h3>Paragraphs</h3></header>
+          <header><h3>Paragraphs</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <p>A paragraph (from the Greek paragraphos, "to write beside" or "written beside") is a self-contained unit of a discourse in writing dealing with a particular point or idea. A paragraph consists of one or more sentences. Though not required by the syntax of any language, paragraphs are usually an expected part of formal writing, used to organize longer prose.</p>
           </div>
@@ -86,7 +90,7 @@
         </article>
 
         <article id="text__lists">
-          <header><h3>Lists</h3></header>
+          <header><h3>Lists</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <h4>Definition list</h4>
             <dl>
@@ -138,7 +142,7 @@
         </article>
 
         <article id="text__blockquotes">
-          <header><h3>Blockquotes</h3></header>
+          <header><h3>Blockquotes</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <blockquote>
               <p>A block quotation (also known as a long quotation or extract) is a quotation in a written document, that is set off from the main text as a paragraph, or block of text.</p>
@@ -150,28 +154,32 @@
         </article>
 
         <article id="text__details">
-          <header><h3>Details / Summary</h3></header>
-          <details>
-            <summary>Expand for details</summary>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, odio! Odio natus ullam ad quaerat, eaque necessitatibus, aliquid distinctio similique voluptatibus dicta consequuntur animi. Quaerat facilis quidem unde eos! Ipsa.</p>
-          </details>
+          <header><h3>Details / Summary</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
+          <div>
+            <details>
+              <summary>Expand for details</summary>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, odio! Odio natus ullam ad quaerat, eaque necessitatibus, aliquid distinctio similique voluptatibus dicta consequuntur animi. Quaerat facilis quidem unde eos! Ipsa.</p>
+            </details>
+          </div>
           <footer><p><a href="#top">[Top]</a></p></footer>
         </article>
 
         <article id="text__address">
-          <header><h3>Address</h3></header>
-          <address>
-            Written by <a href="mailto:webmaster@example.com">Jon Doe</a>.<br>
-            Visit us at:<br>
-            Example.com<br>
-            Box 564, Disneyland<br>
-            USA
-          </address>
+          <header><h3>Address</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
+          <div>
+            <address>
+              Written by <a href="mailto:webmaster@example.com">Jon Doe</a>.<br>
+              Visit us at:<br>
+              Example.com<br>
+              Box 564, Disneyland<br>
+              USA
+            </address>
+          </div>
           <footer><p><a href="#top">[Top]</a></p></footer>
         </article>
 
         <article id="text__hr">
-          <header><h3>Horizontal rules</h3></header>
+          <header><h3>Horizontal rules</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <hr>
           </div>
@@ -179,9 +187,10 @@
         </article>
 
         <article id="text__tables">
-          <header><h3>Tabular data</h3></header>
-          <figure>
-            <table>
+          <header><h3>Tabular data</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
+          <div>
+            <figure>
+              <table>
               <caption>Table Caption</caption>
               <thead>
                 <tr>
@@ -231,13 +240,14 @@
                   <td>Table Cell 5</td>
                 </tr>
               </tbody>
-            </table>
-          </figure>
+              </table>
+            </figure>
+          </div>
           <footer><p><a href="#top">[Top]</a></p></footer>
         </article>
 
         <article id="text__code">
-          <header><h3>Code</h3></header>
+          <header><h3>Code</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <p><strong>Keyboard input:</strong> <kbd>Cmd</kbd></p>
             <p><strong>Inline code:</strong> <code>&lt;div&gt;code&lt;/div&gt;</code></p>
@@ -255,7 +265,7 @@
         </article>
 
         <article id="text__inline">
-          <header><h3>Inline elements</h3></header>
+          <header><h3>Inline elements</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <p><a href="#!">This is a text link</a>.</p>
             <p><strong>Strong is used to indicate strong importance.</strong></p>
@@ -280,7 +290,7 @@
         </article>
 
         <article id="text__comments">
-          <header><h3>HTML Comments</h3></header>
+          <header><h3>HTML Comments</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <p>There is comment here: <!--This comment should not be displayed--></p>
             <p>There is a comment spanning multiple tags and lines below here.</p>
@@ -299,7 +309,7 @@
         <header><h2>Embedded content</h2></header>
 
         <article id="embedded__images">
-          <header><h3>Images</h3></header>
+          <header><h3>Images</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div>
             <h4>Plain <code>&lt;img&gt;</code> element</h4>
             <p><img src="https://picsum.photos/480/480" alt="Photo"></p>
@@ -322,13 +332,13 @@
         </article>
 
         <article id="embedded__meter">
-          <header><h3>Meter</h3></header>
+          <header><h3>Meter</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div><meter value="2" min="0" max="10">2 out of 10</meter></div>
           <footer><p><small>Styled by <code>nimble-meter.min.css</code> add-on.</small></p><p><a href="#top">[Top]</a></p></footer>
         </article>
 
         <article id="embedded__progress">
-          <header><h3>Progress</h3></header>
+          <header><h3>Progress</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
            <div>
             <progress value="25" max="100">25%</progress>
             <progress>progress</progress>
@@ -337,7 +347,7 @@
         </article>
 
         <article id="embedded__svg">
-          <header><h3>Inline SVG</h3></header>
+          <header><h3>Inline SVG</h3> <label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></header>
           <div><svg width="100px" height="100px"><circle cx="100" cy="100" r="100" fill="#1fa3ec"></circle></svg></div>
           <footer><p><a href="#top">[Top]</a></p></footer>
         </article>
@@ -351,6 +361,7 @@
       <section id="forms">
         <header><h2>Form elements</h2></header>
         <form>
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__input">
             <legend>Input fields</legend>
             <p>
@@ -388,6 +399,7 @@
           </fieldset>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__select">
             <legend>Select menus</legend>
             <p>
@@ -414,6 +426,7 @@
           <p><small>Enhanced picker styled by <code>nimble-select.min.css</code> add-on (native styling works without it).</small></p>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__checkbox">
             <legend>Checkboxes</legend>
             <ul>
@@ -424,6 +437,7 @@
           </fieldset>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__radio">
             <legend>Radio buttons</legend>
             <ul>
@@ -434,6 +448,7 @@
           </fieldset>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__textareas">
             <legend>Textareas</legend>
             <p>
@@ -443,6 +458,7 @@
           </fieldset>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__html5">
             <legend>HTML5 inputs</legend>
             <p>
@@ -489,6 +505,7 @@
           </fieldset>
           <p><a href="#top">[Top]</a></p>
 
+          <div class="nimble-fieldset-toggle"><label class="nimble-section-toggle"><input type="checkbox" role="switch" checked> Nimble</label></div>
           <fieldset id="forms__action">
             <legend>Action buttons</legend>
             <p>
@@ -538,6 +555,16 @@
       </nav>
     </footer>
     <style>
+      article > header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .nimble-fieldset-toggle {
+        display: flex;
+        justify-content: flex-end;
+      }
+
       body > footer {
         margin-top: 2rem;
         margin-bottom: calc(-1 * var(--nc-spacing));
@@ -551,6 +578,55 @@
       body > footer a:hover { text-decoration: underline; }
       body > footer a > svg { margin-left: -20px; }
     </style>
+
+    <script src="../no-nimble.js"></script>
+    <script>
+      // Theme toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      themeToggle.checked = prefersDark;
+
+      themeToggle.addEventListener('change', () => {
+        html.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
+      });
+
+      // Nimble CSS toggle
+      const nimbleToggle = document.getElementById('nimble-toggle');
+      const sectionToggles = document.querySelectorAll('.nimble-section-toggle input');
+
+      // Find the content target for a per-section toggle
+      function getToggleTarget(checkbox) {
+        const article = checkbox.closest('article');
+        if (article) return article.querySelector(':scope > div');
+        // Form section: toggle is in a div above the fieldset
+        const wrapper = checkbox.closest('.nimble-fieldset-toggle');
+        if (wrapper) return wrapper.nextElementSibling;
+        return null;
+      }
+
+      // Per-section toggles
+      sectionToggles.forEach(cb => {
+        cb.addEventListener('change', () => {
+          const target = getToggleTarget(cb);
+          if (target) target.classList.toggle('no-nimble', !cb.checked);
+          // Sync global toggle: checked only if ALL section toggles are checked
+          nimbleToggle.checked = [...sectionToggles].every(s => s.checked);
+        });
+      });
+
+      // Global toggle syncs all per-section toggles
+      nimbleToggle.addEventListener('change', () => {
+        const on = nimbleToggle.checked;
+        sectionToggles.forEach(cb => {
+          cb.checked = on;
+          const target = getToggleTarget(cb);
+          if (target) target.classList.toggle('no-nimble', !on);
+        });
+      });
+    </script>
 
   </body>
 </html>
