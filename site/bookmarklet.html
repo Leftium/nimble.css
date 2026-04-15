@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css — Bookmarklet</title>
+    <meta name="description" content="Drag this bookmarklet to your bookmark bar to instantly apply nimble.css to any website.">
+    <meta name="theme-color" content="#0029c1">
+    <link rel="icon" href="static/favicon.ico" sizes="32x32">
+    <link rel="icon" href="static/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
+    <link rel="manifest" href="static/manifest.webmanifest">
+    <link rel="stylesheet" href="dist/nimble.css">
+  </head>
+  <body>
+    <header>
+      <h1 style="display:inline-flex;align-items:start;gap:0.3em"><img src="static/logo.svg" alt="" style="height:1em">Nimble.css — Bookmarklet</h1>
+      <p>Instantly apply nimble.css to any website. Click once to apply, click again to remove.</p>
+    </header>
+    <main>
+      <section>
+        <h2>Install</h2>
+        <p>Drag this link to your bookmark bar:</p>
+        <p style="text-align:center;margin:2rem 0">
+          <a id="bookmarklet-link" class="bookmarklet-btn" href="javascript:(function()%7Bvar%20id%3D'__nimble_css_bookmarklet'%3Bvar%20el%3Ddocument.getElementById(id)%3Bif(el)%7Bvar%20vp%3Ddocument.getElementById(id%2B'_vp')%3Bif(vp)vp.remove()%3Bvar%20ov%3Ddocument.getElementById(id%2B'_ov')%3Bif(ov)ov.remove()%3Bel.remove()%3Bconsole.log('%5Bnimble.css%5D%20Removed')%3Breturn%7Dvar%20link%3Ddocument.createElement('link')%3Blink.id%3Did%3Blink.rel%3D'stylesheet'%3Blink.href%3D'https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2F%40leftium%2Fnimble.css%2Fdist%2Fnimble.min.css'%3Bdocument.head.appendChild(link)%3Bvar%20style%3Ddocument.createElement('style')%3Bstyle.id%3Did%2B'_ov'%3Bstyle.textContent%3D'.grid%3Anot(%5Bclass*%3D%22bleed%22%5D)%7Bgrid-template-columns%3A1fr!important%7D.container%7Bmax-width%3Anone!important%3Bmargin-inline%3Ainitial!important%3Bpadding-inline%3Ainitial!important%7D.overflow-auto%7Boverflow%3Ainitial!important%7D'%3Bdocument.head.appendChild(style)%3Bif(!document.querySelector('meta%5Bname%3D%22viewport%22%5D'))%7Bvar%20meta%3Ddocument.createElement('meta')%3Bmeta.name%3D'viewport'%3Bmeta.content%3D'width%3Ddevice-width%2Cinitial-scale%3D1'%3Bmeta.id%3Did%2B'_vp'%3Bdocument.head.appendChild(meta)%7Dconsole.log('%5Bnimble.css%5D%20Applied')%7D)()">Nimble.css</a>
+        </p>
+        <p>Or right-click the link above and select <strong>Bookmark This Link</strong> (Firefox) or <strong>Add to Bookmarks</strong> (Chrome/Edge).</p>
+      </section>
+
+      <section>
+        <h2>Usage</h2>
+        <ol>
+          <li>Navigate to any website</li>
+          <li>Click the <strong>Nimble.css</strong> bookmark</li>
+          <li>The page will be restyled with nimble.css (full bundle via CDN)</li>
+          <li>Click the bookmark again to remove nimble.css and restore the original styles</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>How It Works</h2>
+        <p>The bookmarklet injects a <code>&lt;link&gt;</code> element that loads <code>nimble.min.css</code> from the jsDelivr CDN. It also injects a <code>&lt;style&gt;</code> element with overrides that neutralize nimble utility class names that collide with popular frameworks (Tailwind, Bootstrap), and adds a <code>&lt;meta name="viewport"&gt;</code> tag if the page doesn't already have one. Clicking again removes all three.</p>
+        <details>
+          <summary>View source</summary>
+          <pre><code id="bookmarklet-source">(function() {
+  var id = '__nimble_css_bookmarklet';
+  var el = document.getElementById(id);
+  if (el) {
+    var vp = document.getElementById(id + '_vp');
+    if (vp) vp.remove();
+    var ov = document.getElementById(id + '_ov');
+    if (ov) ov.remove();
+    el.remove();
+    console.log('[nimble.css] Removed');
+    return;
+  }
+  var link = document.createElement('link');
+  link.id = id;
+  link.rel = 'stylesheet';
+  link.href = 'https://cdn.jsdelivr.net/npm/@leftium/nimble.css/dist/nimble.min.css';
+  document.head.appendChild(link);
+  // Override nimble utility classes that collide with Tailwind/Bootstrap
+  var style = document.createElement('style');
+  style.id = id + '_ov';
+  style.textContent =
+    '.grid:not([class*="bleed"])' +
+    '{grid-template-columns:1fr!important}' +
+    '.container{max-width:none!important;margin-inline:initial!important;padding-inline:initial!important}' +
+    '.overflow-auto{overflow:initial!important}';
+  document.head.appendChild(style);
+  if (!document.querySelector('meta[name="viewport"]')) {
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width,initial-scale=1';
+    meta.id = id + '_vp';
+    document.head.appendChild(meta);
+  }
+  console.log('[nimble.css] Applied');
+})();</code></pre>
+        </details>
+      </section>
+
+      <section>
+        <h2>Notes</h2>
+        <ul>
+          <li>Works best on pages with semantic HTML (headings, paragraphs, lists, tables, forms)</li>
+          <li>Some sites with strict Content Security Policy (CSP) headers may block the external stylesheet</li>
+          <li>The bookmarklet always loads the latest version from npm via jsDelivr</li>
+          <li>nimble.css uses cascade layers, so existing site styles outside layers will still take precedence</li>
+          <li>Includes overrides that neutralize nimble utility class names (<code>.grid</code>, <code>.container</code>, <code>.overflow-auto</code>) to avoid conflicts with Tailwind, Bootstrap, and other frameworks</li>
+        </ul>
+      </section>
+    </main>
+    <footer class="bleed-edge">
+      <nav class="grid">
+        <div>
+          <strong>Nimble.css</strong>
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="demo/">HTML5 Test Page</a></li>
+            <li><a href="demo/extended.html">Extended Demo</a></li>
+            <li><a href="demo/pico.html">Pico-style Demo</a></li>
+            <li><a href="bookmarklet.html">Bookmarklet</a></li>
+          </ul>
+        </div>
+        <div>
+          <strong>Inspiration</strong>
+          <ul>
+            <li><a href="https://picocss.com/">Pico CSS</a> (aesthetic)</li>
+            <li><a href="https://open-props.style/">Open Props</a> (design tokens)</li>
+          </ul>
+        </div>
+        <div>
+          <strong>About</strong>
+          <ul>
+            <li><a href="https://github.com/Leftium/nimble.css"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Leftium/nimble.css</a></li>
+            <li><a href="https://leftium.com"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z"/></svg>Leftium.com</a></li>
+            <li>MIT License</li>
+          </ul>
+        </div>
+      </nav>
+    </footer>
+    <style>
+      .bookmarklet-btn {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        background-color: var(--nc-primary);
+        color: var(--nc-primary-contrast);
+        border-radius: var(--nc-radius);
+        text-decoration: none;
+        cursor: grab;
+        user-select: none;
+        box-shadow: 0 2px 8px oklch(0 0 0 / 0.2);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .bookmarklet-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px oklch(0 0 0 / 0.25);
+        color: var(--nc-primary-contrast);
+      }
+      .bookmarklet-btn:active {
+        transform: translateY(0);
+        cursor: grabbing;
+      }
+
+      body > footer {
+        margin-top: 2rem;
+        margin-bottom: calc(-1 * var(--nc-spacing));
+        padding: 1.5rem;
+        border-top: 1px solid var(--nc-border);
+        background-color: var(--nc-surface-2);
+      }
+
+      body > footer ul { list-style: none; padding-left: 0; }
+      body > footer a { color: color-mix(in oklch, var(--nc-text), transparent 40%); text-decoration: none; }
+      body > footer a:hover { text-decoration: underline; }
+      body > footer a > svg { margin-left: -20px; }
+    </style>
+    <script>
+      // Prevent the bookmarklet from executing on this page when clicked
+      document.getElementById('bookmarklet-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Drag this link to your bookmark bar to install it.\n\nOr right-click and select "Bookmark This Link".');
+      });
+    </script>
+  </body>
+</html>

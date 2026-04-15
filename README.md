@@ -17,6 +17,7 @@ Minimal CSS library for great-looking default HTML styles; no classes required. 
 - [HTML5 Test Page](https://leftium.github.io/nimble.css/demo/) — every standard HTML element
 - [Extended Demo](https://leftium.github.io/nimble.css/demo/extended.html) — layouts, utilities, button variants, forms, dark mode toggle
 - [Pico CSS-style Demo](https://leftium.github.io/nimble.css/demo/pico.html) — Pico CSS-inspired page with forms, buttons, article, tables, and more
+- [Bookmarklet](https://leftium.github.io/nimble.css/bookmarklet.html) — apply nimble.css to any website with one click
 
 ## Quick Start
 
