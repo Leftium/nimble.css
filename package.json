@@ -39,9 +39,9 @@
     "prepublishOnly": "node build.js"
   },
   "devDependencies": {
-    "browser-sync": "^3.0.0",
-    "lightningcss": "^1.29.0",
-    "sass": "^1.86.0"
+    "browser-sync": "^3.0.4",
+    "lightningcss": "^1.32.0",
+    "sass": "^1.101.0"
   },
   "packageManager": "pnpm@10.32.1",
   "license": "MIT",
