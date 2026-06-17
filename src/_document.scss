@@ -31,6 +31,7 @@
       1fr
       #{string.unquote('min(var(#{$prefix}column-width), 100%)')}
       1fr;
+    align-content: start;
     min-height: 100dvh;
     padding-block: var(#{$prefix}spacing);
     position: relative;
