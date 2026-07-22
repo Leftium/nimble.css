@@ -1375,7 +1375,9 @@ Applied to h1-h6 and `thead` cells. Prevents awkward single-word runts on the la
 
 ### 15.11 Button Group Dividers
 
-Same-type button groups (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. A `box-shadow: -1px 0 0 rgb(255 255 255 / 0.3)` on `* + *` children provides a subtle white divider that works on both primary and secondary backgrounds. Box-shadow was chosen over `border-inline-start` because variant classes (`.secondary`) set `border-color` via a higher cascade layer, which would override a border-based divider.
+Same-type button groups (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. An inset `::before` rule on each adjacent child provides a partial-height divider without introducing full-height child-border seams. Its default color mixes `currentColor` with 70% transparency, so it adapts to both dark buttons with light text and customized light buttons with dark text. Outline pairs use opaque `currentColor` because their transparent surface needs a stronger divider.
+
+Consumers can set `--nc-button-group-divider` on a group to replace both defaults. This is the supported customization point; `--_divider` and `--_divider-color` are private implementation properties.
 
 ### 15.12 Pill-Shaped Search Groups
 

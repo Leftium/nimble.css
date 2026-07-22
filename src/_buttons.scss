@@ -95,6 +95,10 @@
   // neighbours already have distinct backgrounds so no separator needed.
   [role="group"] > * + * {
     --_divider: "";           // shown by default (same-type needs separation)
+    --_divider-color: var(
+      #{$prefix}button-group-divider,
+      color-mix(in oklch, currentColor, transparent 70%)
+    );
   }
 
   [role="group"] > * + *::before {
@@ -104,7 +108,7 @@
     top: 20%;
     bottom: 20%;
     width: 1px;
-    background: rgb(255 255 255 / 0.3);
+    background: var(--_divider-color);
     pointer-events: none;
   }
 
@@ -157,10 +161,10 @@
     border: none;
   }
 
-  // Outline dividers use primary color (white overlay is invisible
-  // against transparent background).
+  // Transparent outline buttons need a stronger divider than filled buttons.
+  // currentColor also supports neutral outline groups without another variant.
   [role="group"] > .outline + .outline::before {
-    background: var(#{$prefix}primary);
+    --_divider-color: var(#{$prefix}button-group-divider, currentColor);
   }
 
   // ----- Search groups (pill shape) -----

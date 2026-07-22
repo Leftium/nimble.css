@@ -37,6 +37,24 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
       }
+
+      .demo-light-buttons > button {
+        background: oklch(0.92 0.01 250);
+        border-color: oklch(0.92 0.01 250);
+        color: oklch(0.25 0.01 250);
+      }
+      .demo-dark-buttons > button {
+        background: oklch(0.25 0.01 250);
+        border-color: oklch(0.25 0.01 250);
+        color: oklch(0.92 0.01 250);
+      }
+      .demo-neutral-outline {
+        --nc-button-group-divider: var(--nc-border);
+        border-color: var(--nc-border);
+      }
+      .demo-neutral-outline > button {
+        color: var(--nc-text);
+      }
     </style>
   </head>
   <body>
@@ -116,6 +134,23 @@
           <button class="outline">X</button>
           <button class="outline">Y</button>
           <button class="outline">Z</button>
+        </div>
+
+        <h3>Customized Button Groups</h3>
+        <div role="group" class="demo-light-buttons">
+          <button>Light</button>
+          <button>Neutral</button>
+          <button disabled>Disabled</button>
+        </div>
+        <div role="group" class="demo-dark-buttons">
+          <button>Dark</button>
+          <button>Neutral</button>
+          <button>Group</button>
+        </div>
+        <div role="group" class="demo-neutral-outline">
+          <button class="outline">Neutral</button>
+          <button class="outline">Outline</button>
+          <button class="outline">Group</button>
         </div>
 
         <h3>Small Inline Buttons</h3>

@@ -174,6 +174,15 @@ These properties are auto-derived and available for use in your own components (
 
 `--nc-surface-1` .. `--nc-surface-4`, `--nc-text`, `--nc-border`, `--nc-primary-hover`, `--nc-primary-focus`, `--nc-secondary-hover`, `--nc-secondary-focus`
 
+Button-group dividers adapt to the button text color by default. Override the
+divider for a specific group when its surface needs a custom separator:
+
+```css
+[role="group"].neutral {
+  --nc-button-group-divider: var(--nc-border);
+}
+```
+
 <details>
 <summary>SCSS (advanced)</summary>
 
