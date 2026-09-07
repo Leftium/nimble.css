@@ -82,8 +82,21 @@
     margin-bottom: 0.25em;   // OP ~size-1 (em-relative)
   }
 
-  :where(label:has(+ input, + select, + textarea)) {
+  :where(label:has(+ input, + select, + textarea)),
+  :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea)) {
     font-weight: 600;    // OP --font-weight-6
+  }
+
+  // A wrapping label gives its text the label weight. Controls and helper text
+  // within it retain the regular weight they would have as sibling elements.
+  :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea)) :where(input, select, textarea, small) {
+    font-weight: normal;
+  }
+
+  // Match the gap created by a sibling label's bottom margin.
+  :where(label:not(:has([type="checkbox"], [type="radio"]))) > :where(input, select, textarea) {
+    display: block;
+    margin-top: 0.25em;    // OP ~size-1 (em-relative)
   }
 
   // file and range are short/inline controls — increase the label gap to match
