@@ -2,11 +2,12 @@
 
 **Date:** 2026-09-10
 **Status:** Draft for implementation
-**Baseline:** nimble.css 0.21.0, commit `214b5a8`
+**Source baseline:** nimble.css 0.21.0, commit `214b5a8`
+**Assessment updated:** 2026-09-10, through commit `84fb4d0`
 
 Make `.no-nimble` exclude direct component styling through zero-specificity selector guards in every CSS and SCSS bundle, without runtime stylesheet rewriting.
 
-Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires selector-level checks and a small rendering fixture, including Safari 18. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
+Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires permanent selector-level checks, replacement acceptance fixtures, and an explicit record of any remaining Safari 18 validation gap. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
 
 This document contains the September reassessment and active implementation plan. The [original March assessment](safari-bugs.md#1-scope--layer-style-application-bug-desktop-safari) remains historical evidence. Update the current architecture sections in [nimble-css.md](nimble-css.md) when implementation lands, without rewriting old migration outcomes as if they used the new mechanism.
 
@@ -16,9 +17,38 @@ This document contains the September reassessment and active implementation plan
 - [site/no-nimble.js](../site/no-nimble.js) probes a custom property on a `div`, then rewrites the first readable stylesheet containing the sentinel. The documented Safari failures concern inputs, textarea, select, and details. The probe does not establish that those elements render correctly.
 - The script skips unreadable cross-origin sheets, changes stylesheet position through `adoptedStyleSheets`, and can remove component styles after paint. Neither reliable Safari detection nor the documented absence of a flash has been established.
 - Commit `ff00397` introduced native scoping on March 28. Commit `f47ed85` disabled it on March 29 after Safari failures; `19f7643` added the JS enhancement. The script subsequently moved directories without a behavioral revision.
-- WebKit's [Safari 26.4 announcement](https://webkit.org/blog/17862/webkit-features-for-safari-26-4/) documents a fix for scoped input and textarea styles. This is closely related evidence, not proof that every original Nimble symptom is fixed or that Safari 18 received a backport. No Safari 18 reproduction was performed during this review.
+- WebKit's [Safari 26.4 announcement](https://webkit.org/blog/17862/webkit-features-for-safari-26-4/) documents a fix for scoped input and textarea styles. This is closely related evidence, not proof that every original Nimble symptom was the same issue or that Safari 18 received a backport.
 - The historical selector proposal, `:not(.no-nimble) input`, is insufficient: an excluded input can still match through another ancestor. A guard on the styled element excludes the boundary and its descendants.
 - `@scope` does not stop inheritance. Neither mechanism provides complete component isolation. See [CSS Cascade Level 6](https://drafts.csswg.org/css-cascade-6/#scoped-styles).
+
+### Browser evidence ledger
+
+Reduced isolation fixtures and the original full Nimble failure answer different questions. The reduced fixtures compare native `@scope` and static selector exclusion in a controlled stylesheet. They do not reproduce the complete historical stylesheet structure recorded in [safari-bugs.md](safari-bugs.md).
+
+| Environment | Evidence | Interpretation |
+| --- | --- | --- |
+| Desktop Safari 26.6.1 | Exported probe JSON; 29 of 29 assertions passed | Reduced native `@scope` and static-selector fixtures work. |
+| iPhone Safari 18.7.8 | 29 of 29 assertions observed passing | Reduced mobile Safari fixture works. |
+| Browserling desktop Safari 18 | 29 of 29 assertions observed passing | Useful informal observation; exact user agent and export were not captured reliably. |
+| Uploaded Browserling-attributed JSON | Identifies Chrome 152 | Invalid as Safari evidence; retain only as evidence of the collection failure. |
+| Historical desktop Safari 18.x with full Nimble | Recorded in [safari-bugs.md](safari-bugs.md) | The original failure has not been independently reproduced with the current reduced probe. |
+
+A reduced probe passing on desktop Safari 18 does not invalidate the historical report. The reduced fixture may omit the full-stylesheet interaction that triggered the failure. Do not claim a first fixed Safari version from this evidence.
+
+### Reduced probe inventory and disposition
+
+The exploratory source used for the ledger is currently outside the repository at `/Volumes/p/tmp/safari-probe.html`. It is a 100-line, self-contained offline page with an embedded copy of the original runtime script. Its 29 observations cover:
+
+- `@scope` outside `@layer`, `@layer` outside `@scope`, and the static subject guard;
+- an ordinary target, a target below `.no-nimble`, and a target carrying `.no-nimble` itself;
+- originating pseudo-elements, class removal, a newly inserted descendant, and a global layout rule;
+- ten computed control subjects: text, search, date, color, checkbox, select, textarea, details, fieldset, and label;
+- the historical ancestor-selector leak, zero-specificity behavior, and inheritance across the boundary;
+- the original runtime's basic exclusion plus its cascade-order, separate-add-on, and concatenated-host-CSS failures.
+
+Most control assertions compare only `padding-top`; the other observations use pseudo-element `content`, `display`, `color`, or `margin-left`. The page correctly labels itself as reduced and distinguishes reproduced known limitations, but its UI does not visibly display browser identity and its export filename is always `nimble-browser-probe.json`.
+
+Preserve this exact exploratory artifact in the repository when the test harness is introduced, alongside a short provenance note containing its SHA-1 (`8ea00898f70038122ee0f647937c37c215d1f225`), its embedded/exported fixture identifier (`072ef16f31477dbf2f336522c626d68ff43ef8aa`), and the evidence ledger above. Keep it separate from the positive replacement acceptance suite because its `PASS` semantics intentionally include reproduced defects. Port useful cases into permanent parsed-selector and rendering tests rather than making the exploratory page itself the release gate. The final repository path should follow the test layout chosen during implementation; do not place it in the distributed `src/` or package exports.
 
 Existing consumers make the intended behavior concrete:
 
@@ -42,6 +72,8 @@ External consumer repositories are not part of this implementation. Search the c
 8. Adding or removing an exclusion class updates styling through normal CSS matching. No observer or initialization call is required.
 9. Guards constrain the element receiving declarations. They do not hide excluded descendants from an outside element's `:has()` or structural selectors. An outside label/group can still react to its descendants. This is an explicit contract, not a complete emulation of `@scope` semantics.
 10. On `html` or `body`, exclusion suppresses applicable component rules throughout the subtree while global rules continue to apply.
+
+The public meaning is: Nimble component declarations do not directly style the excluded element or its descendants. It does not promise complete isolation or restoration to browser defaults.
 
 ## Source architecture
 
@@ -95,6 +127,8 @@ Placement rules:
 - Preserve vendor pseudo-element branches separately where necessary; do not combine incompatible selector branches as incidental cleanup.
 - Do not wrap an entire selector in a new `:where()`: that would remove its original specificity.
 
+Known migration hotspots include form selector lists and unlayered date/time rules, nested button group selectors, details content pseudo-elements, dialog backdrop rules, descendant utility selectors, and the select add-on's `@supports`, nested option selectors, picker pseudo-elements, and `@starting-style`. Standalone progress, meter, select, utilities, and base entry points must receive the same ownership treatment as their rules receive in full and core bundles. This list directs review; the permanent completeness test remains the authority as selectors evolve.
+
 Expected transformations:
 
 ```css
@@ -146,9 +180,12 @@ Default-on exclusion is an observable behavior change for pages that already con
 - [ ] Add the helper and configuration validation, initially retaining the existing public activation path while migrating source selectors in the working branch.
 - [ ] Apply guards to every component partial, including standalone entry points, unlayered exceptions, pseudo-elements, and conditional enhancements.
 - [ ] Compare compiled selectors against the prior output: specificity and declarations must be unchanged except for exclusion, and global rules must remain unguarded.
+- [ ] Add a permanent selector-completeness regression test to the normal verification path.
 - [ ] Once the guarded path passes focused verification, switch the default, remove native scope wrappers and sentinels, and replace the JS implementation with the compatibility no-op. Do not ship the intermediate double-scoped state.
 
-Use a focused selector test harness with a real selector parser where needed for specificity analysis. Do not infer completeness from textual guard counts alone. Test Sass compilation for default, null, custom selector-list, ID-containing selector, invalid configuration, and prefixed custom-property configurations. Check both ordinary and minified CSS, since minification can regroup selectors. During migration, create a selector-only fixture build with the old `@scope` wrapper disabled and the guard enabled independently. A double-scoped build cannot prove that guards alone exclude content or avoid the Safari failure. This is a temporary verification path, not a new public configuration mode.
+The permanent test must establish that every emitted selector classified as a Nimble component selector contains the exclusion guard on its declaration subject, while every intentionally global selector remains unguarded. Use a real selector parser and specificity-aware inspection where needed; textual guard counts are insufficient. Cover selector lists, descendant selectors, nested Sass expansion, pseudo-elements, `@media`, `@supports`, `@starting-style`, unlayered component exceptions, standalone component bundles, and minified output after Lightning CSS regrouping. This test protects future selectors as well as the initial migration.
+
+Test Sass compilation for default, null, custom selector-list, ID-containing selector, invalid configuration, and prefixed custom-property configurations. During migration, create a selector-only fixture build with the old `@scope` wrapper disabled and the guard enabled independently. A double-scoped build cannot prove that guards alone exclude content or avoid the Safari failure. This is a temporary verification path, not a new public configuration mode.
 
 The rendering fixture must establish:
 
@@ -163,12 +200,33 @@ The rendering fixture must establish:
 | Ancestor font/color and outside `:has()` | Retain the documented inheritance and matching behavior. |
 | Toggle class, no JS, CDN CSS, multiple Nimble bundles | No initialization dependency or stylesheet rewrite. |
 | Current CSS plus deprecated script | Same computed styles and stylesheet state as without the script. |
+| Nimble CSS followed by an unlayered application override | The application override wins with the same cascade order as before exclusion support. No stylesheet moves or is replaced. |
+| Full Nimble plus a separately loaded component add-on | Component selectors from every applicable bundle obey `.no-nimble`. |
+| Application CSS concatenated after generated Nimble CSS | Application selectors remain active inside `.no-nimble`; only Nimble-owned component selectors receive guards. |
 
 Compare excluded content with a reference that preserves the same ancestor styles and inheritance, while applying only intended global rules and third-party CSS directly within the reference subtree. Removing component rules from the entire reference document would also remove inherited ancestor styling and produce a misleading comparison. Use non-inherited properties such as border, padding, and width to verify form styling. A custom property on a `div` is not sufficient evidence.
 
-Run the fixture in current stable Chrome, Firefox, and Safari, plus an actual Safari 18 build on macOS and iOS Safari 18 where available. Record exact browser and OS versions. A bundled Playwright WebKit result is useful but must not be labeled Safari 18 validation. If access is unavailable, record that gap and do not claim the Safari 18 acceptance criterion passed. Native-only enhancements such as the customizable select picker retain their existing fallback and are not required to look identical across engines.
+Replacement acceptance tests use ordinary semantics: `PASS` means the desired behavior is correct. Keep any historical probes where `PASS` means a runtime defect was reproduced in a separate exploratory suite with explicit labels. Do not mix their results into replacement acceptance totals.
+
+Strengthen the Safari regression fixture with actual compiled Nimble component CSS and the historically affected elements: input, textarea, select, search input, date/time controls, range and color where appropriate, details/summary, plus fieldset and label as historically working contrasts. Compare ordinary content, excluded content, and an equivalent reference subtree containing only intended global styles. Assert several non-inherited computed properties appropriate to each control, including border width/style, padding, width, border radius, appearance, background, and outline. If feasible, retain a native-`@scope` fixture matching the old compiled layer structure closely enough to test the March failure.
+
+Run the fixture in current stable Chrome, Firefox, and Safari, plus an actual Safari 18 build on macOS and iOS Safari 18 where available. Record exact browser and OS versions. A bundled Playwright WebKit result is useful but must not be labeled Safari 18 validation. If full Safari 18 reproduction access is unavailable, record that gap without blocking implementation indefinitely. Native-only enhancements such as the customizable select picker retain their existing fallback and are not required to look identical across engines.
+
+For remote multi-browser collection, start BrowserSync with interaction mirroring disabled:
+
+```sh
+browser-sync start --server --no-ghost-mode
+```
+
+Show browser name, OS/platform, full user agent, timestamp, fixture version, and source commit at the top of the fixture and in exported JSON. Include browser identity in export filenames where feasible, such as `nimble-probe-safari-18-macos.json`. Keep the identity visible so a screenshot is secondary evidence when remote download is unavailable. Treat exports whose user agent contradicts their label as invalid for that browser; the Chrome 152 export demonstrates why this check is required.
 
 Repository instructions require prior approval for expensive builds/tests and for commits or publishing. Present concrete commands and expected scope before those actions. The present spec-writing task does not authorize implementation or release.
+
+### Exclusion size and performance evidence
+
+Record before/after artifact sizes for the full bundle, core bundle, and each affected standalone component bundle. Measure raw CSS, minified CSS, gzip, and Brotli from reproducible files and tool versions. Also report the JavaScript asset separately: existing consumers may stop shipping it, while the compatibility export remains as a small no-op. Do not set a byte budget before measuring.
+
+Add a modest large-DOM fixture modeled on the motivating datatable/list use case. Measure class toggling and style/layout completion with many descendants. A native `@scope` variant can provide context where the same browser implements it reliably. Treat this as a regression sanity check, not a general benchmark or a claim that repeated guards are inherently expensive. Record DOM size, browser, hardware, sample method, and enough repeated observations to spot an obvious regression without presenting noisy timings as precise results.
 
 ### Phase 2: Documentation and compatibility claims
 
@@ -179,7 +237,15 @@ Repository instructions require prior approval for expensive builds/tests and fo
 - [ ] Correct the build-target comment: [build.js](../build.js) contains fixed version targets, not a rolling last-two-version policy. Separate minifier targets from the browser support contract.
 - [ ] Record a reproducible compatibility estimate with dataset date, features included, partial-support treatment, and optional enhancements excluded. Use the same usage dataset for Nimble and Pico; do not present feature intersections as rendering pass rates.
 
-The September review estimated approximately 88.6% for Nimble's main feature set and 94-95% for Pico 2.1.1 using a dataset updated August 24, 2026. These are contextual estimates, not acceptance thresholds. Recompute when documenting the implemented release. Remaining relative-color requirements can reduce the stricter estimate, even after exclusion is fixed.
+The September review estimated approximately 88.6% for Nimble's main feature set and 94-95% for Pico 2.1.1 using a dataset updated August 24, 2026. These are contextual estimates of feature prerequisites, not statements that Nimble or Pico renders correctly for that percentage of browsers. Recompute when documenting the implemented release. Pin the dataset date, exact browser/version sets, feature list, treatment of partial support, and optional enhancements excluded from the baseline. Use the same usage dataset for both frameworks and present separate tiers where appropriate:
+
+| Compatibility tier | Coverage |
+| --- | ---: |
+| Core palette/layout prerequisites | Recompute after implementation |
+| Full relative-color behavior | Recompute after implementation |
+| Optional enhancements | Report separately |
+
+The proposed selector guard does not define Nimble's main compatibility floor. Remaining `light-dark()`, relative `oklch()`, `color-mix()`, and related color requirements can reduce the stricter estimate after exclusion is fixed.
 
 ## Follow-on phase: color fallbacks
 
@@ -200,6 +266,18 @@ Begin with an inventory of final emitted color expressions across all bundles an
 
 Acceptance requires rendering in at least one real browser version lacking `light-dark()`, plus current browsers, across light/dark/system/nested themes and focus states. Exercise the separate relative-color fallback in a browser that lacks the required relative-color expressions, even if it supports `light-dark()`; record exact versions and tested expressions. Verify all documented custom-property overrides in the modern path, including beneath nested theme boundaries. Record unsupported runtime fallback customization explicitly. Only then update coverage estimates; do not advertise Pico-level coverage based solely on adding RGB tokens.
 
+## Implementation sequence
+
+1. Inventory emitted selectors by owner and bundle. Mark global and component rules explicitly, with special attention to the known migration hotspots and standalone entry points.
+2. Build the source-level Sass helper and its configuration validation. Add guards to component sources while retaining the old path only as a temporary branch-local comparison.
+3. Add the permanent parsed-selector regression test. Prove default, disabled, and custom-selector builds before removing the old mechanism.
+4. Add the full Nimble rendering fixture and positive acceptance cases for cascade order, separate add-ons, concatenated application CSS, inheritance, pseudo-elements, and dynamic class toggling.
+5. Run focused browser verification, including the available Safari environments, and record reduced-fixture evidence separately from full Nimble reproduction evidence.
+6. Measure exclusion size and the large-DOM sanity fixture. Use the results to decide whether optimization is needed; do not redesign from assumption.
+7. Switch the default, remove scope wrappers and sentinels, replace the JS with the compatibility no-op, and verify the final built artifacts. Do not ship an intermediate double-scoped form.
+8. Update current documentation and release notes. Keep historical migration outcomes and the March Safari investigation labeled as history.
+9. Handle color fallbacks as a separate change with its own browser matrix, size evidence, and compatibility calculation.
+
 ## Decisions and deferred work
 
 | Decision | Basis | Rationale |
@@ -210,7 +288,8 @@ Acceptance requires rendering in at least one real browser version lacking `ligh
 | Keep JS export temporarily as a no-op | Compatibility choice | Avoid broken imports while removing dangerous rewriting; revisit at an announced breaking release. |
 | Preserve configurable roots and null | Compatibility choice | Existing SCSS consumers retain useful configuration; no extra mode selector. |
 | Ship color work separately | Scope choice | Broader theme behavior and verification should not delay the exclusion fix. |
+| Keep selector completeness as a permanent test | Regression evidence | Source ownership is explicit, but future selectors can omit guards without an automated invariant. |
 
 Deferred: a general `@scope` polyfill, Shadow DOM isolation, re-entry inside exclusions, broad legacy-browser support, external consumer migrations, and a new browser-testing service. None is necessary to implement this contract.
 
-The remaining evidence dependency is access to Safari 18 for validation. Implementation may proceed without it, but the final report must distinguish verified selector support from verified Nimble rendering.
+The remaining Safari evidence gap is reproduction of the historical full Nimble failure in a reliably identified Safari 18 environment. Reduced Safari 18 fixtures have passed, but they do not close that gap. Implementation may proceed without indefinite delay; the final report must distinguish reduced-fixture results, full Nimble results, and historical observations.
