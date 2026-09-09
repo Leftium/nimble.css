@@ -5,6 +5,8 @@
 **Date:** 2026-03-29
 **Safari versions tested:** Desktop Safari 18.x (macOS 15.7.4 Sequoia), Mobile Safari (iOS 18.7.2)
 
+> **Reassessment (2026-09-10):** Before relying on the `@scope` conclusions below, read the [updated assessment](no-nimble-compatibility.md#evidence-and-motivation) and [proposed CSS-only implementation](no-nimble-compatibility.md#source-architecture). They document limitations in the JS probe, newer Safari fix evidence, and a zero-specificity selector alternative. The March observations are preserved here as history; the replacement is proposed, not implemented, and Safari 18 rendering has not been revalidated.
+
 ---
 
 ## Table of Contents
@@ -16,6 +18,8 @@
 ---
 
 ## 1. `@scope` + `@layer` Style Application Bug (Desktop Safari)
+
+This is the March 2026 assessment. See the [September reassessment](no-nimble-compatibility.md#evidence-and-motivation) before using its workaround, compatibility claims, or fix estimates as current guidance.
 
 ### 1.1 Summary
 

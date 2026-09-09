@@ -8,7 +8,7 @@ Make `.no-nimble` exclude direct component styling through zero-specificity sele
 
 Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires selector-level checks and a small rendering fixture, including Safari 18. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
 
-This document is the active implementation plan. The March investigation in [safari-bugs.md](safari-bugs.md) remains historical evidence. Update the current architecture sections in [nimble-css.md](nimble-css.md) when implementation lands, without rewriting old migration outcomes as if they used the new mechanism.
+This document contains the September reassessment and active implementation plan. The [original March assessment](safari-bugs.md#1-scope--layer-style-application-bug-desktop-safari) remains historical evidence. Update the current architecture sections in [nimble-css.md](nimble-css.md) when implementation lands, without rewriting old migration outcomes as if they used the new mechanism.
 
 ## Evidence and motivation
 
