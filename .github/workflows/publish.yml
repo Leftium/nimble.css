@@ -1,0 +1,106 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Compare the pushed commit with the main tip before this push. A
+          # release commit need not be the final commit in a multi-commit push.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Detect release candidate
+        id: candidate
+        env:
+          BASE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          package_name="$(node -p "require('./package.json').name")"
+          current_version="$(node -p "require('./package.json').version")"
+
+          if [ "$package_name" != "@leftium/nimble.css" ]; then
+            echo "Expected package name @leftium/nimble.css, found $package_name" >&2
+            exit 1
+          fi
+
+          echo "version=$current_version" >> "$GITHUB_OUTPUT"
+          echo "should_publish=false" >> "$GITHUB_OUTPUT"
+
+          if ! git cat-file -e "$BASE_SHA:package.json" 2>/dev/null; then
+            echo "The previous pushed commit has no package.json; skipping publication."
+            exit 0
+          fi
+
+          previous_version="$(git show "$BASE_SHA:package.json" | node -e "let source = ''; process.stdin.on('data', chunk => source += chunk); process.stdin.on('end', () => console.log(JSON.parse(source).version))")"
+
+          if [ "$current_version" = "$previous_version" ]; then
+            echo "Package version is unchanged at $current_version; skipping publication."
+            exit 0
+          fi
+
+          echo "Publishing candidate: @leftium/nimble.css@$current_version (previously $previous_version)"
+          echo "should_publish=true" >> "$GITHUB_OUTPUT"
+
+      - name: Validate release candidate
+        if: steps.candidate.outputs.should_publish == 'true'
+        run: |
+          set -euo pipefail
+
+          node -e 'const [major, minor, patch] = process.argv[1].split(".").map(Number); if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) { console.error(`npm 11.5.1 or newer is required for trusted publishing; found ${process.argv[1]}`); process.exit(1) }' "$(npm --version)"
+
+      - name: Check npm for published version
+        id: npm_version
+        if: steps.candidate.outputs.should_publish == 'true'
+        env:
+          PACKAGE_VERSION: ${{ steps.candidate.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          error_file="$(mktemp)"
+          if npm view "@leftium/nimble.css@$PACKAGE_VERSION" version >/dev/null 2>"$error_file"; then
+            echo "@leftium/nimble.css@$PACKAGE_VERSION is already published; skipping publication."
+            echo "is_unpublished=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if grep -q 'E404' "$error_file"; then
+            echo "@leftium/nimble.css@$PACKAGE_VERSION is not published yet."
+            echo "is_unpublished=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          cat "$error_file" >&2
+          exit 1
+
+      - name: Install dependencies
+        if: steps.candidate.outputs.should_publish == 'true' && steps.npm_version.outputs.is_unpublished == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish
+        if: steps.candidate.outputs.should_publish == 'true' && steps.npm_version.outputs.is_unpublished == 'true'
+        run: npm publish
