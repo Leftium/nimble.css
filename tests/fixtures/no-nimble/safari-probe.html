@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nimble isolation regression probe</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;max-width:72rem;margin:2rem auto;padding:0 1rem}
+h1,h2{line-height:1.2}code,pre{font-family:ui-monospace,monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid;padding:1rem}button{font:inherit;padding:.4rem .8rem}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:.5rem;border-bottom:1px solid;vertical-align:top}iframe{position:absolute;left:-10000px;width:800px;height:600px;border:0}summary{cursor:pointer}
+</style></head><body>
+<h1>Nimble isolation regression probe</h1>
+<p>This local, offline test compares native scope, reversed nesting, and a static selector filter. It also checks the original Nimble runtime script against reduced fixtures. It is not a full Nimble visual regression test.</p>
+<p>The tested runtime source is pinned to Nimble commit <code>214b5a8</code>, file blob <code>072ef16f31477dbf2f336522c626d68ff43ef8aa</code>. No network requests are made.</p>
+<p>Open this file in the Safari version being investigated. JavaScript measures results here; the proposed selector-based styling does not require JavaScript in production.</p>
+<button id="run">Run tests</button> <button id="save" disabled>Save result JSON</button>
+<p id="status" role="status">Ready.</p>
+<p><strong>Interpretation:</strong> PASS means an expected observation was reproduced. Rows marked "known limitation" intentionally test for an existing defect; their passing does not mean the defect is acceptable.</p>
+<table><thead><tr><th>Observation</th><th>Result</th><th>Observed</th></tr></thead><tbody id="rows"></tbody></table>
+<details><summary>Complete result data</summary><pre id="json"></pre></details>
+<script>
+const original = "// no-nimble.js \u2014 Progressive enhancement for .no-nimble component isolation\n// Wraps nimble.css scopeable rules in @scope at runtime. Auto-detects desktop\n// Safari's @scope + @layer bug and gracefully degrades (no-op on broken browsers).\n// No dependencies. No FOUC risk.\n\n;(() => {\n  const SENTINEL = '--nimble-scope-start'\n\n  // --- Safari @scope + @layer bug detection ---\n  // Desktop Safari 18.x parses @scope but silently fails to apply styles inside\n  // @scope + @layer to certain elements. Test with a real element to be sure.\n  function isScopeBroken() {\n    const sheet = new CSSStyleSheet()\n    try {\n      sheet.replaceSync(\n        '@scope (:root) to (.ns-t) { @layer ns-t { .ns-p { --ns: 1 } } }'\n      )\n    } catch {\n      return true // @scope not supported at all\n    }\n    const el = document.createElement('div')\n    el.className = 'ns-p'\n    el.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden'\n    document.documentElement.appendChild(el)\n    document.adoptedStyleSheets.push(sheet)\n    const works = getComputedStyle(el).getPropertyValue('--ns').trim() === '1'\n    el.remove()\n    document.adoptedStyleSheets.pop()\n    return !works\n  }\n\n  if (isScopeBroken()) return\n\n  // --- Find nimble stylesheet by sentinel ---\n  let nimbleSheet = null\n  for (const sheet of document.styleSheets) {\n    try {\n      for (const rule of sheet.cssRules)\n        if (findSentinel(rule)) { nimbleSheet = sheet; break }\n    } catch { /* cross-origin */ }\n    if (nimbleSheet) break\n  }\n  if (!nimbleSheet) return\n\n  // If already scoped via SCSS $exclude-selector, nothing to do\n  for (const rule of nimbleSheet.cssRules)\n    if (typeof CSSScopeRule !== 'undefined' && rule instanceof CSSScopeRule) return\n\n  // --- Split rules: global vs scopeable ---\n  // Sentinels appear inside @layer nimble.base and @layer nimble.utilities.\n  // Rules before the sentinel in each layer block are global; after are scopeable.\n  // Top-level rules after the last sentinel-containing block are scopeable.\n  // @media print and @layer nimble.reset are always global.\n  const globalCSS = []\n  const scopeCSS = []\n  let seenAnySentinel = false\n\n  for (const rule of nimbleSheet.cssRules) {\n    if (rule instanceof CSSLayerBlockRule && findSentinel(rule)) {\n      // Split this layer block at the sentinel\n      const layerName = rule.name\n      const pre = [], post = []\n      let past = false\n      for (const inner of rule.cssRules) {\n        if (!past && isSentinelRule(inner)) { past = true; continue }\n        ;(past ? post : pre).push(inner.cssText)\n      }\n      if (pre.length)\n        globalCSS.push(`@layer ${layerName} {\\n${pre.join('\\n')}\\n}`)\n      if (post.length)\n        scopeCSS.push(`@layer ${layerName} {\\n${post.join('\\n')}\\n}`)\n      seenAnySentinel = true\n    } else if (!seenAnySentinel ||\n               rule instanceof CSSLayerStatementRule ||\n               rule instanceof CSSMediaRule && rule.media.mediaText === 'print') {\n      // Global: layer order declaration, reset layer, anything before first sentinel,\n      // and @media print (loaded as global in SCSS)\n      globalCSS.push(rule.cssText)\n    } else {\n      // After sentinel-containing blocks: scopeable (unlayered rules from forms, details, etc.)\n      scopeCSS.push(rule.cssText)\n    }\n  }\n\n  if (!scopeCSS.length) return\n\n  // --- Build replacement stylesheet with @scope wrapper ---\n  const css = globalCSS.join('\\n') + '\\n' +\n    `@scope (:root) to (.no-nimble) {\\n${scopeCSS.join('\\n')}\\n}`\n  const replacement = new CSSStyleSheet()\n  replacement.replaceSync(css)\n\n  nimbleSheet.disabled = true\n  document.adoptedStyleSheets.push(replacement)\n\n  // --- Helpers ---\n  function isSentinelRule(rule) {\n    return rule instanceof CSSStyleRule &&\n      rule.selectorText === ':root' &&\n      rule.style.getPropertyValue(SENTINEL)\n  }\n\n  function findSentinel(rule) {\n    if (isSentinelRule(rule)) return true\n    if (rule.cssRules) {\n      for (const inner of rule.cssRules)\n        if (findSentinel(inner)) return true\n    }\n    return false\n  }\n})()\n";
+const guard=':where(:not(.no-nimble, .no-nimble *))';
+const globals='@layer nimble.reset,nimble.base,nimble.utilities;@layer nimble.reset{*{box-sizing:border-box}}@layer nimble.base{:root{--global:present}.layout{display:grid}}';
+const sentinels='@layer nimble.base{:root{--nimble-scope-start:1}}@layer nimble.utilities{:root{--nimble-scope-start:1}}';
+const components='@layer nimble.base{.target{padding:11px}.target::before{content:"nimble"}}';
+const base=globals+sentinels+components;
+const body='<div class="target" id="outside"></div><div id="boundary" class="no-nimble layout"><div class="target" id="inside"></div></div><div class="target no-nimble" id="self"></div>';
+let data;
+async function frame(css,markup=body,extra='') {
+ const f=document.createElement('iframe');
+ const ready=new Promise((resolve,reject)=>{f.onload=()=>resolve();f.onerror=()=>reject(new Error('Frame failed'));});
+ f.srcdoc='<!doctype html><html><head><style>'+css+'</style>'+extra+'</head><body>'+markup+'</body></html>';
+ document.body.append(f);await ready;return f;
+}
+function value(f,id,prop='paddingTop',pseudo=null){return f.contentWindow.getComputedStyle(f.contentDocument.getElementById(id),pseudo)[prop]}
+function row(name,observed,expected){
+ const result={name,passed:JSON.stringify(observed)===JSON.stringify(expected),observed,expected};data.tests.push(result);
+ const tr=document.createElement('tr');[name,result.passed?'PASS':'FAIL',JSON.stringify(observed)].forEach(text=>{const td=document.createElement('td');td.textContent=text;tr.append(td)});document.getElementById('rows').append(tr);
+}
+function inject(f){const s=f.contentDocument.createElement('script');s.textContent=original;f.contentDocument.body.append(s)}
+async function run(){
+ document.getElementById('run').disabled=true;document.getElementById('save').disabled=true;document.getElementById('rows').textContent='';
+ data={userAgent:navigator.userAgent,platform:navigator.platform,timestamp:new Date().toISOString(),scope:'Reduced fixtures, not full Nimble. PASS can confirm an existing limitation.',sourceBlob:'072ef16f31477dbf2f336522c626d68ff43ef8aa',tests:[]};
+ document.getElementById('status').textContent='Running.';
+ try{
+ const variants=[['scope outside layer',globals+'@scope (:root) to (.no-nimble){'+components+'}'],['layer outside scope',globals+'@layer nimble.base{@scope (:root) to (.no-nimble){.target{padding:11px}.target::before{content:"nimble"}}}'],['static subject filter',globals+'@layer nimble.base{.target'+guard+'{padding:11px}.target'+guard+'::before{content:"nimble"}}']];
+ for(const [name,css] of variants){
+  const f=await frame(css);row(name+': outside / child / boundary',[value(f,'outside'),value(f,'inside'),value(f,'self')],['11px','0px','0px']);
+  row(name+': pseudo-elements',[value(f,'outside','content','::before'),value(f,'inside','content','::before')],['"nimble"','none']);
+  f.contentDocument.getElementById('boundary').classList.remove('no-nimble');row(name+': class removal',value(f,'inside'),'11px');
+  f.contentDocument.getElementById('boundary').classList.add('no-nimble');f.contentDocument.getElementById('boundary').insertAdjacentHTML('beforeend','<div id="late" class="target"></div>');row(name+': new descendant',value(f,'late'),'0px');
+  row(name+': global layout',value(f,'boundary','display'),'grid');f.remove();
+ }
+ const controls='<input type=text><input type=search><input type=date><input type=color><input type=checkbox><select><option>X</option></select><textarea></textarea><details><summary>X</summary></details><fieldset><legend>X</legend></fieldset><label>X</label>';
+ const markup='<section id=out>'+controls+'</section><section id=in class=no-nimble>'+controls+'</section>';
+ const sel=':where(input,select,textarea,details,fieldset,label)';
+ const read=(f,root)=>Array.from(f.contentDocument.querySelectorAll(root+' input,'+root+' select,'+root+' textarea,'+root+' details,'+root+' fieldset,'+root+' label')).map(e=>f.contentWindow.getComputedStyle(e).paddingTop);
+ let f=await frame('',markup);const native=read(f,'#in');f.remove();f=await frame('@layer probe{'+sel+'{padding:19px}}',markup);const styled=read(f,'#out');f.remove();
+ for(const [name,css] of [['scope outside layer','@scope (:root) to (.no-nimble){@layer probe{'+sel+'{padding:19px}}}'],['layer outside scope','@layer probe{@scope (:root) to (.no-nimble){'+sel+'{padding:19px}}}'],['static subject filter','@layer probe{'+sel+guard+'{padding:19px}}']]){
+  f=await frame(css,markup);row(name+': ten controls vs unscoped baseline',read(f,'#out'),styled);row(name+': ten excluded controls vs native baseline',read(f,'#in'),native);f.remove();
+ }
+ f=await frame(':not(.no-nimble) .target{padding:11px}');row('known limitation: historical ancestor selector leaks',value(f,'inside'),'11px');f.remove();
+ f=await frame('.target'+guard+'{padding:11px}.target{padding:17px}');row('static filter: no specificity increase',value(f,'outside'),'17px');f.remove();
+ for(const [name,css] of [['scope','@scope (:root) to (.no-nimble){.parent{color:rgb(1,2,3)}}'],['static filter','.parent'+guard+'{color:rgb(1,2,3)}']]){
+  f=await frame(css,'<div class=parent><div class=no-nimble><span id=inside>X</span></div></div>');row(name+': inheritance crosses boundary',value(f,'inside','color'),'rgb(1, 2, 3)');f.remove();
+ }
+ f=await frame(base);inject(f);row('original runtime: basic exclusion',[value(f,'outside'),value(f,'inside'),value(f,'self')],['11px','0px','0px']);f.remove();
+ f=await frame(base+'.target{color:rgb(1,2,3)}',body,'<style>.target{color:rgb(4,5,6)}</style>');let before=value(f,'outside','color');inject(f);row('known limitation: runtime changes unlayered cascade order',[before,value(f,'outside','color')],['rgb(4, 5, 6)','rgb(1, 2, 3)']);f.remove();
+ f=await frame(base,body,'<style>@layer nimble.base{.addon{margin-left:23px}}</style>');f.contentDocument.getElementById('inside').classList.add('addon');inject(f);row('known limitation: separate add-on remains active',value(f,'inside','marginLeft'),'23px');f.remove();
+ f=await frame(base+'.host{margin-left:31px}');f.contentDocument.getElementById('inside').classList.add('host');before=value(f,'inside','marginLeft');inject(f);row('known limitation: appended host CSS is scoped',[before,value(f,'inside','marginLeft')],['31px','0px']);f.remove();
+ }catch(error){data.error=String(error)}
+ finally{
+ document.querySelectorAll('iframe').forEach(f=>f.remove());document.getElementById('json').textContent=JSON.stringify(data,null,2);
+ document.getElementById('status').textContent=data.tests.filter(t=>t.passed).length+' / '+data.tests.length+' expected observations reproduced.'+(data.error?' Error: '+data.error:'');document.getElementById('run').disabled=false;document.getElementById('save').disabled=false;window.probeResults=data;
+ }
+}
+document.getElementById('run').onclick=run;
+document.getElementById('save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='nimble-browser-probe.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+run();
+</script></body></html>
+<!-- Original no-nimble.js license:
+MIT License
+
+Copyright (c) 2026 Leftium
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->

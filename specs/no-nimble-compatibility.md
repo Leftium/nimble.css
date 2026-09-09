@@ -37,7 +37,7 @@ A reduced probe passing on desktop Safari 18 does not invalidate the historical 
 
 ### Reduced probe inventory and disposition
 
-The exploratory source used for the ledger is currently outside the repository at `/Volumes/p/tmp/safari-probe.html`. It is a 100-line, self-contained offline page with an embedded copy of the original runtime script. Its 29 observations cover:
+The [historical Safari probe](../tests/fixtures/no-nimble/safari-probe.html) used for the ledger is a 100-line, self-contained offline page with an embedded copy of the original runtime script. Its 29 observations cover:
 
 - `@scope` outside `@layer`, `@layer` outside `@scope`, and the static subject guard;
 - an ordinary target, a target below `.no-nimble`, and a target carrying `.no-nimble` itself;
@@ -48,7 +48,7 @@ The exploratory source used for the ledger is currently outside the repository a
 
 Most control assertions compare only `padding-top`; the other observations use pseudo-element `content`, `display`, `color`, or `margin-left`. The page correctly labels itself as reduced and distinguishes reproduced known limitations, but its UI does not visibly display browser identity and its export filename is always `nimble-browser-probe.json`.
 
-Preserve this exact exploratory artifact in the repository when the test harness is introduced, alongside a short provenance note containing its SHA-1 (`8ea00898f70038122ee0f647937c37c215d1f225`), its embedded/exported fixture identifier (`072ef16f31477dbf2f336522c626d68ff43ef8aa`), and the evidence ledger above. Keep it separate from the positive replacement acceptance suite because its `PASS` semantics intentionally include reproduced defects. Port useful cases into permanent parsed-selector and rendering tests rather than making the exploratory page itself the release gate. The final repository path should follow the test layout chosen during implementation; do not place it in the distributed `src/` or package exports.
+Keep this exploratory artifact separate from the positive replacement acceptance suite because its `PASS` semantics intentionally include reproduced defects. The repository file's SHA-1 is `43266e4f76fadf5a0fbf723a962347ae4a1ce312`; the embedded runtime's Git blob ID, exported as `sourceBlob`, is `072ef16f31477dbf2f336522c626d68ff43ef8aa`. Port useful cases into permanent parsed-selector and rendering tests rather than making the exploratory page itself the release gate. Do not place it in the distributed `src/` or package exports.
 
 Existing consumers make the intended behavior concrete:
 
