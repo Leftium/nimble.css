@@ -1,7 +1,7 @@
 // ==========================================================================
-// nimble.css — Scopeable Modules
-// Component-level styles that can be wrapped in @scope for opt-out scoping.
-// Uses meta.load-css() so these can be loaded inside @scope blocks.
+// nimble.css - Component Modules
+// Component-level styles whose selectors carry the opt-out guard.
+// Uses meta.load-css() to compose the full and core entry points.
 // ==========================================================================
 
 @use 'sass:meta';

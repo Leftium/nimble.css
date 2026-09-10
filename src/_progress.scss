@@ -5,6 +5,7 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
@@ -12,7 +13,7 @@
   // Custom styling via appearance: none is broken on iOS Safari (partial
   // stripping of native chrome) and cannot be scoped away from WebKit/Blink
   // via CSS alone.  Native bars look fine everywhere.
-  :where(progress) {
+  #{exclusion.guard(':where(progress)')} {
     width: 100%;
   }
 

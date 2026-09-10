@@ -4,6 +4,7 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
@@ -11,7 +12,7 @@
   // Meter has three semantic states (optimum / suboptimum / sub-sub-optimum)
   // which we map to --nc-valid (green), --nc-primary (default), --nc-invalid (red).
 
-  :where(meter) {
+  #{exclusion.guard(':where(meter)')} {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -24,11 +25,11 @@
   }
 
   // WebKit: track (outer bar)
-  :where(meter)::-webkit-meter-inner-element {
+  #{exclusion.guard(':where(meter)::-webkit-meter-inner-element')} {
     // Wrapper element — reset grid layout that some UAs impose
   }
 
-  :where(meter)::-webkit-meter-bar {
+  #{exclusion.guard(':where(meter)::-webkit-meter-bar')} {
     border-radius: var(#{$prefix}radius);
     background-color: var(#{$prefix}surface-3);
     border: 0;
@@ -36,36 +37,36 @@
   }
 
   // WebKit: value bars for each semantic state
-  :where(meter)::-webkit-meter-optimum-value {
+  #{exclusion.guard(':where(meter)::-webkit-meter-optimum-value')} {
     background-color: var(#{$prefix}valid);
     border-radius: var(#{$prefix}radius);
   }
 
-  :where(meter)::-webkit-meter-suboptimum-value {
+  #{exclusion.guard(':where(meter)::-webkit-meter-suboptimum-value')} {
     background-color: var(#{$prefix}primary);
     border-radius: var(#{$prefix}radius);
   }
 
-  :where(meter)::-webkit-meter-even-less-good-value {
+  #{exclusion.guard(':where(meter)::-webkit-meter-even-less-good-value')} {
     background-color: var(#{$prefix}invalid);
     border-radius: var(#{$prefix}radius);
   }
 
   // Firefox: single bar pseudo-element + pseudo-classes for state
-  :where(meter)::-moz-meter-bar {
+  #{exclusion.guard(':where(meter)::-moz-meter-bar')} {
     background-color: var(#{$prefix}primary);
     border-radius: var(#{$prefix}radius);
   }
 
-  :where(meter):-moz-meter-optimum::-moz-meter-bar {
+  #{exclusion.guard(':where(meter):-moz-meter-optimum::-moz-meter-bar')} {
     background-color: var(#{$prefix}valid);
   }
 
-  :where(meter):-moz-meter-sub-optimum::-moz-meter-bar {
+  #{exclusion.guard(':where(meter):-moz-meter-sub-optimum::-moz-meter-bar')} {
     background-color: var(#{$prefix}primary);
   }
 
-  :where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar {
+  #{exclusion.guard(':where(meter):-moz-meter-sub-sub-optimum::-moz-meter-bar')} {
     background-color: var(#{$prefix}invalid);
   }
 

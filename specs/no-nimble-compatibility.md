@@ -7,14 +7,14 @@
 
 Make `.no-nimble` exclude direct component styling through zero-specificity selector guards in every CSS and SCSS bundle, without runtime stylesheet rewriting.
 
-Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires permanent selector-level checks, replacement acceptance fixtures, and an explicit record of any remaining Safari 18 validation gap. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
+Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires permanent selector-level checks and replacement acceptance fixtures in current browsers. Safari 18 investigation is historical evidence, not a release requirement. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
 
 This document contains the September reassessment and active implementation plan. The [original March assessment](safari-bugs.md#1-scope--layer-style-application-bug-desktop-safari) remains historical evidence. Update the current architecture sections in [nimble-css.md](nimble-css.md) when implementation lands, without rewriting old migration outcomes as if they used the new mechanism.
 
 ## Evidence and motivation
 
-- [src/_config.scss](../src/_config.scss) defaults `$exclude-selector` to `null`. [nimble.scss](../src/nimble.scss) and [nimble-core.scss](../src/nimble-core.scss) optionally emit `@scope` and contain runtime sentinel properties.
-- [site/no-nimble.js](../site/no-nimble.js) probes a custom property on a `div`, then rewrites the first readable stylesheet containing the sentinel. The documented Safari failures concern inputs, textarea, select, and details. The probe does not establish that those elements render correctly.
+- At the source baseline, [src/_config.scss](../src/_config.scss) defaulted `$exclude-selector` to `null`, while [nimble.scss](../src/nimble.scss) and [nimble-core.scss](../src/nimble-core.scss) emitted optional `@scope` wrappers and runtime sentinels.
+- Before this migration, [site/no-nimble.js](../site/no-nimble.js) probed a custom property on a `div`, then rewrote the first readable stylesheet containing the sentinel. The documented Safari failures concerned inputs, textarea, select, and details. That probe did not establish that those elements rendered correctly.
 - The script skips unreadable cross-origin sheets, changes stylesheet position through `adoptedStyleSheets`, and can remove component styles after paint. Neither reliable Safari detection nor the documented absence of a flash has been established.
 - Commit `ff00397` introduced native scoping on March 28. Commit `f47ed85` disabled it on March 29 after Safari failures; `19f7643` added the JS enhancement. The script subsequently moved directories without a behavioral revision.
 - WebKit's [Safari 26.4 announcement](https://webkit.org/blog/17862/webkit-features-for-safari-26-4/) documents a fix for scoped input and textarea styles. This is closely related evidence, not proof that every original Nimble symptom was the same issue or that Safari 18 received a backport.
@@ -34,6 +34,8 @@ Reduced isolation fixtures and the original full Nimble failure answer different
 | Historical desktop Safari 18.x with full Nimble | Recorded in [safari-bugs.md](safari-bugs.md) | The original failure has not been independently reproduced with the current reduced probe. |
 
 A reduced probe passing on desktop Safari 18 does not invalidate the historical report. The reduced fixture may omit the full-stylesheet interaction that triggered the failure. Do not claim a first fixed Safari version from this evidence.
+
+The `safari-18-test` branch also contains a full-CSS reproduction investigation that did not reproduce the historical report on the Safari 18 environments available on 2026-09-10. Keep that result and the original report as historical evidence only. The release target is current stable Chrome, Firefox, and Safari at the time of release; Safari 18 does not block implementation, acceptance, or release.
 
 ### Reduced probe inventory and disposition
 
@@ -68,7 +70,7 @@ External consumer repositories are not part of this implementation. Search the c
 4. Reset, colors and custom properties, document styles, body grid assignment, layout utilities, content shadow, and print styles stay global. The exclusion boundary may still inherit fonts, colors, and custom properties from an ancestor.
 5. Existing component selector specificity, cascade layers, declaration order, and relative source order stay unchanged. The guard contributes zero specificity.
 6. The same behavior applies to full, core, base, utilities, and component add-on bundles. A partial classified as component styling is guarded even when imported alone. Global-only bundles do not acquire guards.
-7. `$exclude-selector: null` disables exclusion. A custom exclusion selector replaces `.no-nimble`; it does not implicitly add the default class.
+7. `$exclude-selector: false` disables exclusion. A custom exclusion selector replaces `.no-nimble`; it does not implicitly add the default class.
 8. Adding or removing an exclusion class updates styling through normal CSS matching. No observer or initialization call is required.
 9. Guards constrain the element receiving declarations. They do not hide excluded descendants from an outside element's `:has()` or structural selectors. An outside label/group can still react to its descendants. This is an explicit contract, not a complete emulation of `@scope` semantics.
 10. On `html` or `body`, exclusion suppresses applicable component rules throughout the subtree while global rules continue to apply.
@@ -149,14 +151,14 @@ textarea:where(:not(.no-nimble, .no-nimble *)) { /* ... */ }
 
 ## Configuration and migration
 
-Change the default to `$exclude-selector: '.no-nimble' !default`. Keep the variable name and `null` escape hatch. Configuring a selector now chooses selector exclusion rather than emitting `@scope`. Do not add a public scoping-mode option; retaining two mechanisms would preserve the compatibility problem and double the behavior surface.
+Change the default to `$exclude-selector: '.no-nimble' !default`. Keep the variable name and use `false` as the escape hatch; Sass cannot use `null` to override a non-null `!default`. Configuring a selector now chooses selector exclusion rather than emitting `@scope`. Do not add a public scoping-mode option; retaining two mechanisms would preserve the compatibility problem and double the behavior surface.
 
 ```scss
 // Default: exclusion enabled.
 @use '@leftium/nimble.css/scss';
 
 // Separate consumer configuration: exclusion disabled.
-@use '@leftium/nimble.css/scss' with ($exclude-selector: null);
+@use '@leftium/nimble.css/scss' with ($exclude-selector: false);
 
 // Separate consumer configuration: custom roots, unchanged specificity.
 @use '@leftium/nimble.css/scss' with (
@@ -168,9 +170,15 @@ These are alternative entry files, not multiple loads in the same Sass compilati
 
 After verification, remove runtime sentinels and the entry-point `@scope` branches. Keep `_scopeable.scss` if it remains useful as the module catalog; its role becomes component composition rather than runtime scoping.
 
-Keep the exported `./no-nimble` path and `site/no-nimble.js` as a deprecated, side-effect-free no-op for the first release of this change. It must not probe, access stylesheets, log warnings, or mutate the document. This temporary compatibility file prevents existing imports from failing or rewriting already-guarded CSS. Document that it is unnecessary with the new CSS and does not activate exclusion in older CSS releases. Consumers must update matching assets together. Remove the export only in a separately announced breaking release.
+Keep the exported `./no-nimble` path and `site/no-nimble.js` as a deprecated compatibility export for the first release of this change. It must not probe, access stylesheets, or mutate the document; it emits one console warning directing consumers to remove the obsolete import before a future release removes the export. This temporary compatibility file prevents existing imports from failing or rewriting already-guarded CSS. Document that it is unnecessary with the new CSS and does not activate exclusion in older CSS releases. Consumers must update matching assets together. Remove the export only in a separately announced breaking release.
 
-Default-on exclusion is an observable behavior change for pages that already contain `.no-nimble` without activating it. Release notes must call this out and name `$exclude-selector: null` as the SCSS escape hatch. Do not add a second prebuilt unguarded bundle solely for this migration.
+Default-on exclusion is an observable behavior change for pages that already contain `.no-nimble` without activating it. Release notes must call this out and name `$exclude-selector: false` as the SCSS escape hatch. Do not add a second prebuilt unguarded bundle solely for this migration.
+
+### Compatibility and release classification
+
+This is not an API or markup break: the documented `.no-nimble` marker, Sass variable name, and `./no-nimble` import path remain available. It is nevertheless a behavior change. With the old prebuilt CSS, a `.no-nimble` class alone usually had no effect; with this release, Nimble component declarations stop applying to that element and its descendants. Global reset, theme, layout, shadow, print, and inherited values remain applicable.
+
+For the small number of consumers that used `.no-nimble` for an unrelated purpose, the practical migration is to rename or remove that class. Direct Sass consumers can instead retain the former unguarded behavior with `$exclude-selector: false`. Existing JavaScript imports remain loadable but become no-ops, so consumers must upgrade their CSS and script assets together. Ship this as a clearly announced pre-1.0 minor behavior change, not a patch or a major-version event.
 
 ## Implementation order and proof
 
@@ -185,7 +193,7 @@ Default-on exclusion is an observable behavior change for pages that already con
 
 The permanent test must establish that every emitted selector classified as a Nimble component selector contains the exclusion guard on its declaration subject, while every intentionally global selector remains unguarded. Use a real selector parser and specificity-aware inspection where needed; textual guard counts are insufficient. Cover selector lists, descendant selectors, nested Sass expansion, pseudo-elements, `@media`, `@supports`, `@starting-style`, unlayered component exceptions, standalone component bundles, and minified output after Lightning CSS regrouping. This test protects future selectors as well as the initial migration.
 
-Test Sass compilation for default, null, custom selector-list, ID-containing selector, invalid configuration, and prefixed custom-property configurations. During migration, create a selector-only fixture build with the old `@scope` wrapper disabled and the guard enabled independently. A double-scoped build cannot prove that guards alone exclude content or avoid the Safari failure. This is a temporary verification path, not a new public configuration mode.
+Test Sass compilation for default, `false`, custom selector-list, ID-containing selector, invalid configuration, and prefixed custom-property configurations. During migration, create a selector-only fixture build with the old `@scope` wrapper disabled and the guard enabled independently. A double-scoped build cannot prove that guards alone exclude content or avoid the Safari failure. This is a temporary verification path, not a new public configuration mode.
 
 The rendering fixture must establish:
 
@@ -210,7 +218,7 @@ Replacement acceptance tests use ordinary semantics: `PASS` means the desired be
 
 Strengthen the Safari regression fixture with actual compiled Nimble component CSS and the historically affected elements: input, textarea, select, search input, date/time controls, range and color where appropriate, details/summary, plus fieldset and label as historically working contrasts. Compare ordinary content, excluded content, and an equivalent reference subtree containing only intended global styles. Assert several non-inherited computed properties appropriate to each control, including border width/style, padding, width, border radius, appearance, background, and outline. If feasible, retain a native-`@scope` fixture matching the old compiled layer structure closely enough to test the March failure.
 
-Run the fixture in current stable Chrome, Firefox, and Safari, plus an actual Safari 18 build on macOS and iOS Safari 18 where available. Record exact browser and OS versions. A bundled Playwright WebKit result is useful but must not be labeled Safari 18 validation. If full Safari 18 reproduction access is unavailable, record that gap without blocking implementation indefinitely. Native-only enhancements such as the customizable select picker retain their existing fallback and are not required to look identical across engines.
+Run the fixture in current stable Chrome, Firefox, and Safari, recording exact browser and OS versions. Safari 18 runs are optional historical investigation and must not delay release. A bundled Playwright WebKit result is useful but must not be labeled as validation of a particular Safari version. Native-only enhancements such as the customizable select picker retain their existing fallback and are not required to look identical across engines.
 
 For remote multi-browser collection, start BrowserSync with interaction mirroring disabled:
 
@@ -286,10 +294,12 @@ Acceptance requires rendering in at least one real browser version lacking `ligh
 | Enable exclusion by default | Design | Makes documented markup effective without runtime activation. |
 | Keep global styling and inheritance | Existing contract | Exclusion is an escape from component declarations, not a document reset. |
 | Keep JS export temporarily as a no-op | Compatibility choice | Avoid broken imports while removing dangerous rewriting; revisit at an announced breaking release. |
-| Preserve configurable roots and null | Compatibility choice | Existing SCSS consumers retain useful configuration; no extra mode selector. |
+| Preserve configurable roots and false opt-out | Compatibility choice | Existing SCSS consumers retain useful configuration; Sass cannot use null to override a non-null default; no extra mode selector. |
+| Browser release target | Support policy | Verify current stable Chrome, Firefox, and Safari. Safari 18 is historical, best-effort evidence only. |
+| Release classification | Release policy | Announce default-on exclusion as a pre-1.0 minor behavior change. It is observable for existing `.no-nimble` markup but preserves the public marker, Sass configuration name, and import path. |
 | Ship color work separately | Scope choice | Broader theme behavior and verification should not delay the exclusion fix. |
 | Keep selector completeness as a permanent test | Regression evidence | Source ownership is explicit, but future selectors can omit guards without an automated invariant. |
 
 Deferred: a general `@scope` polyfill, Shadow DOM isolation, re-entry inside exclusions, broad legacy-browser support, external consumer migrations, and a new browser-testing service. None is necessary to implement this contract.
 
-The remaining Safari evidence gap is reproduction of the historical full Nimble failure in a reliably identified Safari 18 environment. Reduced Safari 18 fixtures have passed, but they do not close that gap. Implementation may proceed without indefinite delay; the final report must distinguish reduced-fixture results, full Nimble results, and historical observations.
+The historical Safari evidence gap remains: the original full Nimble failure has not been reproduced in a reliably identified Safari 18 environment. That gap is not a delivery risk for this change. The final report must distinguish current-browser acceptance results from historical Safari observations.

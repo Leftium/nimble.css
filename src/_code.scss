@@ -4,10 +4,11 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
-  :where(code, kbd, samp) {
+  #{exclusion.guard(':where(code, kbd, samp)')} {
     font-family: var(#{$prefix}font-mono);
     font-size: 0.875em;      // no OP match (7/8); OP normalize inherits font-size
     background-color: var(#{$prefix}surface-2);
@@ -15,7 +16,7 @@
     padding: 0.15em 0.35em;  // no OP match; OP normalize: --size-1 --size-2
   }
 
-  :where(pre) {
+  #{exclusion.guard(':where(pre)')} {
     background-color: var(#{$prefix}surface-2);
     border-radius: var(#{$prefix}radius);
     padding: var(#{$prefix}spacing);
@@ -23,13 +24,13 @@
   }
 
   // Reset nested code inside pre
-  :where(pre code) {
+  #{exclusion.guard(':where(pre code)')} {
     background: none;
     padding: 0;
     font-size: inherit;
   }
 
-  :where(kbd) {
+  #{exclusion.guard(':where(kbd)')} {
     border: 1px solid var(#{$prefix}border);
     border-bottom-width: 2px;
   }

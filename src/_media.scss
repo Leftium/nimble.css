@@ -5,19 +5,20 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
-  :where(img, video, canvas, svg) {
+  #{exclusion.guard(':where(img, video, canvas, svg)')} {
     max-width: 100%;
     height: auto;
   }
 
-  :where(figure) {
+  #{exclusion.guard(':where(figure)')} {
     margin: 0;
   }
 
-  :where(figcaption) {
+  #{exclusion.guard(':where(figcaption)')} {
     font-size: 0.9em;        // no OP match; OP normalize: --font-size-1 (1rem)
     color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
     margin-top: 0.5em;       // OP ~size-2 (em-relative)

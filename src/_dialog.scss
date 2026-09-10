@@ -4,12 +4,13 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @if $enable-dialog {
 
   @layer nimble.base {
 
-    :where(dialog) {
+    #{exclusion.guard(':where(dialog)')} {
       background-color: var(#{$prefix}surface-4);
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
@@ -20,7 +21,7 @@
 
     // Reinforce UA centering for showModal() — some browsers lose
     // the default position/inset/margin when author layers are present.
-    :where(dialog[open]) {
+    #{exclusion.guard(':where(dialog[open])')} {
       position: fixed;
       inset: 0;
       margin: auto;
@@ -28,17 +29,17 @@
 
     // When dialog wraps an article, let the article provide all
     // visual chrome (background, border, padding, radius).
-    :where(dialog:has(> article)) {
+    #{exclusion.guard(':where(dialog:has(> article))')} {
       background: none;
       border: none;
       padding: 0;
     }
 
-    :where(dialog > article) {
+    #{exclusion.guard(':where(dialog > article)')} {
       margin-bottom: 0;
     }
 
-    dialog::backdrop {
+    #{exclusion.guard('dialog::backdrop')} {
       background: rgb(0 0 0 / 0.5);
       backdrop-filter: blur(4px); // OP --size-px-1
       animation: nc-backdrop-in 0.2s ease;

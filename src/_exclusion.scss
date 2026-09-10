@@ -1,0 +1,20 @@
+// ===========================================================================
+// nimble.css - Component exclusion selector helper
+// Appends a zero-specificity guard to the declaration subject of a selector.
+// ===========================================================================
+
+@use 'sass:selector';
+@use 'config' as *;
+
+@function guard($selectors) {
+  @if $exclude-selector == null or $exclude-selector == false {
+    @return $selectors;
+  }
+
+  $roots: selector.parse($exclude-selector);
+  $descendants: selector.nest($roots, '*');
+  $boundary: ':where(:not(#{$roots}, #{$descendants}))';
+  // `unify` adds the guard to the final subject while keeping a pseudo-element
+  // last (for example, `input:where(...)::file-selector-button`).
+  @return selector.unify($selectors, $boundary);
+}

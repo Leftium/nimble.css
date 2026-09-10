@@ -4,7 +4,6 @@
 // ==========================================================================
 
 @forward 'config';
-@use 'config' as *;
 @use 'scopeable';
 
 // Layer order declaration — emitted first in CSS output.
@@ -19,19 +18,5 @@
 @use 'layout-utilities';
 @use 'print';
 
-// Sentinel markers — no-nimble.js uses these to find where scopeable rules begin
-@layer nimble.base {
-  :root { --nimble-scope-start: 1 }
-}
-@layer nimble.utilities {
-  :root { --nimble-scope-start: 1 }
-}
-
-// Component-level styles — optionally scoped
-@if $exclude-selector {
-  @scope (:root) to (#{$exclude-selector}) {
-    @include scopeable.load;
-  }
-} @else {
-  @include scopeable.load;
-}
+// Component-level styles attach their own exclusion guards.
+@include scopeable.load;

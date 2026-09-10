@@ -5,12 +5,13 @@
 
 @use 'sass:string';
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
   // ----- Base button -----
 
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"])')} {
     --_btn-padding-v: 0.5em;   // OP ~size-2 (em-relative)
     --_btn-padding-h: 1em;     // OP ~size-3 (em-relative)
 
@@ -31,36 +32,36 @@
     transition: background-color 0.2s, border-color 0.2s;
   }
 
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover')} {
     background-color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
   }
 
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):focus-visible {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):focus-visible')} {
     box-shadow: 0 0 0 2px var(#{$prefix}primary-focus);
     outline: none;
   }
 
   // ----- Reset button (secondary by default) -----
 
-  :where([type="reset"]) {
+  #{exclusion.guard(':where([type="reset"])')} {
     background-color: var(#{$prefix}secondary);
     border-color: var(#{$prefix}secondary);
     color: var(#{$prefix}secondary-contrast);
   }
 
-  :where([type="reset"]):hover {
+  #{exclusion.guard(':where([type="reset"]):hover')} {
     background-color: var(#{$prefix}secondary-hover);
     border-color: var(#{$prefix}secondary-hover);
   }
 
-  :where([type="reset"]):focus-visible {
+  #{exclusion.guard(':where([type="reset"]):focus-visible')} {
     box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
   }
 
   // ----- Inline (buttons within flow text) -----
 
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline')} {
     --_btn-padding-v: 0.05em;   // no OP match (micro)
     --_btn-padding-h: 0.4em;    // no OP match (near ~size-2)
     margin: 0.1em 0.15em;       // no OP match (micro)
@@ -70,7 +71,7 @@
 
   // ----- Disabled -----
 
-  :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):disabled {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):disabled')} {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
@@ -80,12 +81,12 @@
   // Note: children use [role="group"] without :where() so they beat
   // the zero-specificity form input rules for border-radius.
 
-  :where([role="group"]) {
+  #{exclusion.guard(':where([role="group"])')} {
     display: inline-flex;
     margin-bottom: 0.25em;               // OP ~size-1 (em-relative); match individual buttons
   }
 
-  [role="group"] > * {
+  #{exclusion.guard('[role="group"] > *')} {
     border-radius: 0;
     margin: 0;
     position: relative;
@@ -93,7 +94,7 @@
 
   // Inset divider between adjacent same-type buttons.  Different-type
   // neighbours already have distinct backgrounds so no separator needed.
-  [role="group"] > * + * {
+  #{exclusion.guard('[role="group"] > * + *')} {
     --_divider: "";           // shown by default (same-type needs separation)
     --_divider-color: var(
       #{$prefix}button-group-divider,
@@ -101,7 +102,7 @@
     );
   }
 
-  [role="group"] > * + *::before {
+  #{exclusion.guard('[role="group"] > * + *::before')} {
     content: var(--_divider);
     position: absolute;
     inset-inline-start: 0;
@@ -114,35 +115,31 @@
 
   // Hide divider between different-type button neighbours.
   // primary ↔ secondary
-  [role="group"] > :not(.secondary):not(.outline) + .secondary,
-  [role="group"] > .secondary + :not(.secondary):not(.outline) {
+  #{exclusion.guard('[role="group"] > :not(.secondary):not(.outline) + .secondary, [role="group"] > .secondary + :not(.secondary):not(.outline)')} {
     --_divider: none;
   }
 
   // primary ↔ outline
-  [role="group"] > :not(.secondary):not(.outline) + .outline,
-  [role="group"] > .outline + :not(.secondary):not(.outline) {
+  #{exclusion.guard('[role="group"] > :not(.secondary):not(.outline) + .outline, [role="group"] > .outline + :not(.secondary):not(.outline)')} {
     --_divider: none;
   }
 
   // secondary ↔ outline
-  [role="group"] > .secondary + .outline,
-  [role="group"] > .outline + .secondary {
+  #{exclusion.guard('[role="group"] > .secondary + .outline, [role="group"] > .outline + .secondary')} {
     --_divider: none;
   }
 
   // Hide divider after non-button elements (e.g. search input).
-  [role="group"] > input + *,
-  [role="group"] > select + * {
+  #{exclusion.guard('[role="group"] > input + *, [role="group"] > select + *')} {
     --_divider: none;
   }
 
-  [role="group"] > :first-child {
+  #{exclusion.guard('[role="group"] > :first-child')} {
     border-start-start-radius: var(#{$prefix}radius);
     border-end-start-radius: var(#{$prefix}radius);
   }
 
-  [role="group"] > :last-child {
+  #{exclusion.guard('[role="group"] > :last-child')} {
     border-start-end-radius: var(#{$prefix}radius);
     border-end-end-radius: var(#{$prefix}radius);
   }
@@ -152,30 +149,30 @@
   // container so internal dividers don't double up with per-button borders.
   // :has(> :not(.outline)) excludes mixed groups (e.g. primary + outline).
 
-  [role="group"]:has(.outline):not(:has(> :not(.outline))) {
+  #{exclusion.guard('[role="group"]:has(.outline):not(:has(> :not(.outline)))')} {
     border: 1px solid var(#{$prefix}primary);
     border-radius: var(#{$prefix}radius);
   }
 
-  [role="group"]:has(.outline):not(:has(> :not(.outline))) > .outline {
+  #{exclusion.guard('[role="group"]:has(.outline):not(:has(> :not(.outline))) > .outline')} {
     border: none;
   }
 
   // Transparent outline buttons need a stronger divider than filled buttons.
   // currentColor also supports neutral outline groups without another variant.
-  [role="group"] > .outline + .outline::before {
+  #{exclusion.guard('[role="group"] > .outline + .outline::before')} {
     --_divider-color: var(#{$prefix}button-group-divider, currentColor);
   }
 
   // ----- Search groups (pill shape) -----
 
-  [role="search"] [role="group"] > :first-child {
+  #{exclusion.guard('[role="search"] [role="group"] > :first-child')} {
     border-start-start-radius: 5rem;     // OP --size-10 (pill)
     border-end-start-radius: 5rem;       // OP --size-10 (pill)
     padding-inline-start: 1.25em;        // OP ~size-4 (em-relative)
   }
 
-  [role="search"] [role="group"] > :last-child {
+  #{exclusion.guard('[role="search"] [role="group"] > :last-child')} {
     border-start-end-radius: 5rem;       // OP --size-10 (pill)
     border-end-end-radius: 5rem;         // OP --size-10 (pill)
     padding-inline-end: 1.25em;          // OP ~size-4 (em-relative)
@@ -187,37 +184,37 @@
 
 @layer nimble.utilities {
 
-  .secondary:not(a:not([role="button"])) {
+  #{exclusion.guard('.secondary:not(a:not([role="button"]))')} {
     background-color: var(#{$prefix}secondary);
     border-color: var(#{$prefix}secondary);
     color: var(#{$prefix}secondary-contrast);
   }
 
-  .secondary:not(a:not([role="button"])):hover {
+  #{exclusion.guard('.secondary:not(a:not([role="button"])):hover')} {
     background-color: var(#{$prefix}secondary-hover);
     border-color: var(#{$prefix}secondary-hover);
   }
 
-  .secondary:not(a:not([role="button"])):focus-visible {
+  #{exclusion.guard('.secondary:not(a:not([role="button"])):focus-visible')} {
     box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
   }
 
-  a:not([role="button"]).secondary {
+  #{exclusion.guard('a:not([role="button"]).secondary')} {
     color: var(#{$prefix}secondary);
     text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}secondary), transparent 50%)')};
   }
 
-  a:not([role="button"]).secondary:hover {
+  #{exclusion.guard('a:not([role="button"]).secondary:hover')} {
     color: var(#{$prefix}secondary-hover);
     text-decoration-color: var(#{$prefix}secondary-hover);
   }
 
-  .outline:not(a:not([role="button"])) {
+  #{exclusion.guard('.outline:not(a:not([role="button"]))')} {
     background-color: transparent;
     color: var(#{$prefix}primary);
   }
 
-  .outline:not(a:not([role="button"])):hover {
+  #{exclusion.guard('.outline:not(a:not([role="button"])):hover')} {
     background-color: var(#{$prefix}primary-focus);
     color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);

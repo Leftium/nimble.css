@@ -4,10 +4,11 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
-  :where(article) {
+  #{exclusion.guard(':where(article)')} {
     background-color: var(#{$prefix}surface-1);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
@@ -17,19 +18,18 @@
 
   // Header and footer bleed to card edges via negative margin,
   // with a subtle background tint (matches input background).
-  :where(article > header),
-  :where(article > footer) {
+  #{exclusion.guard(':where(article > header), :where(article > footer)')} {
     background-color: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
     padding: var(#{$prefix}spacing);
   }
 
-  :where(article > header) {
+  #{exclusion.guard(':where(article > header)')} {
     margin: calc(var(#{$prefix}spacing) * -1) calc(var(#{$prefix}spacing) * -1) var(#{$prefix}spacing);
     border-bottom: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius) var(#{$prefix}radius) 0 0;
   }
 
-  :where(article > footer) {
+  #{exclusion.guard(':where(article > footer)')} {
     margin: var(#{$prefix}spacing) calc(var(#{$prefix}spacing) * -1) calc(var(#{$prefix}spacing) * -1);
     border-top: 1px solid var(#{$prefix}border);
     border-radius: 0 0 var(#{$prefix}radius) var(#{$prefix}radius);
@@ -38,13 +38,13 @@
   // Kill last-child bottom margin inside article so it doesn't
   // stack with the card's own padding — but not footer, which
   // uses negative margin to bleed to the card edge.
-  :where(article) > :last-child:not(footer) {
+  #{exclusion.guard(':where(article) > :last-child:not(footer)')} {
     margin-bottom: 0;
   }
 
   // Kill last-child bottom margin inside article > header/footer too —
   // those containers use padding for spacing; a trailing margin doubles it.
-  :where(article > header, article > footer) > :last-child {
+  #{exclusion.guard(':where(article > header, article > footer) > :last-child')} {
     margin-bottom: 0;
   }
 
@@ -52,12 +52,7 @@
   // the container's own padding already provides the visual gap on both sides.
   // Real specificity on the heading tags so this wins over the plain h1–h6
   // rule in _typography.scss (same layer, same zero-specificity containers).
-  :where(article > header, article > footer) > h1,
-  :where(article > header, article > footer) > h2,
-  :where(article > header, article > footer) > h3,
-  :where(article > header, article > footer) > h4,
-  :where(article > header, article > footer) > h5,
-  :where(article > header, article > footer) > h6 {
+  #{exclusion.guard(':where(article > header, article > footer) > h1, :where(article > header, article > footer) > h2, :where(article > header, article > footer) > h3, :where(article > header, article > footer) > h4, :where(article > header, article > footer) > h5, :where(article > header, article > footer) > h6')} {
     margin-top: 0;
     margin-bottom: 0;
   }

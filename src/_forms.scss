@@ -4,13 +4,13 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
   // ----- Text inputs, select, textarea -----
 
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]),
-         select, textarea) {
+  #{exclusion.guard(':where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]), select, textarea)')} {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
     padding: 0.5em 0.75em;  // 0.5em: OP ~size-2; 0.75em: no OP match
@@ -26,21 +26,20 @@
   }
 
   // Make text inputs and select full-width by default (PicoCSS pattern)
-  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]),
-         select, textarea) {
+  #{exclusion.guard(':where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]), select, textarea)')} {
     width: 100%;
     margin-bottom: var(#{$prefix}spacing);
   }
 
   // When an input is the last visible child of a block that already has
   // margin-bottom (e.g. <p>), kill the input's margin to avoid doubling.
-  :where(p, div) > :where(input, select, textarea):nth-last-child(1 of :not(datalist, script, style)) {
+  #{exclusion.guard(':where(p, div) > :where(input, select, textarea):nth-last-child(1 of :not(datalist, script, style))')} {
     margin-bottom: 0;
   }
 
   // ----- Focus -----
 
-  :where(input, select, textarea):focus-visible {
+  #{exclusion.guard(':where(input, select, textarea):focus-visible')} {
     border-color: var(#{$prefix}primary);
     box-shadow: 0 0 0 2px var(#{$prefix}primary-focus);
     outline: none;
@@ -48,7 +47,7 @@
 
   // When a validation message <small> immediately follows an input,
   // pull it up tight against the field and let it carry the spacing instead.
-  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea) + :where(small) {
+  #{exclusion.guard(':where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea) + :where(small)')} {
     display: block;
     margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
     margin-bottom: var(#{$prefix}spacing);
@@ -58,56 +57,55 @@
 
   // ----- Validation states (aria-invalid) -----
 
-  :where(input, select, textarea)[aria-invalid="false"] {
+  #{exclusion.guard(':where(input, select, textarea)[aria-invalid="false"]')} {
     border-color: var(#{$prefix}valid);
   }
 
-  :where(input, select, textarea)[aria-invalid="true"] {
+  #{exclusion.guard(':where(input, select, textarea)[aria-invalid="true"]')} {
     border-color: var(#{$prefix}invalid);
   }
 
   // Color validation messages to match the field state
-  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="false"] + :where(small) {
+  #{exclusion.guard(':where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="false"] + :where(small)')} {
     color: var(#{$prefix}valid);
   }
 
-  :where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="true"] + :where(small) {
+  #{exclusion.guard(':where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea)[aria-invalid="true"] + :where(small)')} {
     color: var(#{$prefix}invalid);
   }
 
   // ----- Labels -----
 
-  :where(label) {
+  #{exclusion.guard(':where(label)')} {
     display: block;
     margin-bottom: 0.25em;   // OP ~size-1 (em-relative)
   }
 
-  :where(label:has(+ input, + select, + textarea)),
-  :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea)) {
+  #{exclusion.guard(':where(label:has(+ input, + select, + textarea)), :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea))')} {
     font-weight: 600;    // OP --font-weight-6
   }
 
   // A wrapping label gives its text the label weight. Controls and helper text
   // within it retain the regular weight they would have as sibling elements.
-  :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea)) :where(input, select, textarea, small) {
+  #{exclusion.guard(':where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea)) :where(input, select, textarea, small)')} {
     font-weight: normal;
   }
 
   // Match the gap created by a sibling label's bottom margin.
-  :where(label:not(:has([type="checkbox"], [type="radio"]))) > :where(input, select, textarea) {
+  #{exclusion.guard(':where(label:not(:has([type="checkbox"], [type="radio"]))) > :where(input, select, textarea)')} {
     display: block;
     margin-top: 0.25em;    // OP ~size-1 (em-relative)
   }
 
   // file and range are short/inline controls — increase the label gap to match
   // the visual weight of the spacing above and beside them.
-  :where(label:has(+ [type="file"], + [type="range"])) {
+  #{exclusion.guard(':where(label:has(+ [type="file"], + [type="range"]))')} {
     margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
   }
 
   // ----- Fieldset -----
 
-  :where(fieldset) {
+  #{exclusion.guard(':where(fieldset)')} {
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
     padding: var(#{$prefix}spacing);
@@ -117,12 +115,11 @@
 
   // Kill last-child bottom margin so it doesn't stack with fieldset padding.
   // Uses :nth-last-child(of ...) to skip invisible elements (datalist, script).
-  :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)),
-  :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)) > :nth-last-child(1 of :not(datalist, script, style)) {
+  #{exclusion.guard(':where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)), :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)) > :nth-last-child(1 of :not(datalist, script, style))')} {
     margin-bottom: 0;
   }
 
-  :where(legend) {
+  #{exclusion.guard(':where(legend)')} {
     font-weight: 600;    // OP --font-weight-6
     padding-inline: 0.25em;  // OP ~size-1 (em-relative)
   }
@@ -130,14 +127,14 @@
   // ----- Checkbox & Radio -----
   // Use accent-color to tint native controls to match the primary color
 
-  :where([type="checkbox"], [type="radio"]) {
+  #{exclusion.guard(':where([type="checkbox"], [type="radio"])')} {
     accent-color: var(#{$prefix}primary);
     width: 1.125em;          // no OP match (OP normalize: --size-3 = 1rem)
     height: 1.125em;         // no OP match (OP normalize: --size-3 = 1rem)
     margin: 0; // Remove browser default margin so flex labels align flush left
   }
 
-  :where(label:has([type="checkbox"], [type="radio"])) {
+  #{exclusion.guard(':where(label:has([type="checkbox"], [type="radio"]))')} {
     display: flex;
     align-items: center;
     gap: 0.35em;             // no OP match (near ~size-1)
@@ -146,20 +143,20 @@
 
   // Last checkbox/radio label in a group drops its bottom margin
   // so the parent element controls spacing to the next sibling.
-  :where(label:has([type="checkbox"], [type="radio"]):last-child) {
+  #{exclusion.guard(':where(label:has([type="checkbox"], [type="radio"]):last-child)')} {
     margin-bottom: 0;
   }
 
   // ----- Search (pill shape) -----
 
-  :where([type="search"]) {
+  #{exclusion.guard(':where([type="search"])')} {
     border-radius: 5rem;     // OP --size-10 (pill)
     padding-inline: 1.25em;  // OP ~size-4 (em-relative)
   }
 
   // ----- Range -----
 
-  :where([type="range"]) {
+  #{exclusion.guard(':where([type="range"])')} {
     accent-color: var(#{$prefix}primary);
     width: 100%;
     margin-bottom: var(#{$prefix}spacing);
@@ -169,13 +166,13 @@
   // Keep natural width so the dropdown arrow stays near the text,
   // similar to date/time inputs preserving native widget UX.
 
-  :where(input[list]) {
+  #{exclusion.guard(':where(input[list])')} {
     width: auto;
   }
 
   // ----- File -----
 
-  :where([type="file"]) {
+  #{exclusion.guard(':where([type="file"])')} {
     color: var(#{$prefix}text);
     font: inherit;
     cursor: pointer;
@@ -183,7 +180,7 @@
     margin-bottom: var(#{$prefix}spacing);
   }
 
-  :where([type="file"])::file-selector-button {
+  #{exclusion.guard(':where([type="file"])::file-selector-button')} {
     padding: 0.5em 1em;      // OP ~size-2 ~size-3 (em-relative)
     margin-right: 0.75em;    // no OP match (between ~size-2/~size-3)
     margin-inline-end: 0.75em; // no OP match (between ~size-2/~size-3)
@@ -196,7 +193,7 @@
     transition: background-color 0.2s, border-color 0.2s;
   }
 
-  :where([type="file"])::file-selector-button:hover {
+  #{exclusion.guard(':where([type="file"])::file-selector-button:hover')} {
     background-color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
   }
@@ -204,14 +201,14 @@
   // ----- Date/time inputs -----
   // Natural width so picker icon stays near content (excluded from full-width rule above).
   // appearance: none is applied outside @layer (see below) to fix iOS Safari sizing.
-  :where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]) {
+  #{exclusion.guard(':where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"])')} {
     min-width: 10em; // no OP match; prevent collapse when empty (e.g. time with no value)
     margin-bottom: var(#{$prefix}spacing);
   }
 
   // ----- Color -----
 
-  :where([type="color"]) {
+  #{exclusion.guard(':where([type="color"])')} {
     --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
     margin-bottom: var(#{$prefix}spacing);
 
@@ -240,13 +237,13 @@
   @if $enable-switch {
     // Minimal switch styling — relies on native checkbox with role="switch"
     // Browsers with :has() support get enhanced label alignment
-    :where(label:has([type="checkbox"][role="switch"])) {
+    #{exclusion.guard(':where(label:has([type="checkbox"][role="switch"]))')} {
       display: flex;
       align-items: center;
       gap: 0.5em;              // OP ~size-2 (em-relative)
     }
 
-    :where([type="checkbox"][role="switch"]) {
+    #{exclusion.guard(':where([type="checkbox"][role="switch"])')} {
       appearance: none;
       width: 2.5em;            // no OP match (custom switch width)
       height: 1.25em;          // OP ~size-4 (em-relative)
@@ -259,7 +256,7 @@
       transition: background-color 0.2s;
     }
 
-    :where([type="checkbox"][role="switch"])::before {
+    #{exclusion.guard(':where([type="checkbox"][role="switch"])::before')} {
       content: '';
       position: absolute;
       top: 2px;
@@ -271,11 +268,11 @@
       transition: transform 0.2s;
     }
 
-    :where([type="checkbox"][role="switch"]):checked {
+    #{exclusion.guard(':where([type="checkbox"][role="switch"]):checked')} {
       background-color: var(#{$prefix}primary);
     }
 
-    :where([type="checkbox"][role="switch"]):checked::before {
+    #{exclusion.guard(':where([type="checkbox"][role="switch"]):checked::before')} {
       transform: translateX(1.25em);
     }
   }
@@ -286,11 +283,7 @@
 // appearance: none unlocks sizing control while preserving the native picker
 // (only the decorative icon is removed on iOS; Chrome/desktop keeps its icons).
 // Placed outside @layer with real selectors to beat UA specificity.
-[type="date"],
-[type="month"],
-[type="week"],
-[type="time"],
-[type="datetime-local"] {
+#{exclusion.guard('[type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]')} {
   -webkit-appearance: none;
   appearance: none;
 }

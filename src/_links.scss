@@ -5,10 +5,11 @@
 
 @use 'sass:string';
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
-  :where(a:not([role="button"])) {
+  #{exclusion.guard(':where(a:not([role="button"]))')} {
     color: var(#{$prefix}primary);
     text-decoration: underline;
     text-underline-offset: 0.15em; // no OP match; OP normalize: 1px (2px Firefox)
@@ -16,12 +17,12 @@
     transition: color 0.2s, text-decoration-color 0.2s;
   }
 
-  :where(a:not([role="button"])):visited {
+  #{exclusion.guard(':where(a:not([role="button"])):visited')} {
     color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.38 0.15 310))')};
     text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}primary) 40%, oklch(0.38 0.15 310) 30%)')};
   }
 
-  :where(a:not([role="button"])):hover {
+  #{exclusion.guard(':where(a:not([role="button"])):hover')} {
     color: var(#{$prefix}primary-hover);
     text-decoration-color: var(#{$prefix}primary-hover);
   }

@@ -128,11 +128,11 @@ nimble.css styles can conflict with third-party components (datatables, rich tex
 
 **What still applies:** Reset, colors/custom properties, body grid, layout utilities (`.fluid`, `.bleed-full`, `.bleed-wide`, `.container`), content shadow (if enabled), and print styles. This means layout classes work on `.no-nimble` elements.
 
-This works via CSS `@scope` (Chrome 118+, Safari 17.4+, Firefox 128+). To disable scoping entirely (smaller output, no opt-out):
+This works directly in the generated CSS, including when JavaScript is disabled. To disable exclusion entirely (smaller output, no opt-out):
 
 ```scss
 @use '@leftium/nimble.css/scss' with (
-  $exclude-selector: null
+  $exclude-selector: false
 );
 ```
 
@@ -201,7 +201,7 @@ Build a CSS file with new defaults. SCSS-unique options listed first; the rest m
   $enable-switch: true,
   $enable-details: true,
 
-  // Scoping (set to null to disable @scope wrapping)
+  // Component exclusion (set to false to disable selector guards)
   $exclude-selector: '.no-nimble',
 
   // Surface fine-tuning
@@ -247,7 +247,7 @@ nimble.css combines [Open Props](https://open-props.style/)'s design token philo
 - **Text color** (`text`) — single text color variable; muted text derived inline via `color-mix()`.
 - **OKLCH color space** — perceptually uniform color system. Change `--nc-primary` and hover/focus states regenerate automatically via [relative color syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors).
 - **Curated scale values** — `$spacing: 1rem` (~Open Props `size-3`) and `$radius: 0.25rem` (~Open Props `radius-2`) are sourced from Open Props' scales.
-- **Minimal DevTools pollution** — ~20 semantic custom properties on `:root` plus scoped `--_` internals per component, rather than dumping hundreds of variables globally.
+- **Minimal DevTools pollution** — ~20 semantic custom properties on `:root` plus component-local `--_` internals, rather than dumping hundreds of variables globally.
 
 The key architectural difference: nimble.css is self-contained SCSS with no runtime dependency on Open Props. Color derivatives (hover, focus, surfaces) are expressed as native CSS relative colors and `calc()`, so runtime theming works without a build step.
 

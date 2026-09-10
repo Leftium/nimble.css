@@ -4,12 +4,13 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @if $enable-details {
 
   @layer nimble.base {
 
-    :where(details) {
+    #{exclusion.guard(':where(details)')} {
       border: 1px solid var(#{$prefix}border);
       border-radius: var(#{$prefix}radius);
       // No vertical padding — summary provides its own via the
@@ -19,7 +20,7 @@
       margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
     }
 
-    :where(summary) {
+    #{exclusion.guard(':where(summary)')} {
       cursor: pointer;
       font-weight: 600;    // OP --font-weight-6 (OP normalize uses weight-7: 700 for dt/summary)
       // Stretch summary across the horizontal padding area, then
@@ -35,7 +36,7 @@
       list-style-type: '▶ ';
     }
 
-    :where(details[open] > summary) {
+    #{exclusion.guard(':where(details[open] > summary)')} {
       list-style-type: '▼ ';
     }
 
@@ -46,14 +47,14 @@
     // block behavior and replace the list marker with a ::before
     // chevron that inherits the button's contrast color.
 
-    :where(summary[role="button"]) {
+    #{exclusion.guard(':where(summary[role="button"])')} {
       display: block;
       width: auto;
       margin: 0 -1em;          // OP ~size-3 (em-relative, negative); restore stretch
       list-style: none;         // remove ▶/▼ marker — replaced by ::before
     }
 
-    :where(summary[role="button"])::before {
+    #{exclusion.guard(':where(summary[role="button"])::before')} {
       content: '▶\00a0';
       display: inline-block;
       transition: transform 0.2s ease;
@@ -61,12 +62,12 @@
       vertical-align: middle;
     }
 
-    :where(details[open] > summary[role="button"])::before {
+    #{exclusion.guard(':where(details[open] > summary[role="button"])::before')} {
       transform: rotate(90deg);
     }
 
     // When open, restore vertical padding for content spacing.
-    :where(details[open]) {
+    #{exclusion.guard(':where(details[open])')} {
       padding-bottom: 0.5em;   // OP ~size-2 (em-relative)
     }
 
@@ -78,7 +79,7 @@
   // which are unlayered and win over any in-layer rule.
   // Repeated :last-child bumps specificity (0,0,2,1) to beat
   // scoped selectors like .foo.svelte-xxx (0,0,2,0).
-  details :last-child:last-child {
+  #{exclusion.guard('details :last-child:last-child')} {
     margin-bottom: 0;
   }
 
@@ -86,30 +87,30 @@
   // Outside @layer — ::details-content needs real specificity to override UA styles
   // Gate on ::details-content support (Safari 18.4+, Chrome 131+)
   @supports selector(details::details-content) {
-    details::details-content {
+    #{exclusion.guard('details::details-content')} {
       transition: opacity 0.3s ease,
                   content-visibility 0.3s ease allow-discrete;
       opacity: 0;
     }
 
-    details[open]::details-content {
+    #{exclusion.guard('details[open]::details-content')} {
       opacity: 1;
     }
 
     // Height animation where interpolate-size is supported (Chrome 129+)
     @supports (interpolate-size: allow-keywords) {
-      details {
+      #{exclusion.guard('details')} {
         interpolate-size: allow-keywords;
       }
 
-      details::details-content {
+      #{exclusion.guard('details::details-content')} {
         transition: height 0.3s ease, opacity 0.3s ease,
                     content-visibility 0.3s ease allow-discrete;
         height: 0;
         overflow: clip;
       }
 
-      details[open]::details-content {
+      #{exclusion.guard('details[open]::details-content')} {
         height: auto;
       }
     }

@@ -5,6 +5,7 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @if $enable-utilities {
 
@@ -13,14 +14,14 @@
     // ----- Tables -----
 
     // Striped table rows
-    .striped :where(tbody tr:nth-child(even)) {
+    #{exclusion.guard('.striped :where(tbody tr:nth-child(even))')} {
       background-color: var(#{$prefix}surface-2);
     }
 
     // ----- Visibility -----
 
     // Accessible hidden (screen readers only)
-    .visually-hidden {
+    #{exclusion.guard('.visually-hidden')} {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -33,7 +34,7 @@
     }
 
     // Scrollable container
-    .overflow-auto {
+    #{exclusion.guard('.overflow-auto')} {
       overflow: auto;
     }
 

@@ -5,27 +5,27 @@
 // ==========================================================================
 
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
   @supports (appearance: base-select) {
-    :where(select),
-    :where(select)::picker(select) {
+    #{exclusion.guard(':where(select), :where(select)::picker(select)')} {
       appearance: base-select;
     }
 
     // Picker icon (chevron)
-    :where(select)::picker-icon {
+    #{exclusion.guard(':where(select)::picker-icon')} {
       content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 2l6 6 6-6'/%3E%3C/svg%3E");
       transition: rotate 0.4s;
     }
 
-    :where(select):open::picker-icon {
+    #{exclusion.guard(':where(select):open::picker-icon')} {
       rotate: 180deg;
     }
 
     // Drop-down picker
-    :where(select)::picker(select) {
+    #{exclusion.guard(':where(select)::picker(select)')} {
       position-area: block-end;
       position-try-order: normal;
       position-try-fallbacks: flip-block;
@@ -38,29 +38,29 @@
       transition: opacity 0.2s, overlay 0.2s allow-discrete, display 0.2s allow-discrete;
     }
 
-    :where(select):open::picker(select) {
+    #{exclusion.guard(':where(select):open::picker(select)')} {
       opacity: 1;
     }
 
     @starting-style {
-      :where(select):open::picker(select) {
+      #{exclusion.guard(':where(select):open::picker(select)')} {
         opacity: 0;
       }
     }
 
     // Options inside the picker
-    :where(select) option {
+    #{exclusion.guard(':where(select) option')} {
       padding: 0.5em 0.75em;   // 0.5em: OP ~size-2; 0.75em: no OP match
                                // OP normalize: select uses 0.75ch block, --size-relative-4 inline
       border-radius: var(#{$prefix}radius);
       transition: background-color 0.15s;
     }
 
-    :where(select) option:hover {
+    #{exclusion.guard(':where(select) option:hover')} {
       background-color: var(#{$prefix}surface-2);
     }
 
-    :where(select) option:checked {
+    #{exclusion.guard(':where(select) option:checked')} {
       font-weight: 600;
     }
   }

@@ -358,8 +358,8 @@
         <article>
           <header>
             <h2>Component Isolation (<code>.no-nimble</code>)</h2>
-            <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles. This requires <code>no-nimble.js</code> which wraps scopeable rules in <code>@scope</code> at runtime. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.bleed-edge</code>, <code>.bleed-wide</code>, <code>.bleed-full</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
-            <p>Compare the elements below with the styled versions above — these should render in browser defaults.</p>
+            <p>The <code>.no-nimble</code> class opts an element out of nimble.css typography, form, and component styles without JavaScript. Layout utilities (<code>.container</code>, <code>.grid</code>, <code>.bleed-edge</code>, <code>.bleed-wide</code>, <code>.bleed-full</code>) remain global and still work on <code>.no-nimble</code> elements.</p>
+            <p>Compare the elements below with the styled versions above. Global styles and inherited values still apply, but direct nimble.css component declarations do not.</p>
           </header>
 
           <div class="no-nimble">
@@ -441,7 +441,6 @@
       </nav>
     </footer>
 
-    <script src="../no-nimble.js"></script>
     <script>
       // Theme toggle
       const themeToggle = document.getElementById('theme-toggle');

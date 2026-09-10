@@ -6,6 +6,7 @@
 @use 'sass:map';
 @use 'sass:string';
 @use 'config' as *;
+@use 'exclusion';
 
 // Heading scale: size, line-height, and top margin
 // h1 has no top margin (page title / first heading).
@@ -31,7 +32,7 @@ $_heading-scale: (
   // ----- Headings -----
 
   @each $tag, $vals in $_heading-scale {
-    #{$tag} {
+    #{exclusion.guard($tag)} {
       font-size: map.get($vals, size);
       line-height: map.get($vals, lh);
       margin-top: map.get($vals, mt);
@@ -45,21 +46,19 @@ $_heading-scale: (
   // Block elements: no top margin, consistent bottom margin
   // Spec §8.4
 
-  p, ul, ol, dl, blockquote, pre, table, figure, form, fieldset {
+  #{exclusion.guard('p, ul, ol, dl, blockquote, pre, table, figure, form, fieldset')} {
     margin-top: 0;
     margin-bottom: var(#{$prefix}spacing);
   }
 
   // Prevent double spacing at page edges: body has padding-block,
   // so strip margins that would stack with it.
-  // Must live inside @scope so it beats the scoped margin rules above.
+  // Must remain with the component rules so it beats the margin rules above.
   // Uses :nth-child/:nth-last-child(of ...) to skip <script>/<style>.
-  body > :first-child,
-  body > :first-child > :first-child {
+  #{exclusion.guard('body > :first-child, body > :first-child > :first-child')} {
     margin-top: 0;
   }
-  body > :nth-last-child(1 of :not(script, style, dialog)),
-  body > :nth-last-child(1 of :not(script, style, dialog)) > :last-child {
+  #{exclusion.guard('body > :nth-last-child(1 of :not(script, style, dialog)), body > :nth-last-child(1 of :not(script, style, dialog)) > :last-child')} {
     margin-bottom: 0;
   }
 
@@ -67,24 +66,24 @@ $_heading-scale: (
 
   // ----- Lists -----
 
-  ul, ol {
+  #{exclusion.guard('ul, ol')} {
     padding-inline-start: 1.5em;    // OP ~size-5 (em-relative); OP normalize: --size-8 (3rem)
   }
 
-  :where(li) {
+  #{exclusion.guard(':where(li)')} {
     margin-bottom: 0.25em;              // OP ~size-1 (em-relative)
   }
 
   // Remove bottom margin on nested lists
-  :where(li) > :where(ul, ol) {
+  #{exclusion.guard(':where(li) > :where(ul, ol)')} {
     margin-bottom: 0;
   }
 
-  dt {
+  #{exclusion.guard('dt')} {
     font-weight: 600;                           // OP --font-weight-6 (OP normalize uses weight-7: 700)
   }
 
-  dd {
+  #{exclusion.guard('dd')} {
     margin-inline-start: 1.5em;         // OP ~size-5 (em-relative)
     margin-bottom: 0.5em;               // OP ~size-2 (em-relative)
   }
@@ -92,7 +91,7 @@ $_heading-scale: (
   // ----- Blockquote -----
   // Spec §9.6
 
-  blockquote {
+  #{exclusion.guard('blockquote')} {
     margin-block: var(#{$prefix}spacing);
     margin-inline: 0;
     padding: 0.25em var(#{$prefix}spacing); // OP ~size-1 (em-relative), --size-3
@@ -100,8 +99,7 @@ $_heading-scale: (
     font-style: italic;
   }
 
-  :where(blockquote) footer,
-  :where(blockquote) cite {
+  #{exclusion.guard(':where(blockquote) footer, :where(blockquote) cite')} {
     font-style: normal;
     font-size: 0.9em;                   // no OP match (near ~size-3)
     color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
@@ -110,7 +108,7 @@ $_heading-scale: (
   // ----- Horizontal Rule -----
   // Spec §9.9
 
-  hr {
+  #{exclusion.guard('hr')} {
     border: none;
     height: 1px;
     background-color: color-mix(in oklch, var(#{$prefix}border), transparent 40%);
@@ -120,7 +118,7 @@ $_heading-scale: (
   // ----- Mark -----
   // Spec §9.10
 
-  mark {
+  #{exclusion.guard('mark')} {
     padding: 0.1em 0.25em;              // 0.1em: no OP match (micro); 0.25em: OP ~size-1
     background-color: #{string.unquote('light-dark(#fde68a, oklch(0.55 0.12 85))')};
     color: #{string.unquote('light-dark(inherit, oklch(0.95 0.01 85))')};
@@ -129,7 +127,7 @@ $_heading-scale: (
 
   // ----- Address -----
 
-  address {
+  #{exclusion.guard('address')} {
     font-style: normal;
   }
 

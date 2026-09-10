@@ -5,22 +5,23 @@
 
 @use 'sass:string';
 @use 'config' as *;
+@use 'exclusion';
 
 @layer nimble.base {
 
-  :where(table) {
+  #{exclusion.guard(':where(table)')} {
     width: 100%;
     border-collapse: collapse;
   }
 
-  :where(th, td) {
+  #{exclusion.guard(':where(th, td)')} {
     padding: 0.5em 0.75em;   // 0.5em: OP ~size-2; 0.75em: no OP match
                               // OP normalize: --size-2 (0.5rem) both axes
     border-bottom: 1px solid #{string.unquote('color-mix(in oklch, var(#{$prefix}border), transparent 40%)')};
     text-align: start;
   }
 
-  :where(thead th, thead td) {
+  #{exclusion.guard(':where(thead th, thead td)')} {
     font-weight: 600;     // OP --font-weight-6
     border-bottom-width: 2px;
     background-color: var(#{$prefix}surface-2);
@@ -28,7 +29,7 @@
   }
 
   // Responsive tables: horizontal scroll when inside figure
-  :where(figure:has(table)) {
+  #{exclusion.guard(':where(figure:has(table))')} {
     overflow-x: auto;
   }
 

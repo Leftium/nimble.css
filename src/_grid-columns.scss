@@ -4,7 +4,7 @@
 // 3-column grid: 1fr | content+padding | 1fr
 // Children get real padding-inline for consistent spacing model
 // (same as article, dialog, .container).
-// Global (not scoped) so the body grid layout always applies.
+// Global (not guarded) so the body grid layout always applies.
 // ==========================================================================
 
 @use 'config' as *;
