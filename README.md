@@ -3,14 +3,14 @@
   # Nimble.css
 </div>
 
-Minimal CSS library for great-looking default HTML styles; no classes required. ~3.8 KB brotli (core).
+Minimal CSS library for great-looking default HTML styles; no classes required. ~4.1 KB brotli (core).
 
 
 
 - **Classless** — every standard HTML element elegantly styled without classes
 - **Dark mode** — included (automatic and manual)
 - **Cascade layers** — plays nicely alongside your own styles
-- **Tiny** — core is only ~3.8 KB brotli (19.6 KB minified)
+- **Tiny** — core is only ~4.1 KB brotli (25.9 KB minified)
 
 ## Demos
 
@@ -47,17 +47,17 @@ import '@leftium/nimble.css';
 </details>
 
 <details>
-<summary>For 3.8 KB core size</summary>
+<summary>For 4.1 KB core size</summary>
 
-`nimble.min.css` (23.3 KB) includes everything.
+`nimble.min.css` (30.1 KB) includes everything.
 
-To trim size, use `nimble-core.min.css` (19.6 KB) + only the add-ons you need:
+To trim size, use `nimble-core.min.css` (25.9 KB) + only the add-ons you need:
 
 | Add-on | Minified |
 |---|---|
-| `nimble-shadow.min.css` | 1.7 KB |
-| `nimble-meter.min.css` | 1.0 KB |
-| `nimble-select.min.css` | 1.1 KB |
+| `nimble-shadow.min.css` | 1.5 KB |
+| `nimble-meter.min.css` | 1.3 KB |
+| `nimble-select.min.css` | 1.5 KB |
 
 Mix and match with CDN links (comment out what you don't need):
 
@@ -85,8 +85,8 @@ For advanced use, `nimble-core` is composed of these non-overlapping layers:
 | Sub-bundle | Minified | Contents |
 |---|---|---|
 | `nimble-reset.min.css` | 1.5 KB | Modern CSS reset |
-| `nimble-base.min.css` | 4.0 KB | Colors + document + typography |
-| `nimble-utilities.min.css` | 274 B | Utility classes |
+| `nimble-base.min.css` | 5.2 KB | Colors + document + typography |
+| `nimble-utilities.min.css` | 385 B | Utility classes |
 
 </details>
 
