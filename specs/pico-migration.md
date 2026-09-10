@@ -156,7 +156,7 @@ nimble's surface scale has larger lightness steps than Pico's. If exact Pico bac
 | `[role="search"]` (pill search) | `[role="search"]` | Same pattern. nimble applies pill-shaped ends to search groups. |
 | `data-theme="dark"` / `data-theme="light"` | `data-theme="dark"` / `data-theme="light"` | Same attribute, same behavior. nimble uses `color-scheme` under the hood. |
 | `.close` | _(none)_ | No built-in close button class. |
-| `$parent-selector: '.pico'` (opt-in) | `.no-nimble` (opt-out) | Pico wraps all styles inside a parent class (opt-in). nimble uses `@scope` to exclude styles from `.no-nimble` subtrees (opt-out). Different approach: nimble styles apply by default; Pico styles only where opted in. |
+| `$parent-selector: '.pico'` (opt-in) | `.no-nimble` (opt-out) | Pico wraps all styles inside a parent class (opt-in). nimble adds zero-specificity selector guards to exclude component styles from `.no-nimble` subtrees (opt-out). Different approach: nimble styles apply by default; Pico styles only where opted in. |
 
 ### 2.2 Semantic / Classless Elements
 

@@ -4,6 +4,7 @@
 // ===========================================================================
 
 @use 'sass:selector';
+@use 'sass:string';
 @use 'config' as *;
 
 @function guard($selectors) {
@@ -12,6 +13,20 @@
   }
 
   $roots: selector.parse($exclude-selector);
+  @each $root in $roots {
+    $serialized: '#{$root}';
+    $first-character: string.slice($serialized, 1, 1);
+    @if $first-character == '>' or $first-character == '+' or $first-character == '~' {
+      @error '$exclude-selector must be a standalone selector.';
+    }
+    @if string.index($serialized, '::') or
+        string.index($serialized, ':before') or
+        string.index($serialized, ':after') or
+        string.index($serialized, ':first-line') or
+        string.index($serialized, ':first-letter') {
+      @error '$exclude-selector must not contain pseudo-elements.';
+    }
+  }
   $descendants: selector.nest($roots, '*');
   $boundary: ':where(:not(#{$roots}, #{$descendants}))';
   // `unify` adds the guard to the final subject while keeping a pseudo-element

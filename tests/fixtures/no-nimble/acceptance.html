@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimble CSS-only exclusion acceptance</title>
+  <link rel="stylesheet" href="../../../dist/nimble.css">
+  <style>
+    #results { font-family: ui-monospace, monospace; white-space: pre-wrap; }
+    #reference { position: absolute; left: -10000px; height: 600px; border: 0; }
+  </style>
+</head>
+<body>
+  <main class="fluid">
+    <h1>CSS-only .no-nimble acceptance</h1>
+    <p>This fixture uses JavaScript only to measure browser output. Production exclusion is provided by the linked CSS and must work with JavaScript disabled.</p>
+    <button id="run" type="button">Run acceptance checks</button>
+    <p id="results" role="status">Ready.</p>
+
+    <section id="normal">
+      <h2>Normal component styling</h2>
+      <label for="normal-input">Label <input id="normal-input" type="text" value="Text input"></label>
+      <button type="button">Button</button>
+      <select><option>Option</option></select>
+      <textarea>Textarea</textarea>
+      <details open><summary role="button">Details summary</summary><p>Details content</p></details>
+      <fieldset><legend>Fieldset legend</legend><label>Checkbox <input type="checkbox" checked></label></fieldset>
+    </section>
+
+    <section id="excluded" class="no-nimble">
+      <h2>Excluded component styling</h2>
+      <label for="excluded-input">Label <input id="excluded-input" type="text" value="Text input"></label>
+      <button type="button">Button</button>
+      <select><option>Option</option></select>
+      <textarea>Textarea</textarea>
+      <details open><summary role="button">Details summary</summary><p>Details content</p></details>
+      <fieldset><legend>Fieldset legend</legend><label>Checkbox <input type="checkbox" checked></label></fieldset>
+    </section>
+
+    <div id="global" class="no-nimble bleed-full">Global layout utilities remain available.</div>
+    <iframe id="reference" title="Global-only property reference"></iframe>
+  </main>
+
+  <script>
+    const markup = `
+      <label>Label <input type="text" value="Text input"></label>
+      <button type="button">Button</button>
+      <select><option>Option</option></select>
+      <textarea>Textarea</textarea>
+      <details open><summary role="button">Details summary</summary><p>Details content</p></details>
+      <fieldset><legend>Fieldset legend</legend><label>Checkbox <input type="checkbox" checked></label></fieldset>`;
+
+    // The reference retains global reset and document rules. Exclusion removes
+    // component declarations only, so a completely unstyled iframe would be a
+    // misleading control, especially for native form metrics on mobile Safari.
+    const globalReferenceStyles = `
+      :where(*:not(progress)), :where(*::before), :where(*::after) {
+        box-sizing: border-box;
+        background-repeat: no-repeat;
+      }
+      :where(html) {
+        -webkit-text-size-adjust: 100%;
+        color-scheme: light dark;
+        font-family: system-ui, sans-serif;
+        font-size: 100%;
+        line-height: 1.5;
+      }
+      :where(body) { margin: 0; }
+      :where(button, input, select, textarea) {
+        font: inherit;
+        letter-spacing: inherit;
+      }
+      :where(button, [type=button], [type=reset], [type=submit]) {
+        -webkit-appearance: button;
+      }`;
+
+    const subjects = [
+      ['input', 'input', ['paddingTop', 'borderTopWidth', 'borderTopStyle', 'borderRadius']],
+      ['button', 'button', ['paddingTop', 'backgroundColor', 'borderTopWidth', 'borderRadius']],
+      // iOS Safari reports native select border geometry differently across
+      // documents. This custom property exists only on Nimble's guarded common
+      // form rule, so it directly proves whether component styling leaked.
+      ['select', 'select', ['--_input-bg']],
+      ['textarea', 'textarea', ['paddingTop', 'borderTopWidth', 'borderRadius']],
+      ['details', 'details', ['paddingTop', 'borderTopWidth', 'borderRadius']],
+      ['summary', 'summary', ['paddingTop', 'fontWeight']],
+      ['fieldset', 'fieldset', ['paddingTop', 'borderTopWidth', 'borderRadius']],
+      ['label', 'fieldset label', ['display', 'marginBottom']],
+    ];
+
+    function read(root, selector, properties) {
+      const style = getComputedStyle(root.querySelector(selector));
+      return properties.map((property) =>
+        property.startsWith('--') ? style.getPropertyValue(property) : style[property]
+      );
+    }
+
+    function line(name, pass, observed) {
+      return `${pass ? 'PASS' : 'FAIL'} ${name}: ${observed}`;
+    }
+
+    async function run() {
+      const frame = document.getElementById('reference');
+      // Native iOS controls can use different metrics in a wider embedded
+      // viewport, so the reference must match the page's layout viewport.
+      frame.style.width = `${document.documentElement.clientWidth}px`;
+      frame.srcdoc = `<!doctype html><style>${globalReferenceStyles}</style><body>${markup}</body>`;
+      await new Promise((resolve) => frame.addEventListener('load', resolve, { once: true }));
+
+      const normal = document.getElementById('normal');
+      const excluded = document.getElementById('excluded');
+      const reference = frame.contentDocument.body;
+      const results = [];
+
+      for (const [name, selector, properties] of subjects) {
+        const normalValues = read(normal, selector, properties);
+        const excludedValues = read(excluded, selector, properties);
+        const nativeValues = read(reference, selector, properties);
+        results.push(line(`${name} is styled outside exclusion`, JSON.stringify(normalValues) !== JSON.stringify(nativeValues), JSON.stringify(normalValues)));
+        results.push(line(`${name} matches global-only reference inside exclusion`, JSON.stringify(excludedValues) === JSON.stringify(nativeValues), JSON.stringify(excludedValues)));
+      }
+
+      const summaryPseudo = getComputedStyle(normal.querySelector('summary'), '::before').content;
+      const excludedPseudo = getComputedStyle(excluded.querySelector('summary'), '::before').content;
+      results.push(line('summary pseudo-element is excluded', summaryPseudo !== excludedPseudo, `${summaryPseudo} / ${excludedPseudo}`));
+
+      excluded.classList.remove('no-nimble');
+      const dynamicStyled = read(excluded, 'input', ['paddingTop', 'borderTopWidth']);
+      const normalStyled = read(normal, 'input', ['paddingTop', 'borderTopWidth']);
+      results.push(line('class removal restores component styling', JSON.stringify(dynamicStyled) === JSON.stringify(normalStyled), JSON.stringify(dynamicStyled)));
+      excluded.classList.add('no-nimble');
+      const dynamicExcluded = read(excluded, 'input', ['paddingTop', 'borderTopWidth']);
+      const nativeInput = read(reference, 'input', ['paddingTop', 'borderTopWidth']);
+      results.push(line('class addition restores exclusion', JSON.stringify(dynamicExcluded) === JSON.stringify(nativeInput), JSON.stringify(dynamicExcluded)));
+
+      const global = document.getElementById('global');
+      results.push(line('global layout utility remains active', getComputedStyle(global).gridColumnStart === '1', getComputedStyle(global).gridColumnStart));
+      results.push(line('global custom properties remain inherited', getComputedStyle(excluded).getPropertyValue('--nc-primary').trim() !== '', getComputedStyle(excluded).getPropertyValue('--nc-primary').trim()));
+      results.push('Inspect dialog backdrops and customizable select picker manually where supported.');
+      document.getElementById('results').textContent = results.join('\n');
+    }
+
+    document.getElementById('run').addEventListener('click', () => run().catch((error) => {
+      document.getElementById('results').textContent = `FAIL fixture error: ${error.message}`;
+    }));
+  </script>
+</body>
+</html>

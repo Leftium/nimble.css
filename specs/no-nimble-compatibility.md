@@ -212,7 +212,9 @@ The rendering fixture must establish:
 | Full Nimble plus a separately loaded component add-on | Component selectors from every applicable bundle obey `.no-nimble`. |
 | Application CSS concatenated after generated Nimble CSS | Application selectors remain active inside `.no-nimble`; only Nimble-owned component selectors receive guards. |
 
-Compare excluded content with a reference that preserves the same ancestor styles and inheritance, while applying only intended global rules and third-party CSS directly within the reference subtree. Removing component rules from the entire reference document would also remove inherited ancestor styling and produce a misleading comparison. Use non-inherited properties such as border, padding, and width to verify form styling. A custom property on a `div` is not sufficient evidence.
+[`tests/fixtures/no-nimble/acceptance.html`](../tests/fixtures/no-nimble/acceptance.html) is the focused manual acceptance fixture. Serve the repository root over HTTP, then run it in each release-target browser. It compares non-inherited component properties with a global-only iframe reference, verifies dynamic class changes, and confirms that global layout and custom properties remain active. Dialog backdrops and customizable select UI remain manual visual checks where the browser supports them.
+
+Compare excluded content with a reference that applies the same intended global rules, and preserve matching ancestor styles and inheritance when they affect the property under test. Removing component rules from the entire reference document would also remove global styling and produce a misleading comparison. Use non-inherited properties such as border, padding, and width to verify form styling. A custom property on a `div` is not sufficient evidence.
 
 Replacement acceptance tests use ordinary semantics: `PASS` means the desired behavior is correct. Keep any historical probes where `PASS` means a runtime defect was reproduced in a separate exploratory suite with explicit labels. Do not mix their results into replacement acceptance totals.
 

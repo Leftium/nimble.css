@@ -136,6 +136,8 @@ This works directly in the generated CSS, including when JavaScript is disabled.
 );
 ```
 
+`@leftium/nimble.css/no-nimble` is deprecated. Existing imports may remain temporarily, but only emit a warning; remove them before a future breaking release removes the export. New JavaScript cannot activate exclusion in an older CSS bundle, so upgrade matching CSS and JavaScript assets together.
+
 ## Customization
 
 ### CSS Custom Properties

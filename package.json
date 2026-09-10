@@ -38,11 +38,13 @@
   },
   "scripts": {
     "build": "node build.js",
+    "test": "node --test",
     "dev": "browser-sync start --server site --index index.html --port 80",
     "prepublishOnly": "node build.js"
   },
   "devDependencies": {
     "browser-sync": "^3.0.4",
+    "css-tree": "^3.2.1",
     "lightningcss": "^1.32.0",
     "sass": "^1.101.0"
   },
