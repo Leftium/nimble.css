@@ -477,9 +477,10 @@ add `.nc-join` to every visual button or touching-control group. Keep a
 plain `role="group"` for semantic-only groups; the old divider and corner-reset
 workarounds are no longer needed for those groups.
 
-If using the earlier draft of this component, replace `.button-group` with
-`.nc-join` and rename custom `--nc-button-group-divider` overrides to
-`--nc-join-divider`.
+When migrating from pre-#12 Nimble, rename custom
+`--nc-button-group-divider` overrides to `--nc-join-divider`. If you used the
+temporary `.button-group` API from the #12 draft, rename that class to
+`.nc-join` as well.
 
 Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 
