@@ -222,10 +222,6 @@ button chrome.
 Use `.secondary`, `.outline`, and `.inline` with `.nc-button` just as you
 would with a native button.
 
-When migrating existing visual `[role="button"]` elements, add
-`.nc-button`. Keep `role="button"` only when the element also needs button
-semantics.
-
 Use `.nc-join` to join adjacent controls into one touching visual unit. It
 works for button rows and mixed input/select + button compositions:
 
@@ -262,13 +258,6 @@ divider for a specific join when its surface needs a custom separator:
   --nc-join-divider: var(--nc-border);
 }
 ```
-
-When migrating from pre-#12 Nimble, replace visual
-`<div role="group">...</div>` with `<div class="nc-join">...</div>` and
-rename `--nc-button-group-divider` overrides to `--nc-join-divider`.
-Keep `role="group"` alongside the class when the controls also need ARIA
-semantics. If you used the temporary `.button-group` API from the #12 draft,
-rename that class to `.nc-join` as well.
 
 <details>
 <summary>SCSS (advanced)</summary>

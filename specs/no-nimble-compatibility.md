@@ -1,15 +1,22 @@
 # CSS-only component exclusion and browser compatibility
 
 **Date:** 2026-09-10
-**Status:** Draft for implementation
+**Status:** Historical implementation proposal. See the [README](../README.md) for the current exclusion API.
 **Source baseline:** nimble.css 0.21.0, commit `214b5a8`
 **Assessment updated:** 2026-09-10, through commit `84fb4d0`
 
-Make `.no-nimble` exclude direct component styling through zero-specificity selector guards in every CSS and SCSS bundle, without runtime stylesheet rewriting.
+The proposal introduced zero-specificity selector guards so `.no-nimble`
+excludes direct component styling in CSS and SCSS bundles without runtime
+stylesheet rewriting.
 
-Today, prebuilt CSS ignores `.no-nimble` unless an optional script wraps rules in `@scope`. The target is default-on exclusion in ordinary CSS, preserving global reset, theme, layout, shadow, and print behavior. Completion requires permanent selector-level checks and replacement acceptance fixtures in current browsers. Safari 18 investigation is historical evidence, not a release requirement. Color fallbacks are a separate follow-on phase; they are not a prerequisite for shipping exclusion.
+At the 0.21.0 baseline, prebuilt CSS ignored `.no-nimble` unless an optional
+script wrapped rules in `@scope`. The proposal targeted default-on exclusion
+while preserving global reset, theme, layout, shadow, and print behavior.
+The sections below record the evidence and implementation plan at that time.
 
-This document contains the September reassessment and active implementation plan. The [original March assessment](safari-bugs.md#1-scope--layer-style-application-bug-desktop-safari) remains historical evidence. Update the current architecture sections in [nimble-css.md](nimble-css.md) when implementation lands, without rewriting old migration outcomes as if they used the new mechanism.
+The [original March assessment](safari-bugs.md#1-scope--layer-style-application-bug-desktop-safari)
+is also historical evidence. Earlier migration outcomes retain the behavior of
+their original releases.
 
 ## Evidence and motivation
 

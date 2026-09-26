@@ -2,8 +2,8 @@
 
 > A minimal class/classless CSS library combining the best of Open Props and PicoCSS.
 
-**Version:** 0.15.0
-**Status:** Draft
+**Version:** 0.15.0 design baseline
+**Status:** Historical design record. See the [README](../README.md) for the current public API.
 **Date:** 2026-04-03
 
 ---
@@ -133,7 +133,7 @@ nimble.css is authored in **SCSS** and compiled to pure CSS for distribution. Th
 
 nimble.css splits its styles into two categories:
 
-**Global styles** — always apply regardless of scoping:
+**Global styles** — always apply regardless of component exclusion:
 - Reset (`_reset.scss`)
 - Colors/custom properties (`_colors.scss`)
 - Document/body grid (`_document.scss`)
@@ -141,28 +141,19 @@ nimble.css splits its styles into two categories:
 - Layout utilities (`_layout-utilities.scss`) — `.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.grid`, `.container`
 - Print styles (`_print.scss`)
 
-**Scopeable styles** — emitted globally by default, optionally wrappable in `@scope`:
+**Component styles** — selectors carry a zero-specificity exclusion guard:
 - Typography, links, buttons, forms, tables, code, media, article, details, dialog
 - Non-layout utilities (`.striped`, `.visually-hidden`, `.overflow-auto`)
 
-The `_scopeable.scss` module uses `meta.load-css()` to load all scopeable partials, allowing the entry point (`nimble.scss`) to conditionally wrap them in `@scope`:
+The `_scopeable.scss` module loads component partials. Each component selector
+uses `exclusion.guard()` to exclude its declaration subject when that element
+is inside `.no-nimble`. The guard is enabled in the prebuilt CSS and does not
+change selector specificity:
 
 ```scss
-@if $exclude-selector {
-  @scope (:root) to (#{$exclude-selector}) {
-    @include scopeable.load;
-  }
-} @else {
-  @include scopeable.load;   // default — no @scope wrapper
-}
+$exclude-selector: '.no-nimble' !default;
+// Set $exclude-selector: false to disable component exclusion.
 ```
-
-By default, `$exclude-selector` is `null` and no `@scope` wrapper is emitted. This ensures compatibility with all browsers, including desktop Safari 18.x which has a bug preventing `@scope` + `@layer` styles from applying to certain elements (see `specs/safari-bugs.md` for details).
-
-For users who need component isolation (`.no-nimble` opt-out), two paths are available:
-
-1. **JS progressive enhancement (recommended):** Include `no-nimble.js` alongside the CSS. The script uses sentinel CSS custom properties to find the boundary between global and scopeable rules, wraps the scopeable portion in `@scope` at runtime, and auto-detects broken browsers.
-2. **SCSS build-time opt-in:** Set `$exclude-selector: '.no-nimble'` for a pure-CSS solution (with the caveat that desktop Safari will be affected).
 
 Layout utilities are intentionally global because they interact with the body grid (e.g., `.bleed-full` sets `grid-column: 1 / -1`). An element with `class="no-nimble bleed-full"` should still participate in the body grid layout even though nimble's component styles (typography, forms, etc.) don't apply inside it.
 
@@ -1028,13 +1019,15 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 .visually-hidden /* accessible hidden (screen readers only) */
 ```
 
-### 10.5 Component Isolation (Opt-In)
+### 10.5 Component Isolation
 
 ```css
 .no-nimble       /* opt out of nimble's component styles (see §15.2) */
 ```
 
-The `.no-nimble` class requires opt-in activation — either via `no-nimble.js` (recommended) or the `$exclude-selector` SCSS flag. Without activation, the class has no effect. See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out) for details.
+The prebuilt CSS applies this exclusion directly; no script or SCSS option is
+needed. See [Section 15.2](#152-third-party-component-isolation-no-nimble-opt-out)
+for details.
 
 **Total class count: ~11** (~10 utilities + `.no-nimble` opt-out).
 
@@ -1087,7 +1080,7 @@ nimble.css/
     _dialog.scss             # Scopeable: dialog
     _print.scss              # Global: @media print rules
     _utilities.scss          # Scopeable: non-layout utilities (.striped, .visually-hidden, etc.)
-    nimble.scss              # Entry point: global + conditional @scope wrapper
+    nimble.scss              # Entry point: global + guarded component styles
     nimble-core.scss         # Core entry point (without progress/meter/select)
   dist/
     nimble.css               # full build (generated, not committed)
@@ -1139,11 +1132,10 @@ $enable-dialog: true !default;
 $enable-switch: true !default;
 $enable-details: true !default;
 
-// --- Scoping ---
-// Set to a selector (e.g. '.no-nimble') to wrap component styles in
-// @scope (:root) to ($exclude-selector). Default: null (no @scope).
-// ⚠️ @scope is broken on desktop Safari 18.x — see specs/safari-bugs.md
-$exclude-selector: null !default;
+// --- Component exclusion ---
+// Component selectors exclude this element and its descendants by default.
+// Set to false to disable exclusion.
+$exclude-selector: '.no-nimble' !default;
 
 // --- Colors (oklch parameters) ---
 $primary-hue: 250 !default;
@@ -1183,7 +1175,7 @@ $breakpoint-phone: 720px !default;
   $primary-hue: 25,            // orange
   $surface-hue: 30,            // warm sand neutrals
   $enable-dialog: false,       // exclude dialog styles
-  $exclude-selector: '.no-nimble',  // enable @scope wrapping (⚠️ broken on desktop Safari 18.x)
+  $exclude-selector: false,       // disable component exclusion
   $content-width: 800px,
 );
 ```
@@ -1298,15 +1290,10 @@ Lessons from MVP.css, new.css, and HN discussions:
 
 CSS cascade layers solve most specificity conflicts with third-party components (Svelte scoped styles, web components, etc.) because unlayered styles always beat layered styles. However, nimble.css's element styles can still "fill in" CSS properties that a component never explicitly sets, subtly changing its appearance.
 
-nimble.css provides an opt-in mechanism for complete component isolation using CSS `@scope`. When enabled, component-level styles (typography, links, buttons, forms, tables, code, media, article, details, dialog, and non-layout utilities) are wrapped in:
-
-```css
-@scope (:root) to (.no-nimble) {
-  /* component styles */
-}
-```
-
-This means nimble's component styles apply everywhere **except** inside elements with `class="no-nimble"`. Document-level styles (reset, colors, body grid, layout utilities, print) remain global — they always apply.
+Component selectors include a zero-specificity guard on the styled element.
+They do not apply to an element with `class="no-nimble"` or to its descendants.
+Document-level styles (reset, colors, body grid, layout utilities, print)
+remain global.
 
 **Usage:**
 
@@ -1324,41 +1311,14 @@ This means nimble's component styles apply everywhere **except** inside elements
 
 Note that layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.container`) are global, so they work on `.no-nimble` elements — you can still control layout while opting out of nimble's component styling.
 
-**Enabling `.no-nimble` — two paths:**
+The prebuilt CSS enables this behavior without JavaScript. SCSS consumers can
+set `$exclude-selector` to a different standalone selector or to `false` to
+disable the guard. The former `@scope` and JavaScript paths are recorded in
+the [historical compatibility investigation](no-nimble-compatibility.md).
 
-By default, `.no-nimble` is **not active** in the prebuilt CSS. The `@scope` wrapper is omitted because desktop Safari 18.x has a bug that prevents `@scope` + `@layer` styles from applying to certain elements (see `specs/safari-bugs.md`).
-
-*Path 1: JS progressive enhancement (recommended):*
-
-```html
-<link rel="stylesheet" href="nimble.css">
-<script src="no-nimble.js"></script>
-```
-
-The `no-nimble.js` script locates nimble's stylesheet via sentinel CSS custom properties (`--nimble-scope-start`) embedded in the compiled CSS. It splits each `@layer` block at the sentinel boundary — rules before are global, rules after are scopeable — then wraps the scopeable portion in `@scope (:root) to (.no-nimble)` using `adoptedStyleSheets`. It auto-detects the desktop Safari `@scope` + `@layer` bug via a real element probe test and gracefully degrades (`.no-nimble` has no effect on broken browsers). If the stylesheet already contains a `CSSScopeRule` (from the SCSS `$exclude-selector` flag), it no-ops to avoid double-scoping. No FOUC — base styles always apply; the JS only adds the scoping boundary.
-
-*Path 2: SCSS build-time opt-in:*
-
-```scss
-// ⚠️ WARNING: Broken on desktop Safari 18.x — see specs/safari-bugs.md §1
-@use '@leftium/nimble.css/scss' with (
-  $exclude-selector: '.no-nimble'
-);
-```
-
-This emits the `@scope` wrapper directly in the CSS output. Pure CSS, no JS dependency. However, desktop Safari users will see broken form/details styling.
-
-**Why `.no-nimble` is opt-in (not default):**
-
-`@scope` is too new for production defaults. Desktop Safari 18.x has a confirmed bug where styles inside `@scope` + `@layer` silently fail to apply to certain element types (`input`, `select`, `textarea`, `details`). There are 10 open `@scope` bugs in WebKit Bugzilla, most unassigned. An ETA for fixes is unknown (likely 6-12 months). Since nimble.css must work everywhere out of the box, `@scope` is disabled by default. See `specs/safari-bugs.md` for the full investigation.
-
-**Size overhead:** When enabled, the `@scope` wrapper adds ~200 bytes to the minified output. Negligible after compression.
-
-**Browser support for `@scope`:** Chrome 118+, Safari 17.4+ (with bugs, see above), Firefox 128+.
-
-**Why not `revert-layer`?** Early prototyping used `all: revert-layer` on wrapper elements, but this approach was either too aggressive (broke third-party component layout by reverting grid/flex properties) or lost specificity battles with scoped component styles. `@scope` cleanly prevents nimble's styles from entering the subtree at all.
-
-**Why not opt-in (Pico's `$parent-selector` approach)?** Pico CSS supports `$parent-selector: '.pico'` so styles only apply inside a class. nimble.css's body grid requires rules on `body` itself, which can't be nested inside a class. Opt-out (default-on with `.no-nimble` escape hatch) avoids this architectural conflict.
+Pico's opt-in `$parent-selector` approach does not fit Nimble's body grid,
+which needs rules on `body` itself. Exclusion lets the grid remain global
+while third-party components opt out of component styling.
 
 ### 15.3 Why SCSS?
 

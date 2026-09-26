@@ -1,8 +1,8 @@
 # Migrating Vanilla CSS Projects to nimble.css
 
-> A plan and tracker for adding nimble.css to projects that use no CSS framework — just hand-written CSS, sanitize.css, and/or Open Props design tokens.
+> A historical plan and migration log for projects that used hand-written CSS, sanitize.css, or Open Props. See the [README](../README.md) for the current Nimble API.
 
-**Status:** Living document
+**Status:** Historical migration record
 **Last updated:** 2026-03-30
 
 ---

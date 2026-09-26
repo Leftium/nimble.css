@@ -1,8 +1,8 @@
 # Migrating from PicoCSS to nimble.css
 
-> A guide for migrating projects from PicoCSS v2 to nimble.css, plus a tracker for nimble.css issues discovered during migration.
+> A guide for migrating projects from PicoCSS v2 to nimble.css, followed by dated migration case studies. See the [README](../README.md) for the current Nimble API.
 
-**Status:** Living document
+**Status:** Historical migration record
 **Last updated:** 2026-03-28
 
 ---
@@ -91,7 +91,9 @@ nimble's component styles (typography, forms, tables, etc.) won't apply inside `
 
 Replace or remove any Pico-specific classes. See the [Feature Comparison Matrix](#2-feature-comparison-matrix) for mappings.
 
-> **Note:** nimble.css v0.12+ renamed breakout classes: `.full-bleed` → `.bleed-full`, `.wide` → `.bleed-wide`, and added `.bleed-edge`. Migration log entries (§6.x) written before this rename still reference the old class names. Projects migrated before v0.12 should update: `.full-bleed` → `.bleed-full`, `.wide` → `.bleed-wide`.
+Add `.nc-button` to non-native elements that need button appearance, including
+button-styled links and summaries. Keep `role="button"` only when the element
+also needs button semantics.
 
 ### 1.7 Verify visually
 
@@ -198,7 +200,7 @@ These work identically in both libraries (write semantic HTML, get styled output
 | `aria-invalid="true"/"false"` | Validation colors | Validation colors | Equivalent. |
 | `aria-busy="true"` | Loading spinner | Not supported | See [Known Issues #1](#5-known-issues--gaps-in-nimblecss). |
 | `[type="checkbox"][role="switch"]` | Switch toggle | Switch toggle | Equivalent (feature-flagged in nimble via `$enable-switch`). |
-| `[role="button"]` on `<a>` | Styled as button | Styled as button | Equivalent. |
+| Button-styled `<a>` | `role="button"` | `.nc-button` | Keep `role="button"` only when the link also needs button semantics. |
 
 ### 2.4 Layout
 
@@ -472,16 +474,9 @@ footer {
 
 ## 6. Migration Log
 
-These dated case studies describe older Nimble releases. Their references to
-`[role="group"]` styling and workarounds are historical. For current releases,
-add `.nc-join` to every visual button or touching-control group. Keep a
-plain `role="group"` for semantic-only groups; the old divider and corner-reset
-workarounds are no longer needed for those groups.
-
-When migrating from pre-#12 Nimble, rename custom
-`--nc-button-group-divider` overrides to `--nc-join-divider`. If you used the
-temporary `.button-group` API from the #12 draft, rename that class to
-`.nc-join` as well.
+These dated case studies preserve the behavior and decisions of older Nimble
+releases. Use the [README](../README.md) for current button, join, and layout
+behavior.
 
 Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 
