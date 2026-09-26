@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Control Density Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .control-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: start;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .control-row > :is(input[type="text"], select) {
+        width: auto;
+      }
+
+      .dense {
+        --nc-control-padding-block: 0.25em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Control Density Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/2">issue #2</a>.
+        Each row mixes native text controls with both button element families.
+      </p>
+
+      <section>
+        <h2>Default density</h2>
+        <div class="control-row">
+          <input type="text" value="Text input" aria-label="Default text input">
+          <select aria-label="Default select">
+            <option>Select</option>
+          </select>
+          <button type="button">Button</button>
+          <input type="button" value="Input button">
+        </div>
+        <p>
+          These controls should remain visually coherent at Nimble's current
+          default density.
+        </p>
+      </section>
+
+      <section>
+        <h2>Dense target</h2>
+        <div class="control-row dense">
+          <input type="text" value="Text input" aria-label="Dense text input">
+          <select aria-label="Dense select">
+            <option>Select</option>
+          </select>
+          <button type="button">Button</button>
+          <input type="button" value="Input button">
+        </div>
+        <p>
+          One inherited custom property reduces block padding for all four
+          controls while preserving their shared height and alignment.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

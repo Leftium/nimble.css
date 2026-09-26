@@ -13,9 +13,8 @@
   #{exclusion.guard(':where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]), select, textarea)')} {
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
-    padding: 0.5em 0.75em;  // 0.5em: OP ~size-2; 0.75em: no OP match
-                            // OP normalize: padding-block: --size-1, padding-inline: --size-2
-    min-height: calc(1em * 1.5 + 1em + 2px); // line-height + vertical padding + border
+    padding: var(#{$prefix}control-padding-block, 0.5em) 0.75em;
+    min-height: calc(1em * 1.5 + var(#{$prefix}control-padding-block, 0.5em) + var(#{$prefix}control-padding-block, 0.5em) + 2px); // line-height + block padding + border
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);

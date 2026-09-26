@@ -107,6 +107,7 @@
     // ----- Spacing & Layout -----
     #{$prefix}spacing: #{$spacing};
     #{$prefix}radius: #{$radius};
+    #{$prefix}control-padding-block: 0.5em;
     #{$prefix}content-width: #{$content-width};
   }
 

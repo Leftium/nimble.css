@@ -275,11 +275,12 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
   /* --- Spacing & Layout --- */
   --nc-radius:             /* default border radius */
   --nc-spacing:            /* base spacing unit */
+  --nc-control-padding-block: /* control block padding (0.5em fallback per control) */
   --nc-content-width:      /* max-width for centered container (60ch, ~480-600px depending on font) */
 }
 ```
 
-**Total: ~20 public properties** (19 original + `--nc-surface-hue`).
+**Total: ~20 public properties** (19 original + `--nc-surface-hue` + `--nc-control-padding-block`).
 
 Compared to the original draft's ~25, we cut:
 - `border-muted` -- derived from `--nc-border` at lower opacity where needed
@@ -647,7 +648,7 @@ PicoCSS buttons are criticized for being too large (issue #482). nimble.css uses
 
 ```css
 :where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
-  --_btn-padding-v: 0.5em;
+  --_btn-padding-v: var(--nc-control-padding-block, 0.5em);
   --_btn-padding-h: 1em;
 
   padding: var(--_btn-padding-v) var(--_btn-padding-h);
@@ -665,6 +666,12 @@ PicoCSS buttons are criticized for being too large (issue #482). nimble.css uses
   transition: background-color 0.2s, border-color 0.2s;
 }
 ```
+
+The shared block-padding property is inherited from a container, so one
+`--nc-control-padding-block: 0.25em` declaration makes a mixed control row
+compact. Buttons retain their own inline padding and the `.inline` variant
+keeps its smaller local padding. Default button geometry remains 42px high at
+`1rem` text: 24px line height, 8px padding on each side, and 1px borders.
 
 **Button variants** (minimal classes):
 
@@ -701,9 +708,11 @@ in the extended demo.
 Form elements are one of PicoCSS's strengths and Open Props normalize's weaknesses. nimble.css adopts PicoCSS's form aesthetic with refinements:
 
 ```css
-:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"],
+                 [type="color"], [type="submit"], [type="button"], [type="reset"]),
        select, textarea) {
-  padding: 0.5em 0.75em;
+  padding: var(--nc-control-padding-block, 0.5em) 0.75em;
+  min-height: calc(1em * 1.5 + var(--nc-control-padding-block, 0.5em) + var(--nc-control-padding-block, 0.5em) + 2px);
   background-color: var(--nc-surface-3);
   border: 1px solid var(--nc-border);
   border-radius: var(--nc-radius);
@@ -719,6 +728,11 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
   outline: none;
 }
 ```
+
+Text inputs, selects, and textareas derive their minimum height from the same
+block padding, 1.5 line height, and two 1px borders. The default is 42px at
+`1rem`; `0.25em` block padding makes the mixed row 34px high. The default
+`1rem` font size prevents iOS Safari from zooming text inputs on focus.
 
 **Validation states** use `aria-invalid`:
 
