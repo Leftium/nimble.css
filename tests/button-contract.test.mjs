@@ -15,6 +15,7 @@ test('ARIA button semantics do not opt into Nimble button styling', () => {
     compile('_buttons.scss'),
     compile('_links.scss'),
     compile('_forms.scss'),
+    compile('_details.scss'),
   ].join('\n');
 
   assert.doesNotMatch(
@@ -39,4 +40,9 @@ test('.nc-button shares the native button visual contract', () => {
 test('form rhythm treats .nc-button as a visual control', () => {
   const css = compile('_forms.scss');
   assert.match(css, /\.nc-button/);
+});
+
+test('button-styled summaries use the visual class', () => {
+  const css = compile('_details.scss');
+  assert.match(css, /summary\.nc-button/);
 });
