@@ -730,7 +730,6 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
 ```css
 :where(label) {
   display: block;
-  margin-bottom: 0.25em;
 }
 :where(label:has(+ input, + select, + textarea)) {
   font-weight: 600;
@@ -741,6 +740,15 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
   padding: var(--nc-spacing);
 }
 ```
+
+Controls and labels keep their own appearance and sizing. They do not
+carry a bottom margin for the next control. A normal stacked `form` or `fieldset`
+sets spacing between adjacent direct children: a close gap from label to field
+or field to helper text, a half-em gap between checkbox/radio options, and the
+standard `--nc-spacing` gap between fields and actions. Flex and grid rows inside
+their own layout containers can set `gap` without clearing child margins. A
+wrapper around fields also owns its internal spacing; the direct-child rules do
+not cross wrappers.
 
 ### 9.4 Tables
 
