@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Button Content Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .button-row svg {
+        inline-size: 1em;
+        block-size: 1em;
+      }
+
+      .dense {
+        --nc-control-padding-block: 0.25em;
+      }
+
+      .wrap-test {
+        inline-size: 8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Button Content Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/3">issue #3</a>.
+        The SVGs are sized only; the fixture does not locally center their content.
+      </p>
+
+      <section>
+        <h2>Default density</h2>
+        <div class="button-row">
+          <button type="button">Plain text</button>
+
+          <button type="button" aria-label="Favorite">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3z" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <button type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12.5l4 4L19 6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Save</span>
+          </button>
+
+          <a href="#role-button-target" role="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Continue</span>
+          </a>
+
+          <input type="button" value="Input button">
+          <input type="submit" value="Submit input">
+          <input type="reset" value="Reset input">
+        </div>
+      </section>
+
+      <section class="dense">
+        <h2>Dense controls</h2>
+        <div class="button-row">
+          <button type="button">Plain text</button>
+          <button type="button" aria-label="Favorite">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12.5l4 4L19 6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Save</span>
+          </button>
+          <input type="button" value="Input button">
+        </div>
+      </section>
+
+      <section>
+        <h2>Wrapping</h2>
+        <div class="button-row">
+          <button type="button" class="wrap-test">
+            Plain text that wraps onto multiple lines
+          </button>
+          <button type="button" class="wrap-test">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Compound content that can wrap</span>
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Inline variant</h2>
+        <p>
+          Text before an <button type="button" class="inline">inline action</button>
+          and text after it should retain a natural text baseline.
+        </p>
+      </section>
+
+      <div id="role-button-target" hidden></div>
+    </main>
+  </body>
+</html>
