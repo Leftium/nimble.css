@@ -91,14 +91,14 @@
   }
 
   // ----- Button groups -----
-  // Note: children use [role="group"] without :where() so they beat
+  // Note: children use .button-group without :where() so they beat
   // the zero-specificity form input rules for border-radius.
 
-  #{exclusion.guard(':where([role="group"])')} {
+  #{exclusion.guard(':where(.button-group)')} {
     display: inline-flex;
   }
 
-  #{exclusion.guard('[role="group"] > *')} {
+  #{exclusion.guard('.button-group > *')} {
     border-radius: 0;
     margin: 0;
     position: relative;
@@ -106,7 +106,7 @@
 
   // Inset divider between adjacent same-type buttons.  Different-type
   // neighbours already have distinct backgrounds so no separator needed.
-  #{exclusion.guard('[role="group"] > * + *')} {
+  #{exclusion.guard('.button-group > * + *')} {
     --_divider: "";           // shown by default (same-type needs separation)
     --_divider-color: var(
       #{$prefix}button-group-divider,
@@ -114,7 +114,7 @@
     );
   }
 
-  #{exclusion.guard('[role="group"] > * + *::before')} {
+  #{exclusion.guard('.button-group > * + *::before')} {
     content: var(--_divider);
     position: absolute;
     inset-inline-start: 0;
@@ -127,31 +127,31 @@
 
   // Hide divider between different-type button neighbours.
   // primary ↔ secondary
-  #{exclusion.guard('[role="group"] > :not(.secondary):not(.outline) + .secondary, [role="group"] > .secondary + :not(.secondary):not(.outline)')} {
+  #{exclusion.guard('.button-group > :not(.secondary):not(.outline) + .secondary, .button-group > .secondary + :not(.secondary):not(.outline)')} {
     --_divider: none;
   }
 
   // primary ↔ outline
-  #{exclusion.guard('[role="group"] > :not(.secondary):not(.outline) + .outline, [role="group"] > .outline + :not(.secondary):not(.outline)')} {
+  #{exclusion.guard('.button-group > :not(.secondary):not(.outline) + .outline, .button-group > .outline + :not(.secondary):not(.outline)')} {
     --_divider: none;
   }
 
   // secondary ↔ outline
-  #{exclusion.guard('[role="group"] > .secondary + .outline, [role="group"] > .outline + .secondary')} {
+  #{exclusion.guard('.button-group > .secondary + .outline, .button-group > .outline + .secondary')} {
     --_divider: none;
   }
 
   // Hide divider after non-button elements (e.g. search input).
-  #{exclusion.guard('[role="group"] > input + *, [role="group"] > select + *')} {
+  #{exclusion.guard('.button-group > input + *, .button-group > select + *')} {
     --_divider: none;
   }
 
-  #{exclusion.guard('[role="group"] > :first-child')} {
+  #{exclusion.guard('.button-group > :first-child')} {
     border-start-start-radius: var(#{$prefix}radius);
     border-end-start-radius: var(#{$prefix}radius);
   }
 
-  #{exclusion.guard('[role="group"] > :last-child')} {
+  #{exclusion.guard('.button-group > :last-child')} {
     border-start-end-radius: var(#{$prefix}radius);
     border-end-end-radius: var(#{$prefix}radius);
   }
@@ -161,30 +161,30 @@
   // container so internal dividers don't double up with per-button borders.
   // :has(> :not(.outline)) excludes mixed groups (e.g. primary + outline).
 
-  #{exclusion.guard('[role="group"]:has(.outline):not(:has(> :not(.outline)))')} {
+  #{exclusion.guard('.button-group:has(.outline):not(:has(> :not(.outline)))')} {
     border: 1px solid var(#{$prefix}primary);
     border-radius: var(#{$prefix}radius);
   }
 
-  #{exclusion.guard('[role="group"]:has(.outline):not(:has(> :not(.outline))) > .outline')} {
+  #{exclusion.guard('.button-group:has(.outline):not(:has(> :not(.outline))) > .outline')} {
     border: none;
   }
 
   // Transparent outline buttons need a stronger divider than filled buttons.
   // currentColor also supports neutral outline groups without another variant.
-  #{exclusion.guard('[role="group"] > .outline + .outline::before')} {
+  #{exclusion.guard('.button-group > .outline + .outline::before')} {
     --_divider-color: var(#{$prefix}button-group-divider, currentColor);
   }
 
   // ----- Search groups (pill shape) -----
 
-  #{exclusion.guard('[role="search"] [role="group"] > :first-child')} {
+  #{exclusion.guard('[role="search"] .button-group > :first-child')} {
     border-start-start-radius: 5rem;     // OP --size-10 (pill)
     border-end-start-radius: 5rem;       // OP --size-10 (pill)
     padding-inline-start: 1.25em;        // OP ~size-4 (em-relative)
   }
 
-  #{exclusion.guard('[role="search"] [role="group"] > :last-child')} {
+  #{exclusion.guard('[role="search"] .button-group > :last-child')} {
     border-start-end-radius: 5rem;       // OP --size-10 (pill)
     border-end-end-radius: 5rem;         // OP --size-10 (pill)
     padding-inline-end: 1.25em;          // OP ~size-4 (em-relative)

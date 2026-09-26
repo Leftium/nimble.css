@@ -680,24 +680,30 @@ keeps its smaller local padding. Default button geometry remains 42px high at
 .outline   { /* transparent background, primary border */ }
 ```
 
-**Button groups** (adopted from PicoCSS):
+**Button groups** (visual contract adapted from PicoCSS):
 
 ```css
-[role="group"] {
+.button-group {
   display: inline-flex;
 }
-[role="group"] > * {
+.button-group > * {
   border-radius: 0;
 }
-[role="group"] > :first-child {
+.button-group > :first-child {
   border-start-start-radius: var(--nc-radius);
   border-end-start-radius: var(--nc-radius);
 }
-[role="group"] > :last-child {
+.button-group > :last-child {
   border-start-end-radius: var(--nc-radius);
   border-end-end-radius: var(--nc-radius);
 }
 ```
+
+`.button-group` alone opts into the touching-control layout, dividers, and
+corner treatment. Add `role="group"` with an accessible name when the controls
+also form a meaningful ARIA group. A semantic-only `[role="group"]` has no
+Nimble button-group layout or chrome. Mixed input/select and button groups use
+the same class. In search forms, `[role="search"] .button-group` gets pill ends.
 
 Button groups have no external margin. A parent that wraps several groups owns
 the spacing between rows; use `display: flex`, `flex-wrap: wrap`, and `gap` as
@@ -1414,11 +1420,11 @@ Applied to h1-h6 and `thead` cells. Prevents awkward single-word runts on the la
 
 Same-type button groups (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. An inset `::before` rule on each adjacent child provides a partial-height divider without introducing full-height child-border seams. Its default color mixes `currentColor` with 70% transparency, so it adapts to both dark buttons with light text and customized light buttons with dark text. Outline pairs use opaque `currentColor` because their transparent surface needs a stronger divider.
 
-Consumers can set `--nc-button-group-divider` on a group to replace both defaults. This is the supported customization point; `--_divider` and `--_divider-color` are private implementation properties.
+Consumers can set `--nc-button-group-divider` on `.button-group` to replace both defaults. This is the supported customization point; `--_divider` and `--_divider-color` are private implementation properties.
 
 ### 15.12 Pill-Shaped Search Groups
 
-`[role="search"] [role="group"]` children get `5rem` border-radius on the outer corners, producing pill ends. Extra `padding-inline` on the first/last children prevents text from crowding the curve. This matches PicoCSS's search aesthetic without requiring a dedicated class.
+`[role="search"] .button-group` children get `5rem` border-radius on the outer corners, producing pill ends. Extra `padding-inline` on the first/last children prevents text from crowding the curve. The button-group class is required; the search role alone does not style a generic ARIA group.
 
 ### 15.13 WCAG AA Contrast Tuning
 
@@ -1523,7 +1529,7 @@ Utilities, extended demo, and final validation.
 - [x] `demo/extended.html` — layout modes, button variants + groups (including same-type groups), form patterns (login/registration/search with pill-shaped search bar), surface hierarchy swatches, dark mode toggle, striped table, dialog demo
 - [x] WCAG AA color audit — lowered `$primary-lightness` from 0.55 to 0.50; switched `primary-contrast` and `secondary-contrast` to `light-dark(#fff, oklch(0.15 0.005 250))` for dark-mode button readability. All pairings pass AA.
 - [x] Light-mode `text-2` lightened from L=0.450 to L=0.580 for visible distinction from `text-1` (L=0.280)
-- [x] Button group fixes — stripped margin on children, box-shadow dividers between same-type siblings, pill-shaped search groups via `[role="search"] [role="group"]`
+- [x] Button group fixes - stripped margin on children, inset dividers between same-type siblings, pill-shaped search groups via `[role="search"] .button-group`
 - [x] Outline button hover keeps outline style (subtle `primary-focus` tint instead of solid fill)
 - [x] `.bleed-wide` utility (formerly `.wide`): added `width: 100%` so it stretches within `grid-column: 1 / -1`
 - [x] Measure `dist/nimble.min.css` against size budget — 11,924 B min / **3,131 B gzipped** (budget: <8 KB min+gz)

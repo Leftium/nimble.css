@@ -29,14 +29,14 @@
       <p>
         Regression fixture for
         <a href="https://github.com/Leftium/nimble.css/issues/4">issue #4</a>.
-        It captures the old ARIA-driven selector and the target explicit class contract.
+        It checks that the explicit class controls visual grouping independently of ARIA.
       </p>
 
       <section>
-        <h2>Legacy selector</h2>
+        <h2>Former styling selector</h2>
         <p>
-          This is grouped by current Nimble because <code>role="group"</code> is the
-          styling trigger. After the migration, the same markup should be semantic only.
+          <code>role="group"</code> gives this row semantics only. Its buttons
+          retain their individual corners and have no group dividers.
         </p>
         <div role="group" aria-label="Legacy grouped actions">
           <button>One</button>
@@ -46,9 +46,9 @@
       </section>
 
       <section>
-        <h2>Target visual-only contract</h2>
+        <h2>Visual-only contract</h2>
         <p>
-          This should become a visual button group without requiring ARIA.
+          The class creates a visual button group without requiring ARIA.
         </p>
         <div class="button-group">
           <button>One</button>
@@ -58,7 +58,7 @@
       </section>
 
       <section>
-        <h2>Target visual + semantic contract</h2>
+        <h2>Visual + semantic contract</h2>
         <p>
           Authors may add group semantics independently when the relationship is meaningful.
         </p>
@@ -72,8 +72,8 @@
       <section>
         <h2>Plain semantic group</h2>
         <p>
-          This group deliberately uses unrelated application content. After the migration,
-          Nimble must not apply button-group flex, radius, divider, or child-margin rules.
+          This group deliberately uses unrelated application content. Nimble does
+          not apply button-group flex, radius, divider, or child-margin rules.
         </p>
         <div class="semantic-group" role="group" aria-label="Annotation options">
           <label><input type="checkbox"> Familiar</label>

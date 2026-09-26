@@ -188,14 +188,23 @@ changing the default `1rem` control font size:
 }
 ```
 
+Use `.button-group` for touching buttons or a mixed input/select and button row.
+Add `role="group"` and an accessible name only when the controls form a
+meaningful semantic group. A plain `role="group"` has no Nimble group layout or
+chrome. Search forms with a `.button-group` get pill-shaped outer corners.
+
 Button-group dividers adapt to the button text color by default. Override the
 divider for a specific group when its surface needs a custom separator:
 
 ```css
-[role="group"].neutral {
+.button-group.neutral {
   --nc-button-group-divider: var(--nc-border);
 }
 ```
+
+When migrating from earlier Nimble versions, replace visual
+`<div role="group">...</div>` with `<div class="button-group">...</div>`.
+Keep `role="group"` alongside the class when the group also needs ARIA semantics.
 
 <details>
 <summary>SCSS (advanced)</summary>
