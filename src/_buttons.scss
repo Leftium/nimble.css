@@ -31,6 +31,20 @@
     transition: background-color 0.2s, border-color 0.2s;
   }
 
+  // Only elements that can contain icon/text descendants establish a flex
+  // context. Button-type inputs keep their replaced-element layout.
+  #{exclusion.guard(':where(button, [role="button"]:not(input))')} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 0.25em;
+    min-height: calc(1.5em + var(--_btn-padding-v) + var(--_btn-padding-v) + 2px);
+  }
+
+  #{exclusion.guard(':where(button, [role="button"]:not(input)) > svg')} {
+    flex-shrink: 0;
+  }
+
   #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover')} {
     background-color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
