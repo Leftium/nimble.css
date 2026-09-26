@@ -177,7 +177,7 @@ These properties are auto-derived and available for use in your own components (
 `--nc-surface-1` .. `--nc-surface-4`, `--nc-text`, `--nc-border`, `--nc-primary-hover`, `--nc-primary-focus`, `--nc-secondary-hover`, `--nc-secondary-focus`
 
 Set `--nc-control-padding-block` on a container to change the vertical density
-of buttons, button-type inputs, `[role="button"]` elements, text-like inputs,
+of native buttons, button-type inputs, `.nc-button` elements, text-like inputs,
 selects, and textareas together.
 It defaults to `0.5em` on each control; `0.25em` produces a compact row without
 changing the default `1rem` control font size:
@@ -187,6 +187,23 @@ changing the default `1rem` control font size:
   --nc-control-padding-block: 0.25em;
 }
 ```
+
+Non-native elements opt into Nimble button appearance with `.nc-button`.
+ARIA semantics stay independent: a plain `[role="button"]` receives no Nimble
+button chrome.
+
+```html
+<a class="nc-button" href="/next">Next</a>
+<d-action role="button" tabindex="0">Semantic button only</d-action>
+<d-action class="nc-button" role="button" tabindex="0">Semantic + visual</d-action>
+```
+
+Use `.secondary`, `.outline`, and `.inline` with `.nc-button` just as you
+would with a native button.
+
+When migrating existing visual `[role="button"]` elements, add
+`.nc-button`. Keep `role="button"` only when the element also needs button
+semantics.
 
 Use `.nc-join` to join adjacent controls into one touching visual unit. It
 works for button rows and mixed input/select + button compositions:
