@@ -84,8 +84,7 @@
 
   // ----- Disabled -----
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"]):disabled,
-  #{exclusion.guard('.nc-button[aria-disabled="true"]')}')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button):disabled')} {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
