@@ -111,11 +111,14 @@
           <button disabled>Disabled</button>
         </p>
 
-        <h3>Link as Button</h3>
+        <h3>Explicit Visual Buttons</h3>
         <p>
-          <a href="#" role="button">Primary Link</a>
-          <a href="#" role="button" class="secondary">Secondary Link</a>
-          <a href="#" role="button" class="outline">Outline Link</a>
+          <a href="#" class="nc-button">Primary Link</a>
+          <a href="#" class="nc-button secondary">Secondary Link</a>
+          <a href="#" class="nc-button outline">Outline Link</a>
+        </p>
+        <p>
+          <span role="button" tabindex="0">Semantic-only role (no Nimble button chrome)</span>
         </p>
 
         <h3>Joined Button Variants</h3>
@@ -164,7 +167,7 @@
         </div>
 
         <h3>Small Inline Buttons</h3>
-        <p>Text with an inline <button class="inline">action</button> and a <button class="outline inline">secondary action</button> embedded in a paragraph.</p>
+        <p>Text with an inline <button class="inline">action</button> and an <a href="#" class="nc-button outline inline">explicit visual link action</a> embedded in a paragraph.</p>
       </section>
 
       <!-- ============================================================ -->

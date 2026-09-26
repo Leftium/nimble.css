@@ -11,7 +11,7 @@
 
   // ----- Base button -----
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"])')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button)')} {
     --_btn-padding-v: var(#{$prefix}control-padding-block, 0.5em);
     --_btn-padding-h: 1em;     // OP ~size-3 (em-relative)
 
@@ -33,7 +33,7 @@
 
   // Only elements that can contain icon/text descendants establish a flex
   // context. Button-type inputs keep their replaced-element layout.
-  #{exclusion.guard(':where(button, [role="button"]:not(input))')} {
+  #{exclusion.guard(':where(button, .nc-button:not(input))')} {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -41,16 +41,16 @@
     min-height: calc(1.5em + var(--_btn-padding-v) + var(--_btn-padding-v) + 2px);
   }
 
-  #{exclusion.guard(':where(button, [role="button"]:not(input)) > svg')} {
+  #{exclusion.guard(':where(button, .nc-button:not(input)) > svg')} {
     flex-shrink: 0;
   }
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):hover')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button):hover')} {
     background-color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);
   }
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):focus-visible')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button):focus-visible')} {
     box-shadow: 0 0 0 2px var(#{$prefix}primary-focus);
     outline: none;
   }
@@ -74,7 +74,7 @@
 
   // ----- Inline (buttons within flow text) -----
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]).inline')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button).inline')} {
     --_btn-padding-v: 0.05em;   // no OP match (micro)
     --_btn-padding-h: 0.4em;    // no OP match (near ~size-2)
     margin: 0.1em 0.15em;       // no OP match (micro)
@@ -84,7 +84,7 @@
 
   // ----- Disabled -----
 
-  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]):disabled')} {
+  #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], .nc-button):disabled')} {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
@@ -196,37 +196,37 @@
 
 @layer nimble.utilities {
 
-  #{exclusion.guard('.secondary:not(a:not([role="button"]))')} {
+  #{exclusion.guard('.secondary:not(a:not(.nc-button))')} {
     background-color: var(#{$prefix}secondary);
     border-color: var(#{$prefix}secondary);
     color: var(#{$prefix}secondary-contrast);
   }
 
-  #{exclusion.guard('.secondary:not(a:not([role="button"])):hover')} {
+  #{exclusion.guard('.secondary:not(a:not(.nc-button)):hover')} {
     background-color: var(#{$prefix}secondary-hover);
     border-color: var(#{$prefix}secondary-hover);
   }
 
-  #{exclusion.guard('.secondary:not(a:not([role="button"])):focus-visible')} {
+  #{exclusion.guard('.secondary:not(a:not(.nc-button)):focus-visible')} {
     box-shadow: 0 0 0 2px var(#{$prefix}secondary-focus);
   }
 
-  #{exclusion.guard('a:not([role="button"]).secondary')} {
+  #{exclusion.guard('a:not(.nc-button).secondary')} {
     color: var(#{$prefix}secondary);
     text-decoration-color: #{string.unquote('color-mix(in oklch, var(#{$prefix}secondary), transparent 50%)')};
   }
 
-  #{exclusion.guard('a:not([role="button"]).secondary:hover')} {
+  #{exclusion.guard('a:not(.nc-button).secondary:hover')} {
     color: var(#{$prefix}secondary-hover);
     text-decoration-color: var(#{$prefix}secondary-hover);
   }
 
-  #{exclusion.guard('.outline:not(a:not([role="button"]))')} {
+  #{exclusion.guard('.outline:not(a:not(.nc-button))')} {
     background-color: transparent;
     color: var(#{$prefix}primary);
   }
 
-  #{exclusion.guard('.outline:not(a:not([role="button"])):hover')} {
+  #{exclusion.guard('.outline:not(a:not(.nc-button)):hover')} {
     background-color: var(#{$prefix}primary-focus);
     color: var(#{$prefix}primary-hover);
     border-color: var(#{$prefix}primary-hover);

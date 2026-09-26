@@ -627,14 +627,14 @@ Headings that follow block content get extra top margin for visual separation:
 ### 9.1 Links
 
 ```css
-:where(a:not([role="button"])) {
+:where(a:not(.nc-button)) {
   color: var(--nc-primary);
   text-decoration: underline;
   text-underline-offset: 0.15em;
   text-decoration-color: color-mix(in oklch, var(--nc-primary), transparent 50%);
   transition: color 0.2s, text-decoration-color 0.2s;
 }
-:where(a:not([role="button"])):hover {
+:where(a:not(.nc-button)):hover {
   color: var(--nc-primary-hover);
   text-decoration-color: var(--nc-primary-hover);
 }
@@ -647,7 +647,7 @@ Links are always underlined (accessibility best practice, per W3C WCAG F73). The
 PicoCSS buttons are criticized for being too large (issue #482). nimble.css uses more compact padding:
 
 ```css
-:where(button, [type="submit"], [type="reset"], [type="button"], [role="button"]) {
+:where(button, [type="submit"], [type="reset"], [type="button"], .nc-button) {
   --_btn-padding-v: var(--nc-control-padding-block, 0.5em);
   --_btn-padding-h: 1em;
 
@@ -672,6 +672,11 @@ The shared block-padding property is inherited from a container, so one
 compact. Buttons retain their own inline padding and the `.inline` variant
 keeps its smaller local padding. Default button geometry remains 42px high at
 `1rem` text: 24px line height, 8px padding on each side, and 1px borders.
+
+Native button controls receive this appearance automatically. Non-native
+elements opt in with `.nc-button`; ARIA `role="button"` is semantic only and
+does not trigger Nimble styling. This keeps accessibility semantics independent
+from the visual component API.
 
 **Button variants** (minimal classes):
 
@@ -991,6 +996,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 ### 10.2 Buttons (Scoped)
 
 ```css
+.nc-button       /* button appearance for non-native elements */
 .secondary       /* secondary button style (uses --nc-secondary) */
 .outline         /* outline button style */
 ```
@@ -1057,7 +1063,7 @@ nimble.css/
     _scopeable.scss          # Mixin loading scopeable modules via meta.load-css()
     _typography.scss         # Scopeable: headings, p, lists, blockquote, hr, mark
     _links.scss              # Scopeable: a
-    _buttons.scss            # Scopeable: button, [role="button"], joined controls
+    _buttons.scss            # Scopeable: native buttons, .nc-button, joined controls
     _forms.scss              # Scopeable: input, select, textarea, label, fieldset, switch
     _tables.scss             # Scopeable: table, th, td
     _code.scss               # Scopeable: pre, code, kbd, samp
