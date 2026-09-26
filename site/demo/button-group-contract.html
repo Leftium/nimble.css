@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Button Group Contract Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .fixture-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .semantic-group {
+        padding: 0.5rem;
+        border: 1px dashed var(--nc-border);
+      }
+
+      .semantic-group > * + * {
+        margin-inline-start: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Button Group Contract Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/4">issue #4</a>.
+        It captures the old ARIA-driven selector and the target explicit class contract.
+      </p>
+
+      <section>
+        <h2>Legacy selector</h2>
+        <p>
+          This is grouped by current Nimble because <code>role="group"</code> is the
+          styling trigger. After the migration, the same markup should be semantic only.
+        </p>
+        <div role="group" aria-label="Legacy grouped actions">
+          <button>One</button>
+          <button>Two</button>
+          <button>Three</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Target visual-only contract</h2>
+        <p>
+          This should become a visual button group without requiring ARIA.
+        </p>
+        <div class="button-group">
+          <button>One</button>
+          <button>Two</button>
+          <button>Three</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Target visual + semantic contract</h2>
+        <p>
+          Authors may add group semantics independently when the relationship is meaningful.
+        </p>
+        <div class="button-group" role="group" aria-label="Text alignment">
+          <button>Left</button>
+          <button>Center</button>
+          <button>Right</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Plain semantic group</h2>
+        <p>
+          This group deliberately uses unrelated application content. After the migration,
+          Nimble must not apply button-group flex, radius, divider, or child-margin rules.
+        </p>
+        <div class="semantic-group" role="group" aria-label="Annotation options">
+          <label><input type="checkbox"> Familiar</label>
+          <label><input type="checkbox"> Unfamiliar</label>
+          <a href="#semantic-target">Help</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Mixed control group</h2>
+        <p>
+          Search/control compositions that want touching controls should opt in explicitly.
+        </p>
+        <div class="fixture-row">
+          <div class="button-group">
+            <input type="search" aria-label="Search query" placeholder="Search">
+            <button type="button">Go</button>
+          </div>
+          <div class="button-group">
+            <select aria-label="Scope">
+              <option>All</option>
+              <option>Open</option>
+            </select>
+            <button type="button">Apply</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="semantic-target" hidden></div>
+    </main>
+  </body>
+</html>
