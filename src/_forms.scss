@@ -41,6 +41,11 @@
     margin-block-start: 0.25em;
   }
 
+  // Short file and range controls need more separation from their sibling label.
+  #{exclusion.guard(':where(form, fieldset) > :where(label) + :where([type="file"], [type="range"])')} {
+    margin-block-start: 0.5em;
+  }
+
   #{exclusion.guard(':where(form, fieldset) > :where(label:has([type="checkbox"], [type="radio"])) + :where(label:has([type="checkbox"], [type="radio"]))')} {
     margin-block-start: 0.5em;
   }
