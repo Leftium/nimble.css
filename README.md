@@ -225,11 +225,12 @@ divider for a specific join when its surface needs a custom separator:
 }
 ```
 
-When migrating from earlier Nimble versions, replace visual
-`<div role="group">...</div>` with `<div class="nc-join">...</div>`.
+When migrating from pre-#12 Nimble, replace visual
+`<div role="group">...</div>` with `<div class="nc-join">...</div>` and
+rename `--nc-button-group-divider` overrides to `--nc-join-divider`.
 Keep `role="group"` alongside the class when the controls also need ARIA
-semantics. Rename `--nc-button-group-divider` overrides to `--nc-join-divider`
-if you used the earlier draft of this component.
+semantics. If you used the temporary `.button-group` API from the #12 draft,
+rename that class to `.nc-join` as well.
 
 <details>
 <summary>SCSS (advanced)</summary>
