@@ -188,14 +188,49 @@ changing the default `1rem` control font size:
 }
 ```
 
-Button-group dividers adapt to the button text color by default. Override the
-divider for a specific group when its surface needs a custom separator:
+Use `.nc-join` to join adjacent controls into one touching visual unit. It
+works for button rows and mixed input/select + button compositions:
+
+```html
+<div class="nc-join">
+  <button>Left</button>
+  <button>Center</button>
+  <button>Right</button>
+</div>
+
+<div class="nc-join">
+  <input type="search" aria-label="Search query">
+  <button>Search</button>
+</div>
+```
+
+Add `role="group"` and an accessible name only when the controls form a
+meaningful semantic group. A plain `role="group"` receives no join layout or
+chrome. Search forms with a `.nc-join` get pill-shaped outer corners.
+
+```html
+<div class="nc-join" role="group" aria-label="Text alignment">
+  <button>Left</button>
+  <button>Center</button>
+  <button>Right</button>
+</div>
+```
+
+Join dividers adapt to the control's text color by default. Override the
+divider for a specific join when its surface needs a custom separator:
 
 ```css
-[role="group"].neutral {
-  --nc-button-group-divider: var(--nc-border);
+.nc-join.neutral {
+  --nc-join-divider: var(--nc-border);
 }
 ```
+
+When migrating from pre-#12 Nimble, replace visual
+`<div role="group">...</div>` with `<div class="nc-join">...</div>` and
+rename `--nc-button-group-divider` overrides to `--nc-join-divider`.
+Keep `role="group"` alongside the class when the controls also need ARIA
+semantics. If you used the temporary `.button-group` API from the #12 draft,
+rename that class to `.nc-join` as well.
 
 <details>
 <summary>SCSS (advanced)</summary>

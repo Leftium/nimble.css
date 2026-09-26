@@ -31,7 +31,7 @@
 
   // A stacked form or fieldset owns the space between its direct children.
   // Reusable controls carry no trailing margin into flex and grid layouts.
-  #{exclusion.guard(':where(form, fieldset) > :where(label, input, select, textarea, button, [role="button"], [role="group"], small) + :where(label, input, select, textarea, button, [role="button"], [role="group"], small)')} {
+  #{exclusion.guard(':where(form, fieldset) > :where(label, input, select, textarea, button, [role="button"], .nc-join, small) + :where(label, input, select, textarea, button, [role="button"], .nc-join, small)')} {
     margin-block-start: var(#{$prefix}spacing);
   }
 

@@ -55,7 +55,7 @@
         color: oklch(0.92 0.01 250);
       }
       .demo-neutral-outline {
-        --nc-button-group-divider: var(--nc-border);
+        --nc-join-divider: var(--nc-border);
         border-color: var(--nc-border);
       }
       .demo-neutral-outline > button {
@@ -118,45 +118,45 @@
           <a href="#" role="button" class="outline">Outline Link</a>
         </p>
 
-        <h3>Button Group</h3>
-        <div role="group">
+        <h3>Joined Button Variants</h3>
+        <div class="nc-join">
           <button>Left</button>
           <button class="secondary">Center</button>
           <button class="outline">Right</button>
         </div>
 
-        <h3>Same-Type Button Groups</h3>
+        <h3>Joined Same-Type Buttons</h3>
         <div class="demo-group-row">
-          <div role="group">
+          <div class="nc-join">
             <button>One</button>
             <button>Two</button>
             <button>Three</button>
           </div>
-          <div role="group">
+          <div class="nc-join">
             <button class="secondary">A</button>
             <button class="secondary">B</button>
             <button class="secondary">C</button>
           </div>
-          <div role="group">
+          <div class="nc-join">
             <button class="outline">X</button>
             <button class="outline">Y</button>
             <button class="outline">Z</button>
           </div>
         </div>
 
-        <h3>Customized Button Groups</h3>
+        <h3>Customized Joins</h3>
         <div class="demo-group-row">
-          <div role="group" class="demo-light-buttons">
+          <div class="nc-join demo-light-buttons">
             <button>Light</button>
             <button>Neutral</button>
             <button disabled>Disabled</button>
           </div>
-          <div role="group" class="demo-dark-buttons">
+          <div class="nc-join demo-dark-buttons">
             <button>Dark</button>
             <button>Neutral</button>
             <button>Group</button>
           </div>
-          <div role="group" class="demo-neutral-outline">
+          <div class="nc-join demo-neutral-outline">
             <button class="outline">Neutral</button>
             <button class="outline">Outline</button>
             <button class="outline">Group</button>
@@ -233,7 +233,7 @@
 
         <h3>Search</h3>
         <form onsubmit="return false" role="search">
-          <div role="group">
+          <div class="nc-join">
             <input type="search" placeholder="Search...">
             <button type="submit">Search</button>
           </div>

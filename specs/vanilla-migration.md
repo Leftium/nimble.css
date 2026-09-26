@@ -600,7 +600,7 @@ Layout utilities (`.fluid`, `.bleed-edge`, `.bleed-wide`, `.bleed-full`, `.conta
 6. Removed custom `h1` margin, `h3` margin, and generic `div` flex styles — nimble provides heading margins
 7. Removed custom button styles (padding, border, border-radius, background, color, hover, active states) — nimble provides button styling
 8. Removed `small` color rule — nimble handles it
-9. Added `.button-group` class for button rows (flex, wrap, gap) with `width: auto; margin-bottom: 0` on child buttons to override nimble's full-width form defaults
+9. Added a project-local `.button-group` class for wrapping button rows (flex, wrap, gap) with `width: auto; margin-bottom: 0` on child buttons to override nimble's full-width form defaults. This spaced row is distinct from Nimble's touching `.nc-join` primitive.
 
 **Eruda panel:** No conflicts — the Eruda plugin CSS is architecturally isolated in a separate DOM subtree, as predicted.
 

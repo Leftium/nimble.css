@@ -680,27 +680,34 @@ keeps its smaller local padding. Default button geometry remains 42px high at
 .outline   { /* transparent background, primary border */ }
 ```
 
-**Button groups** (adopted from PicoCSS):
+**Joined controls** (visual contract adapted from PicoCSS):
 
 ```css
-[role="group"] {
+.nc-join {
   display: inline-flex;
 }
-[role="group"] > * {
+.nc-join > * {
   border-radius: 0;
 }
-[role="group"] > :first-child {
+.nc-join > :first-child {
   border-start-start-radius: var(--nc-radius);
   border-end-start-radius: var(--nc-radius);
 }
-[role="group"] > :last-child {
+.nc-join > :last-child {
   border-start-end-radius: var(--nc-radius);
   border-end-end-radius: var(--nc-radius);
 }
 ```
 
-Button groups have no external margin. A parent that wraps several groups owns
-the spacing between rows; use `display: flex`, `flex-wrap: wrap`, and `gap` as
+`.nc-join` joins adjacent controls into one touching visual unit, with shared
+outer corners and dividers where needed. It applies equally to button rows and
+mixed input/select + button compositions. Add `role="group"` with an accessible
+name only when the controls also form a meaningful ARIA group. A semantic-only
+`[role="group"]` receives no join layout or chrome. In search forms,
+`[role="search"] .nc-join` gets pill ends.
+
+Joins have no external margin. A parent that wraps several joins owns the
+spacing between rows; use `display: flex`, `flex-wrap: wrap`, and `gap` as
 in the extended demo.
 
 ### 9.3 Forms
@@ -1050,7 +1057,7 @@ nimble.css/
     _scopeable.scss          # Mixin loading scopeable modules via meta.load-css()
     _typography.scss         # Scopeable: headings, p, lists, blockquote, hr, mark
     _links.scss              # Scopeable: a
-    _buttons.scss            # Scopeable: button, [role="button"], button groups
+    _buttons.scss            # Scopeable: button, [role="button"], joined controls
     _forms.scss              # Scopeable: input, select, textarea, label, fieldset, switch
     _tables.scss             # Scopeable: table, th, td
     _code.scss               # Scopeable: pre, code, kbd, samp
@@ -1410,15 +1417,15 @@ Visited links use `color-mix()` to blend 40% primary with purple (`oklch(0.5 0.2
 
 Applied to h1-h6 and `thead` cells. Prevents awkward single-word runts on the last line. Well-supported: Chrome 114+, Firefox 121+, Safari 17.5+. Progressive enhancement — ignored by older browsers.
 
-### 15.11 Button Group Dividers
+### 15.11 Join Dividers
 
-Same-type button groups (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. An inset `::before` rule on each adjacent child provides a partial-height divider without introducing full-height child-border seams. Its default color mixes `currentColor` with 70% transparency, so it adapts to both dark buttons with light text and customized light buttons with dark text. Outline pairs use opaque `currentColor` because their transparent surface needs a stronger divider.
+Same-type joined buttons (e.g. three primary buttons) have no visible boundary between siblings because the border color matches the background. An inset `::before` rule on each adjacent child provides a partial-height divider without introducing full-height child-border seams. Its default color mixes `currentColor` with 70% transparency, so it adapts to both dark buttons with light text and customized light buttons with dark text. Outline pairs use opaque `currentColor` because their transparent surface needs a stronger divider. Dividers after input/select controls and between different button variants are suppressed.
 
-Consumers can set `--nc-button-group-divider` on a group to replace both defaults. This is the supported customization point; `--_divider` and `--_divider-color` are private implementation properties.
+Consumers can set `--nc-join-divider` on `.nc-join` to replace both defaults. This is the supported customization point; `--_divider` and `--_divider-color` are private implementation properties.
 
-### 15.12 Pill-Shaped Search Groups
+### 15.12 Pill-Shaped Joined Search Controls
 
-`[role="search"] [role="group"]` children get `5rem` border-radius on the outer corners, producing pill ends. Extra `padding-inline` on the first/last children prevents text from crowding the curve. This matches PicoCSS's search aesthetic without requiring a dedicated class.
+`[role="search"] .nc-join` children get `5rem` border-radius on the outer corners, producing pill ends. Extra `padding-inline` on the first/last children prevents text from crowding the curve. The join class is required; the search role alone does not style a generic ARIA group.
 
 ### 15.13 WCAG AA Contrast Tuning
 
@@ -1502,7 +1509,7 @@ The foundational layers that everything else builds on.
 One partial per element group. Each can be implemented and visually tested independently.
 
 - [x] `src/_links.scss` — `a` styling, underline via `color-mix()`, visited purple shift, hover
-- [x] `src/_buttons.scss` — button base, `.secondary`/`.outline` variants (in `nimble.utilities` layer), button groups, disabled state
+- [x] `src/_buttons.scss` — button base, `.secondary`/`.outline` variants (in `nimble.utilities` layer), joined controls, disabled state
 - [x] `src/_forms.scss` — text inputs, select, textarea, labels, fieldset, validation (`aria-invalid`), `accent-color` for checkbox/radio/range, switch toggle (behind `$enable-switch`)
 - [x] `src/_tables.scss` — table base, thead with `text-wrap: balance`, `figure:has(table)` overflow
 - [x] `src/_code.scss` — inline `code`/`kbd`/`samp`, `pre` blocks, `pre code` reset, `kbd` raised border
@@ -1523,7 +1530,7 @@ Utilities, extended demo, and final validation.
 - [x] `demo/extended.html` — layout modes, button variants + groups (including same-type groups), form patterns (login/registration/search with pill-shaped search bar), surface hierarchy swatches, dark mode toggle, striped table, dialog demo
 - [x] WCAG AA color audit — lowered `$primary-lightness` from 0.55 to 0.50; switched `primary-contrast` and `secondary-contrast` to `light-dark(#fff, oklch(0.15 0.005 250))` for dark-mode button readability. All pairings pass AA.
 - [x] Light-mode `text-2` lightened from L=0.450 to L=0.580 for visible distinction from `text-1` (L=0.280)
-- [x] Button group fixes — stripped margin on children, box-shadow dividers between same-type siblings, pill-shaped search groups via `[role="search"] [role="group"]`
+- [x] Joined-control fixes - stripped margin on children, inset dividers between same-type siblings, pill-shaped search controls via `[role="search"] .nc-join`
 - [x] Outline button hover keeps outline style (subtle `primary-focus` tint instead of solid fill)
 - [x] `.bleed-wide` utility (formerly `.wide`): added `width: 100%` so it stretches within `grid-column: 1 / -1`
 - [x] Measure `dist/nimble.min.css` against size budget — 11,924 B min / **3,131 B gzipped** (budget: <8 KB min+gz)
@@ -1564,7 +1571,7 @@ The output remains well under all budget targets. The `light-dark()` function an
 | Surface colors | Yes (4) | No | Yes | No | No | No |
 | Dark mode | light-dark() + manual | Auto + manual | Auto | Auto | Auto | Opt-in attr |
 | Form styling | Full | Full | Minimal | Basic | Basic | Basic |
-| Button groups | Yes | Yes | No | No | No | No |
+| Joined controls | Yes | Yes | No | No | No | No |
 | Classes needed | ~8 | ~12 | 0 | ~3 | 0 | 0 |
 | npm installable | Yes | Yes | Yes | Yes | Yes | Yes |
 | Built CSS in repo | No | Yes | Yes | No | Yes | Yes |

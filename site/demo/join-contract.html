@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Join Contract Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .fixture-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .semantic-group {
+        padding: 0.5rem;
+        border: 1px dashed var(--nc-border);
+      }
+
+      .semantic-group > * + * {
+        margin-inline-start: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Join Contract Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/4">issue #4</a>.
+        It checks that <code>.nc-join</code> joins adjacent controls independently of ARIA.
+      </p>
+
+      <section>
+        <h2>Former styling selector</h2>
+        <p>
+          <code>role="group"</code> gives this row semantics only. Its buttons
+          retain their individual corners and have no group dividers.
+        </p>
+        <div role="group" aria-label="Legacy grouped actions">
+          <button>One</button>
+          <button>Two</button>
+          <button>Three</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Visual-only contract</h2>
+        <p>
+          The class joins adjacent buttons without requiring ARIA.
+        </p>
+        <div class="nc-join">
+          <button>One</button>
+          <button>Two</button>
+          <button>Three</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Visual + semantic contract</h2>
+        <p>
+          Authors may add group semantics independently when the relationship is meaningful.
+        </p>
+        <div class="nc-join" role="group" aria-label="Text alignment">
+          <button>Left</button>
+          <button>Center</button>
+          <button>Right</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Plain semantic group</h2>
+        <p>
+          This group deliberately uses unrelated application content. Nimble does
+          not apply join flex, radius, divider, or child-margin rules.
+        </p>
+        <div class="semantic-group" role="group" aria-label="Annotation options">
+          <label><input type="checkbox"> Familiar</label>
+          <label><input type="checkbox"> Unfamiliar</label>
+          <a href="#semantic-target">Help</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Mixed joined controls</h2>
+        <p>
+          Search/control compositions that want touching controls should opt in explicitly.
+        </p>
+        <div class="fixture-row">
+          <div class="nc-join">
+            <input type="search" aria-label="Search query" placeholder="Search">
+            <button type="button">Go</button>
+          </div>
+          <div class="nc-join">
+            <select aria-label="Scope">
+              <option>All</option>
+              <option>Open</option>
+            </select>
+            <button type="button">Apply</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="semantic-target" hidden></div>
+    </main>
+  </body>
+</html>
