@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Control Composition Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .fixture {
+        padding: 1rem;
+        border: 1px solid var(--nc-border);
+        border-radius: var(--nc-radius);
+      }
+
+      .fixture-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 0.5rem;
+        align-items: start;
+      }
+
+      .fixture-flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: start;
+      }
+
+      .fixture-options {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .fixture-options > label {
+        outline: 1px dashed var(--nc-border);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Control Composition Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/1">issue #1</a>.
+        Layout containers intentionally set only layout properties; they do not reset Nimble control margins.
+      </p>
+
+      <section>
+        <h2>Grid row: inputs + button</h2>
+        <div class="fixture fixture-grid">
+          <input type="text" placeholder="First value" aria-label="First value">
+          <input type="text" placeholder="Second value" aria-label="Second value">
+          <button type="button">Remove</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Flex row: wrapping label/select + button + link</h2>
+        <div class="fixture fixture-flex">
+          <label>
+            Topic
+            <select>
+              <option>Alpha</option>
+              <option>Beta</option>
+            </select>
+          </label>
+          <button type="button">Apply</button>
+          <a href="#stacked">Continue</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Option rows: identical geometry</h2>
+        <div class="fixture fixture-options">
+          <label><input type="radio" name="rating"> First option</label>
+          <label><input type="radio" name="rating"> Second option</label>
+          <label><input type="radio" name="rating"> Last option</label>
+        </div>
+      </section>
+
+      <section id="stacked">
+        <h2>Normal stacked form</h2>
+        <form class="fixture" onsubmit="return false">
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="Jane Doe">
+
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="jane@example.com">
+
+          <label>
+            <input type="checkbox"> Remember me
+          </label>
+
+          <button type="submit">Save</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
