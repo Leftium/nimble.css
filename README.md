@@ -176,6 +176,18 @@ These properties are auto-derived and available for use in your own components (
 
 `--nc-surface-1` .. `--nc-surface-4`, `--nc-text`, `--nc-border`, `--nc-primary-hover`, `--nc-primary-focus`, `--nc-secondary-hover`, `--nc-secondary-focus`
 
+Set `--nc-control-padding-block` on a container to change the vertical density
+of buttons, button-type inputs, `[role="button"]` elements, text-like inputs,
+selects, and textareas together.
+It defaults to `0.5em` on each control; `0.25em` produces a compact row without
+changing the default `1rem` control font size:
+
+```css
+.compact-controls {
+  --nc-control-padding-block: 0.25em;
+}
+```
+
 Button-group dividers adapt to the button text color by default. Override the
 divider for a specific group when its surface needs a custom separator:
 

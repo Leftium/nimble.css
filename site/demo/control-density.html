@@ -18,17 +18,8 @@
         width: auto;
       }
 
-      /*
-       * Characterization-only workaround: this duplicates vertical geometry
-       * across control families. The implementation should replace these
-       * per-element overrides with a shared Nimble custom-property contract.
-       */
-      .dense-workaround :is(button, input, select) {
-        padding-block: 0.25em;
-      }
-
-      .dense-workaround :is(input[type="text"], select) {
-        min-height: calc(1em * 1.5 + 0.5em + 2px);
+      .dense {
+        --nc-control-padding-block: 0.25em;
       }
     </style>
   </head>
@@ -59,7 +50,7 @@
 
       <section>
         <h2>Dense target</h2>
-        <div class="control-row dense-workaround">
+        <div class="control-row dense">
           <input type="text" value="Text input" aria-label="Dense text input">
           <select aria-label="Dense select">
             <option>Select</option>
@@ -68,9 +59,8 @@
           <input type="button" value="Input button">
         </div>
         <p>
-          This row is the target compact geometry, currently produced by
-          duplicated consumer overrides. Replace those overrides with a small
-          shared Nimble custom-property contract while preserving alignment.
+          One inherited custom property reduces block padding for all four
+          controls while preserving their shared height and alignment.
         </p>
       </section>
     </main>

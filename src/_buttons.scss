@@ -12,7 +12,7 @@
   // ----- Base button -----
 
   #{exclusion.guard(':where(button, [type="submit"], [type="reset"], [type="button"], [role="button"])')} {
-    --_btn-padding-v: 0.5em;   // OP ~size-2 (em-relative)
+    --_btn-padding-v: var(#{$prefix}control-padding-block, 0.5em);
     --_btn-padding-h: 1em;     // OP ~size-3 (em-relative)
 
     padding: var(--_btn-padding-v) var(--_btn-padding-h);
