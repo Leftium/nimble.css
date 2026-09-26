@@ -28,13 +28,26 @@
   // Make text inputs and select full-width by default (PicoCSS pattern)
   #{exclusion.guard(':where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"]), select, textarea)')} {
     width: 100%;
-    margin-bottom: var(#{$prefix}spacing);
   }
 
-  // When an input is the last visible child of a block that already has
-  // margin-bottom (e.g. <p>), kill the input's margin to avoid doubling.
-  #{exclusion.guard(':where(p, div) > :where(input, select, textarea):nth-last-child(1 of :not(datalist, script, style))')} {
-    margin-bottom: 0;
+  // A stacked form or fieldset owns the space between its direct children.
+  // Reusable controls carry no trailing margin into flex and grid layouts.
+  #{exclusion.guard(':where(form, fieldset) > :where(label, input, select, textarea, button, [role="button"], [role="group"], small) + :where(label, input, select, textarea, button, [role="button"], [role="group"], small)')} {
+    margin-block-start: var(#{$prefix}spacing);
+  }
+
+  // Keep a label close to the field it names.
+  #{exclusion.guard(':where(form, fieldset) > :where(label) + :where(input, select, textarea)')} {
+    margin-block-start: 0.25em;
+  }
+
+  // Short file and range controls need more separation from their sibling label.
+  #{exclusion.guard(':where(form, fieldset) > :where(label) + :where([type="file"], [type="range"])')} {
+    margin-block-start: 0.5em;
+  }
+
+  #{exclusion.guard(':where(form, fieldset) > :where(label:has([type="checkbox"], [type="radio"])) + :where(label:has([type="checkbox"], [type="radio"]))')} {
+    margin-block-start: 0.5em;
   }
 
   // ----- Focus -----
@@ -45,12 +58,10 @@
     outline: none;
   }
 
-  // When a validation message <small> immediately follows an input,
-  // pull it up tight against the field and let it carry the spacing instead.
+  // Helper text owns its close gap after a field, including inside a wrapping label.
   #{exclusion.guard(':where(input:not([type="submit"], [type="button"], [type="reset"]), select, textarea) + :where(small)')} {
     display: block;
-    margin-top: calc(var(#{$prefix}spacing) * -0.75); // pull up under the input
-    margin-bottom: var(#{$prefix}spacing);
+    margin-block-start: 0.25em;
     font-size: 0.875em;     // no OP match (7/8)
     color: color-mix(in oklch, var(#{$prefix}text), transparent 40%);
   }
@@ -78,7 +89,6 @@
 
   #{exclusion.guard(':where(label)')} {
     display: block;
-    margin-bottom: 0.25em;   // OP ~size-1 (em-relative)
   }
 
   #{exclusion.guard(':where(label:has(+ input, + select, + textarea)), :where(label:not(:has([type="checkbox"], [type="radio"])):has(input, select, textarea))')} {
@@ -91,16 +101,10 @@
     font-weight: normal;
   }
 
-  // Match the gap created by a sibling label's bottom margin.
+  // Keep the control inside a wrapping label as close as a sibling control.
   #{exclusion.guard(':where(label:not(:has([type="checkbox"], [type="radio"]))) > :where(input, select, textarea)')} {
     display: block;
     margin-top: 0.25em;    // OP ~size-1 (em-relative)
-  }
-
-  // file and range are short/inline controls — increase the label gap to match
-  // the visual weight of the spacing above and beside them.
-  #{exclusion.guard(':where(label:has(+ [type="file"], + [type="range"]))')} {
-    margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
   }
 
   // ----- Fieldset -----
@@ -111,12 +115,6 @@
     padding: var(#{$prefix}spacing);
     min-width: 0; // Override UA min-content default — prevents overflow on narrow viewports
     max-width: 100%;
-  }
-
-  // Kill last-child bottom margin so it doesn't stack with fieldset padding.
-  // Uses :nth-last-child(of ...) to skip invisible elements (datalist, script).
-  #{exclusion.guard(':where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)), :where(fieldset) > :nth-last-child(1 of :not(datalist, script, style)) > :nth-last-child(1 of :not(datalist, script, style))')} {
-    margin-bottom: 0;
   }
 
   #{exclusion.guard(':where(legend)')} {
@@ -138,13 +136,6 @@
     display: flex;
     align-items: center;
     gap: 0.35em;             // no OP match (near ~size-1)
-    margin-bottom: 0.5em;    // OP ~size-2 (em-relative)
-  }
-
-  // Last checkbox/radio label in a group drops its bottom margin
-  // so the parent element controls spacing to the next sibling.
-  #{exclusion.guard(':where(label:has([type="checkbox"], [type="radio"]):last-child)')} {
-    margin-bottom: 0;
   }
 
   // ----- Search (pill shape) -----
@@ -159,7 +150,6 @@
   #{exclusion.guard(':where([type="range"])')} {
     accent-color: var(#{$prefix}primary);
     width: 100%;
-    margin-bottom: var(#{$prefix}spacing);
   }
 
   // ----- Datalist-connected inputs -----
@@ -177,7 +167,6 @@
     font: inherit;
     cursor: pointer;
     max-width: 100%; // Prevent native file input from overflowing container (iOS Safari)
-    margin-bottom: var(#{$prefix}spacing);
   }
 
   #{exclusion.guard(':where([type="file"])::file-selector-button')} {
@@ -203,14 +192,12 @@
   // appearance: none is applied outside @layer (see below) to fix iOS Safari sizing.
   #{exclusion.guard(':where([type="date"], [type="month"], [type="week"], [type="time"], [type="datetime-local"])')} {
     min-width: 10em; // no OP match; prevent collapse when empty (e.g. time with no value)
-    margin-bottom: var(#{$prefix}spacing);
   }
 
   // ----- Color -----
 
   #{exclusion.guard(':where([type="color"])')} {
     --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
-    margin-bottom: var(#{$prefix}spacing);
 
     --_color-pad: 0.25em;    // OP ~size-1 (em-relative)
 

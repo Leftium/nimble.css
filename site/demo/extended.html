@@ -38,6 +38,12 @@
         gap: 1rem;
       }
 
+      .demo-group-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25em;
+      }
+
       .demo-light-buttons > button {
         background: oklch(0.92 0.01 250);
         border-color: oklch(0.92 0.01 250);
@@ -120,37 +126,41 @@
         </div>
 
         <h3>Same-Type Button Groups</h3>
-        <div role="group">
-          <button>One</button>
-          <button>Two</button>
-          <button>Three</button>
-        </div>
-        <div role="group">
-          <button class="secondary">A</button>
-          <button class="secondary">B</button>
-          <button class="secondary">C</button>
-        </div>
-        <div role="group">
-          <button class="outline">X</button>
-          <button class="outline">Y</button>
-          <button class="outline">Z</button>
+        <div class="demo-group-row">
+          <div role="group">
+            <button>One</button>
+            <button>Two</button>
+            <button>Three</button>
+          </div>
+          <div role="group">
+            <button class="secondary">A</button>
+            <button class="secondary">B</button>
+            <button class="secondary">C</button>
+          </div>
+          <div role="group">
+            <button class="outline">X</button>
+            <button class="outline">Y</button>
+            <button class="outline">Z</button>
+          </div>
         </div>
 
         <h3>Customized Button Groups</h3>
-        <div role="group" class="demo-light-buttons">
-          <button>Light</button>
-          <button>Neutral</button>
-          <button disabled>Disabled</button>
-        </div>
-        <div role="group" class="demo-dark-buttons">
-          <button>Dark</button>
-          <button>Neutral</button>
-          <button>Group</button>
-        </div>
-        <div role="group" class="demo-neutral-outline">
-          <button class="outline">Neutral</button>
-          <button class="outline">Outline</button>
-          <button class="outline">Group</button>
+        <div class="demo-group-row">
+          <div role="group" class="demo-light-buttons">
+            <button>Light</button>
+            <button>Neutral</button>
+            <button disabled>Disabled</button>
+          </div>
+          <div role="group" class="demo-dark-buttons">
+            <button>Dark</button>
+            <button>Neutral</button>
+            <button>Group</button>
+          </div>
+          <div role="group" class="demo-neutral-outline">
+            <button class="outline">Neutral</button>
+            <button class="outline">Outline</button>
+            <button class="outline">Group</button>
+          </div>
         </div>
 
         <h3>Small Inline Buttons</h3>
