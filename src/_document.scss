@@ -18,22 +18,22 @@
   }
 
   // Grid centering: 3-column grid on body.
-  //   1fr | content + padding | 1fr
+  //   1fr | content + page padding | 1fr
   //    1            2            3
   // Column 2 is wide enough for content + real inline padding on children.
   // Content children go to column 2 and get padding-inline (in _grid-columns).
   // On narrow viewports min(..., 100%) caps at viewport width; the real
-  // padding-inline on children provides the spacing — no pseudo-padding.
+  // padding-inline on children provides the gutter — no pseudo-padding.
   body {
-    #{$prefix}column-width: #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}spacing))')};
+    --_column-width: #{string.unquote('calc(var(#{$prefix}content-width) + 2 * var(#{$prefix}page-padding-inline))')};
     display: grid;
     grid-template-columns:
       1fr
-      #{string.unquote('min(var(#{$prefix}column-width), 100%)')}
+      #{string.unquote('min(var(--_column-width), 100%)')}
       1fr;
     align-content: start;
     min-height: 100dvh;
-    padding-block: var(#{$prefix}spacing);
+    padding-block: var(#{$prefix}page-padding-block);
     position: relative;
   }
 

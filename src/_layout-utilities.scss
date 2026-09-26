@@ -5,7 +5,7 @@
 //
 // Breakout hierarchy (narrow → wide):
 //   (default)    — content column (--nc-content-width)
-//   .bleed-edge  — content + shadow gap (requires shadow add-on)
+//   .bleed-edge  — content + page gutters (requires shadow add-on)
 //   .bleed-wide  — up to $wide-width (1200px), centered
 //   .bleed-full  — full viewport width
 // ==========================================================================
@@ -16,28 +16,29 @@
 
   @layer nimble.utilities {
 
-    // Centered content container (useful inside fluid layout)
+    // Centered content container (useful inside fluid layout).
+    // Its inline padding is a layout gutter, not component spacing.
     .container {
       max-width: var(#{$prefix}content-width);
       margin-inline: auto;
-      padding-inline: var(#{$prefix}spacing);
+      padding-inline: var(#{$prefix}page-padding-inline);
     }
 
-    // Full viewport width with padding (opt-in on body or wrapper)
+    // Full viewport width with page gutter (opt-in on body or wrapper)
     .fluid {
       display: block;
       max-width: none;
-      padding-inline: var(#{$prefix}spacing);
+      padding-inline: var(#{$prefix}page-padding-inline);
     }
 
-    // Break out to wide max-width
+    // Break out to wide max-width, retaining the page gutter at its edges.
     .bleed-wide {
       grid-column: 1 / -1;
       box-shadow: none;
       width: 100%;
       max-width: #{$wide-width};
       margin-inline: auto;
-      padding-inline: var(#{$prefix}spacing);
+      padding-inline: var(#{$prefix}page-padding-inline);
     }
 
     // Break out of centered container to full viewport width.

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page gutters and form rhythm - Nimble.css</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      .probe { background: var(--nc-surface-2); }
+      .probe::before { content: ""; }
+      .bleed-edge { background: var(--nc-surface-3); }
+      .case { margin-block: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <header class="probe">
+      <h1>Page gutters and form rhythm</h1>
+      <p>Set <code>--nc-page-padding-inline</code> and <code>--nc-page-padding-block</code> on the root to compare default and zero gutters.</p>
+    </header>
+    <div id="bleed" class="bleed-edge">This edge follows the shadow boundary when there is outside clearance.</div>
+    <main>
+      <div class="case">
+        <h2>Hidden first</h2>
+        <form id="hidden-first">
+          <input type="hidden" name="id" value="1">
+          <button id="first-button" type="button">First visible control</button>
+        </form>
+      </div>
+      <div class="case">
+        <h2>Visible, hidden, visible</h2>
+        <form id="hidden-middle">
+          <input id="first-field" aria-label="First field">
+          <input type="hidden" name="id" value="2">
+          <input type="hidden" name="token" value="3">
+          <button id="second-button" type="button">Second visible control</button>
+        </form>
+      </div>
+      <div class="case">
+        <h2>Close spacing</h2>
+        <form id="close-spacing">
+          <label for="text-field">Text field</label>
+          <input id="text-field">
+          <small id="helper">Helper text</small>
+          <label for="file-field">File field</label>
+          <input id="file-field" type="file">
+          <label for="range-field">Range field</label>
+          <input id="range-field" type="range">
+          <label><input type="checkbox"> First option</label>
+          <label id="second-option"><input type="checkbox"> Second option</label>
+        </form>
+      </div>
+    </main>
+    <aside id="wide" class="bleed-wide">Wide layout padding follows the page gutter.</aside>
+    <div style="display: contents">
+      <footer id="wrapped">A display: contents wrapper keeps the same page gutter.</footer>
+    </div>
+  </body>
+</html>

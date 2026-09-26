@@ -29,9 +29,10 @@
     width: 100%;
   }
 
-  // A stacked form or fieldset owns the space between its direct children.
+  // A stacked form or fieldset owns the space between visible direct controls.
+  // The filtered child index skips any number of hidden inputs between them.
   // Reusable controls carry no trailing margin into flex and grid layouts.
-  #{exclusion.guard(':where(form, fieldset) > :where(label, input, select, textarea, button, .nc-button, .nc-join, small) + :where(label, input, select, textarea, button, .nc-button, .nc-join, small)')} {
+  #{exclusion.guard(':where(form, fieldset) > :where(:nth-child(n + 2 of :where(label, input:not([type="hidden"]), select, textarea, button, .nc-button, .nc-join, small)))')} {
     margin-block-start: var(#{$prefix}spacing);
   }
 

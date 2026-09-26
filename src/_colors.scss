@@ -10,6 +10,13 @@
 @use 'sass:string';
 @use 'config' as *;
 
+// Normalize a consumer's unitless 0 to 0px for column-width arithmetic.
+@property #{$prefix}page-padding-inline {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 // Helper: build an oklch() string that Sass passes through as-is
 @function _oklch($l, $c, $h, $alpha: null) {
   @if $alpha {
@@ -106,6 +113,8 @@
 
     // ----- Spacing & Layout -----
     #{$prefix}spacing: #{$spacing};
+    #{$prefix}page-padding-inline: var(#{$prefix}spacing);
+    #{$prefix}page-padding-block: var(#{$prefix}spacing);
     #{$prefix}radius: #{$radius};
     #{$prefix}control-padding-block: 0.5em;
     #{$prefix}content-width: #{$content-width};
