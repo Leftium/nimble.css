@@ -188,23 +188,48 @@ changing the default `1rem` control font size:
 }
 ```
 
-Use `.button-group` for touching buttons or a mixed input/select and button row.
-Add `role="group"` and an accessible name only when the controls form a
-meaningful semantic group. A plain `role="group"` has no Nimble group layout or
-chrome. Search forms with a `.button-group` get pill-shaped outer corners.
+Use `.nc-join` to join adjacent controls into one touching visual unit. It
+works for button rows and mixed input/select + button compositions:
 
-Button-group dividers adapt to the button text color by default. Override the
-divider for a specific group when its surface needs a custom separator:
+```html
+<div class="nc-join">
+  <button>Left</button>
+  <button>Center</button>
+  <button>Right</button>
+</div>
+
+<div class="nc-join">
+  <input type="search" aria-label="Search query">
+  <button>Search</button>
+</div>
+```
+
+Add `role="group"` and an accessible name only when the controls form a
+meaningful semantic group. A plain `role="group"` receives no join layout or
+chrome. Search forms with a `.nc-join` get pill-shaped outer corners.
+
+```html
+<div class="nc-join" role="group" aria-label="Text alignment">
+  <button>Left</button>
+  <button>Center</button>
+  <button>Right</button>
+</div>
+```
+
+Join dividers adapt to the control's text color by default. Override the
+divider for a specific join when its surface needs a custom separator:
 
 ```css
-.button-group.neutral {
-  --nc-button-group-divider: var(--nc-border);
+.nc-join.neutral {
+  --nc-join-divider: var(--nc-border);
 }
 ```
 
 When migrating from earlier Nimble versions, replace visual
-`<div role="group">...</div>` with `<div class="button-group">...</div>`.
-Keep `role="group"` alongside the class when the group also needs ARIA semantics.
+`<div role="group">...</div>` with `<div class="nc-join">...</div>`.
+Keep `role="group"` alongside the class when the controls also need ARIA
+semantics. Rename `--nc-button-group-divider` overrides to `--nc-join-divider`
+if you used the earlier draft of this component.
 
 <details>
 <summary>SCSS (advanced)</summary>

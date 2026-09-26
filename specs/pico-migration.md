@@ -152,8 +152,8 @@ nimble's surface scale has larger lightness steps than Pico's. If exact Pico bac
 | `.outline` | `.outline` | Same purpose (outline button style). |
 | `.contrast` | _(none)_ | No contrast variant in nimble. Use `.secondary` or custom CSS. |
 | `data-tooltip` | _(none)_ | No built-in tooltip. Use tippy.js or CSS-only tooltips. See §6.7. |
-| `[role="group"]` (button groups) | `.button-group` | Visual styling requires the class; retain `role="group"` with an accessible name only when semantic grouping is useful. |
-| `[role="search"]` (pill search) | `[role="search"] .button-group` | Add the class to the touching control row for pill-shaped ends. |
+| `[role="group"]` (button groups) | `.nc-join` | The class joins adjacent buttons or mixed controls visually; retain `role="group"` with an accessible name only when semantic grouping is useful. |
+| `[role="search"]` (pill search) | `[role="search"] .nc-join` | Add the class to the touching control row for pill-shaped ends. |
 | `data-theme="dark"` / `data-theme="light"` | `data-theme="dark"` / `data-theme="light"` | Same attribute, same behavior. nimble uses `color-scheme` under the hood. |
 | `.close` | _(none)_ | No built-in close button class. |
 | `$parent-selector: '.pico'` (opt-in) | `.no-nimble` (opt-out) | Pico wraps all styles inside a parent class (opt-in). nimble adds zero-specificity selector guards to exclude component styles from `.no-nimble` subtrees (opt-out). Different approach: nimble styles apply by default; Pico styles only where opted in. |
@@ -473,9 +473,13 @@ footer {
 
 These dated case studies describe older Nimble releases. Their references to
 `[role="group"]` styling and workarounds are historical. For current releases,
-add `.button-group` to every visual button or touching-control group. Keep a
+add `.nc-join` to every visual button or touching-control group. Keep a
 plain `role="group"` for semantic-only groups; the old divider and corner-reset
 workarounds are no longer needed for those groups.
+
+If using the earlier draft of this component, replace `.button-group` with
+`.nc-join` and rename custom `--nc-button-group-divider` overrides to
+`--nc-join-divider`.
 
 Projects migrated from PicoCSS to nimble.css, with notes on issues encountered.
 
@@ -812,9 +816,9 @@ Resetting requires 5 property overrides: `margin: 0; padding: 0; border-bottom: 
 **Severity:** Cosmetic
 **Status:** Open
 
-nimble buttons have `border: 1px solid` on all four sides. When buttons are laid out in a custom inline grid (without `.button-group`), adjacent buttons show 2px borders between them. Projects must add `border: none` and re-add only the borders they need.
+nimble buttons have `border: 1px solid` on all four sides. When buttons are laid out in a custom inline grid (without `.nc-join`), adjacent buttons show 2px borders between them. Projects must add `border: none` and re-add only the borders they need.
 
-**Recommendation:** This is inherent to the CSS box model: adjacent bordered elements can create double seams. Nimble's `.button-group` handles visual button groups; custom grids can use `border: none` with selective borders.
+**Recommendation:** This is inherent to the CSS box model: adjacent bordered elements can create double seams. Nimble's `.nc-join` handles touching control rows; custom grids can use `border: none` with selective borders.
 
 ### 6.8 bangtastic (2026-03-28)
 

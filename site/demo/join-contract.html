@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nimble.css - Button Group Contract Fixture</title>
+    <title>Nimble.css - Join Contract Fixture</title>
     <link rel="stylesheet" href="../dist/nimble.css">
     <style>
       .fixture-row {
@@ -25,11 +25,11 @@
   </head>
   <body>
     <main>
-      <h1>Button Group Contract Fixture</h1>
+      <h1>Join Contract Fixture</h1>
       <p>
         Regression fixture for
         <a href="https://github.com/Leftium/nimble.css/issues/4">issue #4</a>.
-        It checks that the explicit class controls visual grouping independently of ARIA.
+        It checks that <code>.nc-join</code> joins adjacent controls independently of ARIA.
       </p>
 
       <section>
@@ -48,9 +48,9 @@
       <section>
         <h2>Visual-only contract</h2>
         <p>
-          The class creates a visual button group without requiring ARIA.
+          The class joins adjacent buttons without requiring ARIA.
         </p>
-        <div class="button-group">
+        <div class="nc-join">
           <button>One</button>
           <button>Two</button>
           <button>Three</button>
@@ -62,7 +62,7 @@
         <p>
           Authors may add group semantics independently when the relationship is meaningful.
         </p>
-        <div class="button-group" role="group" aria-label="Text alignment">
+        <div class="nc-join" role="group" aria-label="Text alignment">
           <button>Left</button>
           <button>Center</button>
           <button>Right</button>
@@ -73,7 +73,7 @@
         <h2>Plain semantic group</h2>
         <p>
           This group deliberately uses unrelated application content. Nimble does
-          not apply button-group flex, radius, divider, or child-margin rules.
+          not apply join flex, radius, divider, or child-margin rules.
         </p>
         <div class="semantic-group" role="group" aria-label="Annotation options">
           <label><input type="checkbox"> Familiar</label>
@@ -83,16 +83,16 @@
       </section>
 
       <section>
-        <h2>Mixed control group</h2>
+        <h2>Mixed joined controls</h2>
         <p>
           Search/control compositions that want touching controls should opt in explicitly.
         </p>
         <div class="fixture-row">
-          <div class="button-group">
+          <div class="nc-join">
             <input type="search" aria-label="Search query" placeholder="Search">
             <button type="button">Go</button>
           </div>
-          <div class="button-group">
+          <div class="nc-join">
             <select aria-label="Scope">
               <option>All</option>
               <option>Open</option>
