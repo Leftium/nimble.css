@@ -16,6 +16,7 @@ Minimal CSS library for great-looking default HTML styles; no classes required. 
 
 - [HTML5 Test Page](https://leftium.github.io/nimble.css/demo/) — every standard HTML element
 - [Extended Demo](https://leftium.github.io/nimble.css/demo/extended.html) — layouts, utilities, button variants, forms, dark mode toggle
+- [Page Gutters and Form Rhythm](https://leftium.github.io/nimble.css/demo/gutters-and-form-rhythm.html) - default and zero gutters, shadow edge, and hidden-input form cases
 - [Pico CSS-style Demo](https://leftium.github.io/nimble.css/demo/pico.html) — Pico CSS-inspired page with forms, buttons, article, tables, and more
 - [Bookmarklet](https://leftium.github.io/nimble.css/bookmarklet.html) — apply nimble.css to any website with one click
 
@@ -166,9 +167,29 @@ Override at runtime — no build step needed. Hover and focus states auto-derive
   --nc-font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 
   /* Layout */
-  --nc-spacing: 1rem;
+  --nc-spacing: 1rem; /* general component and rhythm spacing */
+  --nc-page-padding-inline: var(--nc-spacing);
+  --nc-page-padding-block: var(--nc-spacing);
   --nc-radius: 0.25rem;
   --nc-content-width: 60ch;
+}
+```
+
+The centered page column, and its optional shadow, are as wide as
+`--nc-content-width + 2 * --nc-page-padding-inline`. Body children and layout
+containers use the inline page gutter; the body uses the block page gutter.
+The shadow needs separate outside clearance before it appears, measured with
+`--nc-spacing`, so setting page gutters to zero does not force the shadow on.
+`.bleed-edge` aligns with the same column edge. `--_column-width` is derived
+internally; customize the public width and gutter properties instead.
+
+For edge-to-edge content in a centered column:
+
+```css
+:root {
+  --nc-content-width: min(42.875em, 100%);
+  --nc-page-padding-inline: 0;
+  --nc-page-padding-block: 0;
 }
 ```
 

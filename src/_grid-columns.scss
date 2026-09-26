@@ -3,7 +3,7 @@
 // Assigns body's direct children to the centered content column (column 2).
 // 3-column grid: 1fr | content+padding | 1fr
 // Children get real padding-inline for consistent spacing model
-// (same as article, dialog, .container).
+// (same page gutter as layout containers).
 // Global (not guarded) so the body grid layout always applies.
 // ==========================================================================
 
@@ -14,7 +14,7 @@
   body > * {
     grid-column: 2;
     min-width: 0; // Allow grid children to shrink below intrinsic content width
-    padding-inline: var(#{$prefix}spacing);
+    padding-inline: var(#{$prefix}page-padding-inline);
   }
 
   // Fix for frameworks (SvelteKit, etc.) that insert a
@@ -25,7 +25,7 @@
   body > [style*='display: contents'] > * {
     grid-column: 2;
     min-width: 0;
-    padding-inline: var(#{$prefix}spacing);
+    padding-inline: var(#{$prefix}page-padding-inline);
   }
 
 }

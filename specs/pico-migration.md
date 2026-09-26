@@ -251,7 +251,8 @@ nav ul {
 ```css
 body {
   display: grid;
-  grid-template-columns: 1fr min(var(--nc-content-width), calc(100% - 2 * var(--nc-spacing))) 1fr;
+  --_column-width: calc(var(--nc-content-width) + 2 * var(--nc-page-padding-inline));
+  grid-template-columns: 1fr min(var(--_column-width), 100%) 1fr;
 }
 body > * { grid-column: 2; }
 ```
@@ -865,7 +866,7 @@ nimble buttons have `border: 1px solid` on all four sides. When buttons are laid
 
 Pico's `.container` provided both centering (`max-width` + `margin-inline: auto`) and horizontal breathing room (`padding-inline`). Projects migrating from Pico often retain `class="container"` on `<main>` or other body-grid children.
 
-In nimble, the body grid already provides the horizontal gap: the column formula `min(--nc-content-width, calc(100% - 2 * --nc-spacing))` guarantees `--nc-spacing` clearance from the viewport/shadow edge. nimble applies no styles to `<main>` by default. Adding `.container` (which sets `padding-inline: var(--nc-spacing)`) on top of the grid column creates a second layer of inset, visually doubling the side padding.
+In nimble, the body grid already provides the horizontal gap: its effective column width is `--nc-content-width + 2 * --nc-page-padding-inline`, and body children receive that inline page padding. Adding `.container` (which also sets `padding-inline: var(--nc-page-padding-inline)`) on a body-grid child creates a second layer of inset, visually doubling the side padding at the default settings.
 
 **Fix:** Remove `class="container"` from direct body-grid children (`<main>`, `<div>`, etc.). The body grid handles centering; `.container` is only needed inside `.fluid` layouts to re-introduce a centered max-width.
 

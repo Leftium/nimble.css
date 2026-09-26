@@ -4,7 +4,7 @@
 // Uses surface hue for tonal consistency; adapts to light/dark mode.
 //
 // The shadow tightly wraps the padded content column (column 2).
-// Body children have real padding-inline: --nc-spacing, so the gap
+// Body children have real padding-inline: --nc-page-padding-inline, so the gap
 // between content and shadow edge IS the padding — no phantom gap.
 //
 // Includes:
@@ -54,7 +54,7 @@
   }
 
   // Content shadow: fixed-position pseudo spanning the full viewport height.
-  // Width matches column 2 (--nc-column-width) — the shadow tightly wraps
+  // Width matches column 2 (--_column-width) — the shadow tightly wraps
   // the padded column. The real padding-inline on body children creates
   // the visual gap between content and shadow edge.
   // The clamp() formula handles visibility: shadow shows when there's at
@@ -68,8 +68,8 @@
     left: 50%;
     transform: translateX(-50%);
     width: clamp(0px,
-      #{string.unquote('calc((100% - var(#{$prefix}column-width) - 2 * var(#{$prefix}spacing)) * 9999)')},
-      var(#{$prefix}column-width)
+      #{string.unquote('calc((100% - var(--_column-width) - 2 * var(#{$prefix}spacing)) * 9999)')},
+      var(--_column-width)
     );
     box-shadow: var(#{$prefix}content-shadow);
     pointer-events: none;
@@ -78,7 +78,7 @@
 
 }
 
-// Break out to shadow/column edge (--nc-column-width).
+// Break out to shadow/column edge (--_column-width).
 // Uses the same shadow-visibility condition as the body::before pseudo:
 // when shadow is visible, caps at column width (shadow boundary);
 // when shadow is hidden (narrow viewport), goes full width.
@@ -91,8 +91,8 @@
       grid-column: 1 / -1;
       width: 100%;
       max-width: clamp(
-        var(#{$prefix}column-width),
-        #{string.unquote('calc((100% - var(#{$prefix}column-width) - 2 * var(#{$prefix}spacing)) * -9999)')},
+        var(--_column-width),
+        #{string.unquote('calc((100% - var(--_column-width) - 2 * var(#{$prefix}spacing)) * -9999)')},
         100%
       );
       margin-inline: auto;

@@ -274,7 +274,9 @@ nimble.css takes a **middle path**: ~20 semantic custom properties on `:root`, p
 
   /* --- Spacing & Layout --- */
   --nc-radius:             /* default border radius */
-  --nc-spacing:            /* base spacing unit */
+  --nc-spacing:            /* general component and rhythm spacing */
+  --nc-page-padding-inline: /* page/layout inline gutter; defaults to --nc-spacing */
+  --nc-page-padding-block: /* body block padding; defaults to --nc-spacing */
   --nc-control-padding-block: /* control block padding (0.5em fallback per control) */
   --nc-content-width:      /* max-width for centered container (60ch, ~480-600px depending on font) */
 }
@@ -482,11 +484,14 @@ Setting `color-scheme` on the element causes `light-dark()` to resolve to the fo
 ```css
 body {
   display: grid;
-  grid-template-columns: 1fr min(var(--nc-content-width), calc(100% - 2 * var(--nc-spacing))) 1fr;
+  --_column-width: calc(var(--nc-content-width) + 2 * var(--nc-page-padding-inline));
+  grid-template-columns: 1fr min(var(--_column-width), 100%) 1fr;
+  padding-block: var(--nc-page-padding-block);
 }
 body > * {
   grid-column: 2;
   min-width: 0; /* allow grid children to shrink below intrinsic content width */
+  padding-inline: var(--nc-page-padding-inline);
 }
 ```
 
@@ -495,6 +500,15 @@ This approach (from simple.css) is superior to PicoCSS's max-width + breakpoint 
 - No breakpoints needed for basic centering.
 - Full-bleed elements can use `.bleed-full` (or `grid-column: 1 / -1`).
 
+`--nc-content-width` is usable content width. The effective column and shadow
+width includes two inline page gutters. `--_column-width` is derived geometry,
+not a public customization property. The shadow appears only when there is
+`--nc-spacing` of outside clearance on each side; zero page gutters do not
+change that threshold. `.bleed-edge` follows that same shadow/column boundary.
+`.container`, `.fluid`, and `.bleed-wide` use page inline padding because their
+padding defines layout edges. Component padding and grid gaps keep using
+`--nc-spacing`.
+
 **Content width defaults:**
 - `--nc-content-width: 60ch` (aligns with Open Props `--size-content-3`; ~480-600px depending on font, good for readability)
 - Overridable per-element or globally
@@ -502,14 +516,14 @@ This approach (from simple.css) is superior to PicoCSS's max-width + breakpoint 
 **Breaking out of the container:**
 
 Breakout hierarchy (narrow -> wide):
-- `.bleed-edge` — content + shadow gap on each side (shadow boundary); goes full-width when shadow is hidden
+- `.bleed-edge` — content + page gutter on each side (shadow boundary); goes full-width when shadow is hidden
 - `.bleed-wide` — up to 1200px, centered
 - `.bleed-full` — full viewport width
 
 ```css
 .bleed-edge {
   grid-column: 1 / -1;
-  max-width: clamp(content-width + 2*gap, ..., 100%); /* shadow-aware */
+  max-width: clamp(var(--_column-width), ..., 100%); /* shadow-aware */
   margin-inline: auto;
 }
 
@@ -517,7 +531,7 @@ Breakout hierarchy (narrow -> wide):
   grid-column: 1 / -1;
   max-width: 1200px;
   margin-inline: auto;
-  padding-inline: var(--nc-spacing);
+  padding-inline: var(--nc-page-padding-inline);
 }
 
 .bleed-full {
@@ -557,7 +571,7 @@ In fluid mode, `body` takes full viewport width with consistent padding:
 body.fluid {
   display: block;
   max-width: none;
-  padding-inline: var(--nc-spacing);
+  padding-inline: var(--nc-page-padding-inline);
 }
 ```
 
@@ -783,7 +797,7 @@ block padding, 1.5 line height, and two 1px borders. The default is 42px at
 
 Controls and labels keep their own appearance and sizing. They do not
 carry a bottom margin for the next control. A normal stacked `form` or `fieldset`
-sets spacing between adjacent direct children: a close gap from label to field
+sets spacing between visible direct controls, skipping hidden inputs: a close gap from an adjacent label to field
 or field to helper text, a half-em gap after labels for short file/range
 controls and between checkbox/radio options, and the standard `--nc-spacing`
 gap between fields and actions. Flex and grid rows inside
@@ -987,7 +1001,7 @@ These interact with the body grid and must work everywhere, including on `.no-ni
 ```css
 .container       /* centered content width (useful inside fluid layout) */
 .fluid           /* full viewport width with padding */
-.bleed-edge      /* break out to shadow/paper boundary (content + gap); full-width when shadow hidden */
+.bleed-edge      /* break out to shadow/paper boundary (content + page gutters); full-width when shadow hidden */
 .bleed-wide      /* break out to 1200px max-width */
 .bleed-full      /* break out to full viewport width */
 .grid            /* responsive equal-column grid (1fr mobile, auto-fit desktop) */
