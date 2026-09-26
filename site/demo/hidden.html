@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimble.css - Hidden Attribute Fixture</title>
+    <link rel="stylesheet" href="../dist/nimble.css">
+    <style>
+      v-hidden-demo {
+        display: block;
+        margin-block: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid var(--nc-border);
+        border-radius: var(--nc-radius);
+        background: var(--nc-surface-2);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Hidden Attribute Fixture</h1>
+      <p>
+        Regression fixture for
+        <a href="https://github.com/Leftium/nimble.css/issues/5">issue #5</a>.
+        The custom element deliberately sets <code>display: block</code>.
+      </p>
+
+      <section>
+        <h2>Ordinary hidden state</h2>
+        <p>The next two elements must not render:</p>
+        <p hidden>Native hidden element - regression if visible.</p>
+        <v-hidden-demo hidden>Styled custom element - regression if visible.</v-hidden-demo>
+
+        <p>The next custom element must render:</p>
+        <v-hidden-demo>Visible styled custom element.</v-hidden-demo>
+      </section>
+
+      <section>
+        <h2>Hidden until found</h2>
+        <p>
+          <a href="#until-found-demo">Reveal the hidden-until-found custom element</a>.
+          Nimble must not force this state to <code>display: none</code>, because the
+          browser needs a generated box to reveal it through fragment navigation or find-in-page.
+        </p>
+        <v-hidden-demo id="until-found-demo" hidden="until-found">
+          Hidden-until-found custom element revealed successfully.
+        </v-hidden-demo>
+      </section>
+    </main>
+  </body>
+</html>

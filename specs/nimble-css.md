@@ -179,6 +179,16 @@ nimble.css embeds a trimmed version of **sanitize.css** as its reset foundation 
 
 We embed it directly (not as a dependency) to control size and avoid breaking changes.
 
+**Hidden state:** the reset reinforces the ordinary HTML `hidden` state with a zero-specificity important declaration so consumer `display` rules cannot accidentally reveal semantically hidden content:
+
+```css
+:where([hidden]:not([hidden="until-found" i])) {
+  display: none !important;
+}
+```
+
+`hidden="until-found"` is excluded because browsers need that state to retain a generated box for find-in-page and fragment navigation. To intentionally reveal ordinary hidden content, remove the `hidden` attribute rather than overriding `display` in CSS.
+
 **postcss-normalize** is rejected because its browser-target-based subsetting adds build complexity without meaningful size savings at sanitize.css's small size.
 
 ## 4. CSS Custom Properties

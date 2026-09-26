@@ -116,6 +116,13 @@
 
   // --- Accessibility ---
 
+  // Preserve the semantic hidden state even when author CSS sets display.
+  // hidden="until-found" is intentionally excluded because it must retain a
+  // generated box so find-in-page and fragment navigation can reveal it.
+  :where([hidden]:not([hidden="until-found" i])) {
+    display: none !important;
+  }
+
   // Remove delay from tapping on clickable elements
   :where(a, area, button, input, label, select, summary, textarea, [tabindex]) {
     touch-action: manipulation;
