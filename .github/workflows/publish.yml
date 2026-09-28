@@ -8,7 +8,7 @@ on:
       - package.json
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 concurrency:
@@ -104,3 +104,22 @@ jobs:
       - name: Publish
         if: steps.candidate.outputs.should_publish == 'true' && steps.npm_version.outputs.is_unpublished == 'true'
         run: npm publish
+
+      - name: Create GitHub Release
+        if: steps.candidate.outputs.should_publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ steps.candidate.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          tag="v$PACKAGE_VERSION"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "GitHub Release $tag already exists; skipping creation."
+            exit 0
+          fi
+
+          gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --title "$tag" \
+            --generate-notes
