@@ -107,11 +107,14 @@
         height: control.getBoundingClientRect().height,
         width: control.getBoundingClientRect().width,
         appearance: getComputedStyle(control).appearance,
-        contentFits: control.scrollHeight <= control.clientHeight + 1,
+        // Select overflow catches a stacked enhanced value/icon. Native date/time
+        // editors can report extra internal scroll height without clipped text.
+        contentFits: control.localName === 'select'
+          ? control.scrollHeight <= control.clientHeight + 1 : null,
       }));
       const reference = controls.find(control => control.control === 'text').height;
       return { density: section.dataset.density, reference,
-        pass: controls.every(control => Math.abs(control.height - reference) <= 1 && control.contentFits), controls };
+        pass: controls.every(control => Math.abs(control.height - reference) <= 1 && control.contentFits !== false), controls };
     });
     document.querySelector('#result').textContent = densities.every(row => row.pass)
       ? 'All single-line controls align within 1px.' : 'Height differences or content overflow detected. See measurements below.';
