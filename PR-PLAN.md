@@ -30,3 +30,11 @@ Normalize the used height of native date/time inputs with Nimble's standard sing
 - Verify the existing iOS Safari `appearance: none` sizing workaround remains present and does not regress.
 - Verify changing `--nc-control-padding-block` still changes standard control density coherently.
 - Confirm checkbox, radio, range, file, and multiline textarea behavior is not accidentally forced into the single-line height contract.
+
+## Implementation detail
+
+The full bundle enhances selects with `appearance: base-select`. Wrapping labels
+set controls to `display: block`, which stacks the enhanced value and picker icon.
+Preserve flex layout for single-line enhanced selects inside labels so the shared
+height does not hide overflowing content. The measurement fixture checks content
+fit as well as outer height. Listbox selects keep their existing layout.
