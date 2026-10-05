@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimble.css - Control Height Matrix</title>
+  <link rel="stylesheet" href="../dist/nimble.css">
+  <style>
+    .matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+    .matrix label { min-width: 0; }
+    .dense { --nc-control-padding-block: 0.25em; }
+    .roomy { --nc-control-padding-block: 0.75em; }
+    pre { max-height: 24rem; overflow: auto; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Control Height Matrix</h1>
+  <p>Single-line controls should share the text input's height at every density.
+  Try the populated and empty native pickers. Date/time and datalist inputs keep
+  their natural width; ordinary text inputs and selects fill their column.</p>
+  <p><a href="control-density.html">Button density fixture</a></p>
+<section class="default" data-density="default"><h2>Default density</h2><div class="matrix"><label>Text<input type="text" value="Example" data-control="text"></label>
+<label>Email<input type="email" value="name@example.com" data-control="email"></label>
+<label>URL<input type="url" value="https://example.com" data-control="url"></label>
+<label>Telephone<input type="tel" value="555-0100" data-control="tel"></label>
+<label>Password<input type="password" value="password" data-control="password"></label>
+<label>Number<input type="number" value="42" data-control="number"></label>
+<label>Search<input type="search" value="Example" data-control="search"></label>
+<label>Select<select data-control="select"><option>Example</option><option>Another option</option></select></label>
+<label>Datalist<input type="text" list="suggestions" value="Example" data-control="list"></label>
+<label>Date<input type="date" value="2026-10-06" data-control="date"></label>
+<label>Month<input type="month" value="2026-10" data-control="month"></label>
+<label>Week<input type="week" value="2026-W41" data-control="week"></label>
+<label>Time<input type="time" value="12:30" data-control="time"></label>
+<label>Date and time<input type="datetime-local" value="2026-10-06T12:30" data-control="datetime-local"></label>
+<label>Color<input type="color" value="#336699" data-control="color"></label>
+<label>Empty date<input type="date" data-control="empty-date"></label>
+<label>Empty month<input type="month" data-control="empty-month"></label>
+<label>Empty week<input type="week" data-control="empty-week"></label>
+<label>Empty time<input type="time" data-control="empty-time"></label>
+<label>Empty datetime-local<input type="datetime-local" data-control="empty-datetime-local"></label></div></section>
+<section class="dense" data-density="dense"><h2>Dense density</h2><div class="matrix"><label>Text<input type="text" value="Example" data-control="text"></label>
+<label>Email<input type="email" value="name@example.com" data-control="email"></label>
+<label>URL<input type="url" value="https://example.com" data-control="url"></label>
+<label>Telephone<input type="tel" value="555-0100" data-control="tel"></label>
+<label>Password<input type="password" value="password" data-control="password"></label>
+<label>Number<input type="number" value="42" data-control="number"></label>
+<label>Search<input type="search" value="Example" data-control="search"></label>
+<label>Select<select data-control="select"><option>Example</option><option>Another option</option></select></label>
+<label>Datalist<input type="text" list="suggestions" value="Example" data-control="list"></label>
+<label>Date<input type="date" value="2026-10-06" data-control="date"></label>
+<label>Month<input type="month" value="2026-10" data-control="month"></label>
+<label>Week<input type="week" value="2026-W41" data-control="week"></label>
+<label>Time<input type="time" value="12:30" data-control="time"></label>
+<label>Date and time<input type="datetime-local" value="2026-10-06T12:30" data-control="datetime-local"></label>
+<label>Color<input type="color" value="#336699" data-control="color"></label>
+<label>Empty date<input type="date" data-control="empty-date"></label>
+<label>Empty month<input type="month" data-control="empty-month"></label>
+<label>Empty week<input type="week" data-control="empty-week"></label>
+<label>Empty time<input type="time" data-control="empty-time"></label>
+<label>Empty datetime-local<input type="datetime-local" data-control="empty-datetime-local"></label></div></section>
+<section class="roomy" data-density="roomy"><h2>Roomy density</h2><div class="matrix"><label>Text<input type="text" value="Example" data-control="text"></label>
+<label>Email<input type="email" value="name@example.com" data-control="email"></label>
+<label>URL<input type="url" value="https://example.com" data-control="url"></label>
+<label>Telephone<input type="tel" value="555-0100" data-control="tel"></label>
+<label>Password<input type="password" value="password" data-control="password"></label>
+<label>Number<input type="number" value="42" data-control="number"></label>
+<label>Search<input type="search" value="Example" data-control="search"></label>
+<label>Select<select data-control="select"><option>Example</option><option>Another option</option></select></label>
+<label>Datalist<input type="text" list="suggestions" value="Example" data-control="list"></label>
+<label>Date<input type="date" value="2026-10-06" data-control="date"></label>
+<label>Month<input type="month" value="2026-10" data-control="month"></label>
+<label>Week<input type="week" value="2026-W41" data-control="week"></label>
+<label>Time<input type="time" value="12:30" data-control="time"></label>
+<label>Date and time<input type="datetime-local" value="2026-10-06T12:30" data-control="datetime-local"></label>
+<label>Color<input type="color" value="#336699" data-control="color"></label>
+<label>Empty date<input type="date" data-control="empty-date"></label>
+<label>Empty month<input type="month" data-control="empty-month"></label>
+<label>Empty week<input type="week" data-control="empty-week"></label>
+<label>Empty time<input type="time" data-control="empty-time"></label>
+<label>Empty datetime-local<input type="datetime-local" data-control="empty-datetime-local"></label></div></section>
+  <datalist id="suggestions"><option value="Example"><option value="Another option"></datalist>
+  <section class="dense" id="special">
+    <h2>Controls with independent sizes</h2>
+    <div class="matrix">
+      <label><input type="checkbox"> Checkbox</label>
+      <label><input type="radio" name="choice"> Radio</label>
+      <label>Range<input type="range"></label>
+      <label>File<input type="file"></label>
+      <label>Multiline text<textarea rows="4">Multiple lines remain flexible.</textarea></label>
+      <label>Listbox<select multiple size="4"><option>One</option><option>Two</option><option>Three</option><option>Four</option></select></label>
+    </div>
+  </section>
+  <section>
+    <h2>Rendered measurements</h2>
+    <button type="button" id="measure">Measure again</button>
+    <p id="result" role="status"></p>
+    <pre id="measurements"></pre>
+  </section>
+</main>
+<script>
+  function measureControls() {
+    const densities = Array.from(document.querySelectorAll('[data-density]'), section => {
+      const controls = Array.from(section.querySelectorAll('[data-control]'), control => ({
+        control: control.dataset.control,
+        height: control.getBoundingClientRect().height,
+        width: control.getBoundingClientRect().width,
+        appearance: getComputedStyle(control).appearance,
+        // Select overflow catches a stacked enhanced value/icon. Native date/time
+        // editors can report extra internal scroll height without clipped text.
+        contentFits: control.localName === 'select'
+          ? control.scrollHeight <= control.clientHeight + 1 : null,
+      }));
+      const reference = controls.find(control => control.control === 'text').height;
+      return { density: section.dataset.density, reference,
+        pass: controls.every(control => Math.abs(control.height - reference) <= 1 && control.contentFits !== false), controls };
+    });
+    document.querySelector('#result').textContent = densities.every(row => row.pass)
+      ? 'All single-line controls align within 1px.' : 'Height differences or content overflow detected. See measurements below.';
+    document.querySelector('#measurements').textContent = JSON.stringify(densities, null, 2);
+    return densities;
+  }
+  document.querySelector('#measure').addEventListener('click', measureControls);
+  window.addEventListener('load', measureControls);
+  window.addEventListener('resize', measureControls);
+</script>
+</body>
+</html>

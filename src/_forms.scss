@@ -6,6 +6,9 @@
 @use 'config' as *;
 @use 'exclusion';
 
+// Border-box height shared by single-line controls, including native widgets.
+$control-block-size: calc(1em * 1.5 + var(#{$prefix}control-padding-block, 0.5em) + var(#{$prefix}control-padding-block, 0.5em) + 2px);
+
 @layer nimble.base {
 
   // ----- Text inputs, select, textarea -----
@@ -14,7 +17,7 @@
     --_input-bg: color-mix(in oklch, var(#{$prefix}surface-1), var(#{$prefix}surface-2) 20%);
 
     padding: var(#{$prefix}control-padding-block, 0.5em) 0.75em;
-    min-height: calc(1em * 1.5 + var(#{$prefix}control-padding-block, 0.5em) + var(#{$prefix}control-padding-block, 0.5em) + 2px); // line-height + block padding + border
+    min-height: $control-block-size;
     background-color: var(--_input-bg);
     border: 1px solid var(#{$prefix}border);
     border-radius: var(#{$prefix}radius);
@@ -22,6 +25,12 @@
     font: inherit;
     font-size: 1rem; // OP --size-3; >=16px prevents iOS Safari auto-zoom on focus
     transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  // A minimum alone lets native widgets grow taller than adjacent text inputs.
+  // Leave textareas and listbox selects free to grow with their row count.
+  #{exclusion.guard(':where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"]), select:not([multiple], [size]), select[size="0"]:not([multiple]), select[size="1"]:not([multiple]))')} {
+    block-size: $control-block-size;
   }
 
   // Make text inputs and select full-width by default (PicoCSS pattern)
@@ -197,7 +206,7 @@
   // ----- Color -----
 
   #{exclusion.guard(':where([type="color"])')} {
-    --_color-size: calc(1em * 1.5 + 1em + 2px); // Match text input height
+    --_color-size: #{$control-block-size}; // Match text input height at every density
 
     --_color-pad: 0.25em;    // OP ~size-1 (em-relative)
 

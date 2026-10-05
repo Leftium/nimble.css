@@ -746,10 +746,22 @@ Form elements are one of PicoCSS's strengths and Open Props normalize's weakness
 }
 ```
 
-Text inputs, selects, and textareas derive their minimum height from the same
-block padding, 1.5 line height, and two 1px borders. The default is 42px at
-`1rem`; `0.25em` block padding makes the mixed row 34px high. The default
-`1rem` font size prevents iOS Safari from zooming text inputs on focus.
+Single-line text inputs, dropdown selects, native date/time inputs, and color
+inputs use an explicit border-box block size derived from the same block padding,
+1.5 line height, and two 1px borders. The default is 42px at `1rem`; `0.25em`
+block padding makes the mixed row 34px high. A minimum alone cannot constrain
+native picker geometry. Textareas and listbox selects retain only the minimum
+height so their row counts can expand them. Checkbox, radio, range, and file
+controls keep their independent sizes.
+
+The existing `--nc-control-padding-block` property controls density without a
+new public sizing token. Date/time and datalist inputs retain their natural
+width; ordinary text inputs and selects remain full-width. The out-of-layer
+`appearance: none` date/time rule remains necessary for iOS Safari sizing and
+preserves native picker interaction. The default `1rem` font size prevents iOS
+Safari from zooming text inputs on focus. Use
+[`site/demo/control-heights.html`](../site/demo/control-heights.html) to compare
+populated and empty controls at default, dense, and roomy densities.
 
 **Validation states** use `aria-invalid`:
 
