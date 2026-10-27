@@ -44,6 +44,9 @@
         gap: 0.25em;
       }
 
+      .demo-light-buttons, .demo-dark-buttons {
+        --nc-join-hover-divider: "";
+      }
       .demo-light-buttons > button {
         background: oklch(0.92 0.01 250);
         border-color: oklch(0.92 0.01 250);
@@ -147,7 +150,39 @@
           </div>
         </div>
 
+        <p>Hover either end or the middle button: dividers disappear only at
+          the changed surface. Tab through the buttons to check that keyboard
+          focus keeps the dividers and a visible focus ring.</p>
+
+        <h3>Disabled and Reset Joins</h3>
+        <div class="demo-group-row">
+          <div class="nc-join">
+            <button>Enabled</button>
+            <button disabled>Disabled</button>
+            <button disabled>Disabled</button>
+            <button>Enabled</button>
+          </div>
+          <div class="nc-join">
+            <button class="outline">Enabled</button>
+            <button class="outline" disabled>Disabled</button>
+            <button class="outline" disabled>Disabled</button>
+          </div>
+          <div class="nc-join">
+            <button>Primary</button>
+            <button type="reset">Reset</button>
+            <button class="secondary">Secondary</button>
+            <button>Primary</button>
+          </div>
+        </div>
+
+        <p>Outline buttons keep their dividers at rest, even between enabled
+          and disabled buttons. Hovering an enabled outline button hides the
+          divider at its changed background.</p>
+
         <h3>Customized Joins</h3>
+        <p>The light and dark groups keep their custom backgrounds on hover,
+          so <code>--nc-join-hover-divider: ""</code> keeps their hover dividers.
+          The enabled/disabled boundary still hides its divider.</p>
         <div class="demo-group-row">
           <div class="nc-join demo-light-buttons">
             <button>Light</button>

@@ -125,19 +125,39 @@
     pointer-events: none;
   }
 
+  // A boundary belongs to the later child, including when its predecessor
+  // changes state. Keep these selectors at the default divider specificity
+  // so mixed variants and non-button controls retain their own rules below.
+  $join-button: ':is(button, [type="submit"], [type="reset"], [type="button"], .nc-button)';
+  #{exclusion.guard('.nc-join > :where(#{$join-button}:hover:not(:disabled)) + :where(#{$join-button}:not(:hover)), .nc-join > :where(#{$join-button}:not(:hover)) + :where(#{$join-button}:hover:not(:disabled))')} {
+    // Custom surfaces may keep the same background on hover. An empty
+    // string preserves their divider without reviving mixed-variant ones.
+    --_divider: var(#{$prefix}join-hover-divider, none);
+  }
+
+  #{exclusion.guard('.nc-join > :where(#{$join-button}:disabled) + :where(#{$join-button}:not(:disabled)), .nc-join > :where(#{$join-button}:not(:disabled)) + :where(#{$join-button}:disabled)')} {
+    --_divider: none;
+  }
+
+  // Outline neighbours share a transparent idle surface even when their
+  // opacity differs. Hover supplies a distinct surface on the enabled side.
+  #{exclusion.guard('.nc-join > :where(.outline:not(:hover)) + :where(.outline:not(:hover))')} {
+    --_divider: "";
+  }
+
   // Hide divider between different-type button neighbours.
   // primary ↔ secondary
-  #{exclusion.guard('.nc-join > :not(.secondary):not(.outline) + .secondary, .nc-join > .secondary + :not(.secondary):not(.outline)')} {
+  #{exclusion.guard('.nc-join > :not(.secondary):not([type="reset"]):not(.outline) + :is(.secondary, [type="reset"]):not(.outline), .nc-join > :is(.secondary, [type="reset"]):not(.outline) + :not(.secondary):not([type="reset"]):not(.outline)')} {
     --_divider: none;
   }
 
   // primary ↔ outline
-  #{exclusion.guard('.nc-join > :not(.secondary):not(.outline) + .outline, .nc-join > .outline + :not(.secondary):not(.outline)')} {
+  #{exclusion.guard('.nc-join > :not(.secondary):not([type="reset"]):not(.outline) + .outline, .nc-join > .outline + :not(.secondary):not([type="reset"]):not(.outline)')} {
     --_divider: none;
   }
 
   // secondary ↔ outline
-  #{exclusion.guard('.nc-join > .secondary + .outline, .nc-join > .outline + .secondary')} {
+  #{exclusion.guard('.nc-join > :is(.secondary, [type="reset"]):not(.outline) + .outline, .nc-join > .outline + :is(.secondary, [type="reset"]):not(.outline)')} {
     --_divider: none;
   }
 

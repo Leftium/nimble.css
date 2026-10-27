@@ -259,6 +259,26 @@ divider for a specific join when its surface needs a custom separator:
 }
 ```
 
+Dividers disappear at built-in variant, hover, and filled enabled/disabled
+boundaries. Outline neighbours keep their divider at rest, including between
+enabled and disabled buttons, because their backgrounds remain transparent.
+Hovering an enabled outline button hides its adjacent dividers. Two disabled
+buttons keep their divider. Keyboard focus alone
+keeps the divider because it does not change the background. Reset buttons
+count as secondary unless they use `.outline`.
+
+CSS cannot compare adjacent computed colors. If custom button backgrounds
+stay the same on hover, preserve the hover divider explicitly:
+
+```css
+.nc-join.custom-surface {
+  --nc-join-hover-divider: "";
+}
+```
+
+This override affects hover boundaries only; mixed variants and
+filled enabled/disabled boundaries still suppress their dividers.
+
 <details>
 <summary>SCSS (advanced)</summary>
 
