@@ -129,7 +129,7 @@
   // changes state. Keep these selectors at the default divider specificity
   // so mixed variants and non-button controls retain their own rules below.
   $join-button: ':is(button, [type="submit"], [type="reset"], [type="button"], .nc-button)';
-  #{exclusion.guard('.nc-join > :where(#{$join-button}:hover:not(:disabled)) + :where(#{$join-button}:not(:hover):not(:disabled)), .nc-join > :where(#{$join-button}:not(:hover):not(:disabled)) + :where(#{$join-button}:hover:not(:disabled))')} {
+  #{exclusion.guard('.nc-join > :where(#{$join-button}:hover:not(:disabled)) + :where(#{$join-button}:not(:hover)), .nc-join > :where(#{$join-button}:not(:hover)) + :where(#{$join-button}:hover:not(:disabled))')} {
     // Custom surfaces may keep the same background on hover. An empty
     // string preserves their divider without reviving mixed-variant ones.
     --_divider: var(#{$prefix}join-hover-divider, none);
@@ -137,6 +137,12 @@
 
   #{exclusion.guard('.nc-join > :where(#{$join-button}:disabled) + :where(#{$join-button}:not(:disabled)), .nc-join > :where(#{$join-button}:not(:disabled)) + :where(#{$join-button}:disabled)')} {
     --_divider: none;
+  }
+
+  // Outline neighbours share a transparent idle surface even when their
+  // opacity differs. Hover supplies a distinct surface on the enabled side.
+  #{exclusion.guard('.nc-join > :where(.outline:not(:hover)) + :where(.outline:not(:hover))')} {
+    --_divider: "";
   }
 
   // Hide divider between different-type button neighbours.

@@ -75,8 +75,20 @@ test('join divider states in full and minified CSS', {
           ]`), ['1px', '0px'], `${label}: outline borders collapse onto group`);
         }
 
-        await fixture(`<button class="${variant}">A</button><button class="${variant}" disabled>B</button><button class="${variant}" disabled>C</button><button class="${variant}">D</button>`);
-        await expect(['none', '""', 'none'], `${variant} disabled boundaries`);
+        const disabledId = await fixture(`<button class="${variant}">A</button><button class="${variant}" disabled>B</button><button class="${variant}" disabled>C</button><button class="${variant}">D</button>`);
+        const disabledIdle = variant === 'outline' ? ['""', '""', '""'] : ['none', '""', 'none'];
+        await expect(disabledIdle, `${variant} disabled boundaries`);
+        for (const index of [1, 4]) {
+          await force(disabledId, index, ['hover']);
+          const hovered = [...disabledIdle];
+          hovered[index === 1 ? 0 : 2] = 'none';
+          await expect(hovered, `${variant} hover next to disabled ${index}`);
+          await force(disabledId, index, []);
+          await expect(disabledIdle, `${variant} leave hover next to disabled ${index}`);
+          await force(disabledId, index, ['focus-visible']);
+          await expect(disabledIdle, `${variant} focus next to disabled ${index}`);
+          await force(disabledId, index, []);
+        }
       }
 
       const resetId = await fixture('<button>P</button><button type="reset">R</button><button class="secondary">S</button><button type="reset">R</button><button>P</button>');

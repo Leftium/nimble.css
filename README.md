@@ -259,8 +259,11 @@ divider for a specific join when its surface needs a custom separator:
 }
 ```
 
-Dividers disappear at built-in variant, hover, and enabled/disabled
-boundaries. Two disabled buttons keep their divider. Keyboard focus alone
+Dividers disappear at built-in variant, hover, and filled enabled/disabled
+boundaries. Outline neighbours keep their divider at rest, including between
+enabled and disabled buttons, because their backgrounds remain transparent.
+Hovering an enabled outline button hides its adjacent dividers. Two disabled
+buttons keep their divider. Keyboard focus alone
 keeps the divider because it does not change the background. Reset buttons
 count as secondary unless they use `.outline`.
 
@@ -274,7 +277,7 @@ stay the same on hover, preserve the hover divider explicitly:
 ```
 
 This override affects hover boundaries only; mixed variants and
-enabled/disabled boundaries still suppress their dividers.
+filled enabled/disabled boundaries still suppress their dividers.
 
 <details>
 <summary>SCSS (advanced)</summary>
